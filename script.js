@@ -1,4 +1,4 @@
-// script.js - Gov-AI Dashboard Logic (Final Jatin Code)
+// script.js - Gov-AI Dashboard Logic (Final with Filters)
 
 // GLOBAL VARIABLE TO TRACK OPEN COMPLAINT
 let currentItemIndex = null;
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 4500); 
 
     // INITIAL RENDER
-    renderTable();
+    renderTable(); // Renders All by default
     initMainChart();
 });
 
@@ -106,17 +106,44 @@ function removeLoader() {
     }
 }
 
-// --- 3. RENDER TABLE ---
-function renderTable() {
+// --- 3. FILTER & RENDER FUNCTION (UPDATED) ---
+
+// Filter Logic
+function filterTable() {
+    const filterValue = document.getElementById('statusFilter').value;
+    
+    if (filterValue === 'All') {
+        renderTable(data); // Show everything
+    } else {
+        // Create a temporary filtered list
+        const filteredData = data.filter(item => item.status === filterValue);
+        renderTable(filteredData);
+    }
+}
+
+// Render Logic
+function renderTable(dataset) {
     const tbody = document.getElementById('tableBody');
     if(!tbody) return;
     tbody.innerHTML = '';
 
-    data.forEach((item, index) => {
+    // If no dataset passed, use global data (default)
+    const displayData = dataset || data;
+
+    if (displayData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#64748b;">No records found for this filter.</td></tr>';
+        return;
+    }
+
+    displayData.forEach((item) => {
         let statusClass = 'st-pending'; 
         if (item.status === 'Solved') statusClass = 'st-solved';     
         if (item.status === 'Rejected') statusClass = 'st-rejected'; 
         if (item.status === 'Approved') statusClass = 'st-approved';
+
+        // CRITICAL: We find the ORIGINAL index in the main 'data' array.
+        // This ensures that even if we filter, the correct item opens in the modal.
+        const originalIndex = data.indexOf(item);
 
         const row = `
             <tr>
@@ -124,17 +151,17 @@ function renderTable() {
                 <td>${item.type}</td>
                 <td>${item.loc}</td>
                 <td><span class="status-badge ${statusClass}">${item.status}</span></td>
-                <td><button class="btn-action" onclick="openAnalyzeModal(${index})">Analyze</button></td>
+                <td><button class="btn-action" onclick="openAnalyzeModal(${originalIndex})">Analyze</button></td>
             </tr>
         `;
         tbody.innerHTML += row;
     });
 }
 
-// --- 4. OPEN ANALYZE MODAL (UPDATED LOGIC) ---
+// --- 4. OPEN ANALYZE MODAL ---
 function openAnalyzeModal(index) {
     currentItemIndex = index;
-    const item = data[index];
+    const item = data[index]; // Uses the correct item from global data
 
     // Populate Data
     document.getElementById('m-type').innerText = item.type;
@@ -145,31 +172,29 @@ function openAnalyzeModal(index) {
     document.getElementById('m-photo').src = item.img;
     document.getElementById('m-desc').innerText = item.desc;
     
-    // --- HIDE APPROVE BUTTON ---
+    // --- BUTTON LOGIC ---
     const approveBtn = document.querySelector('.modal-action-btn.primary');
     if(approveBtn) approveBtn.style.display = 'none'; 
     
-    // --- SMART REJECT BUTTON LOGIC ---
     const rejectBtn = document.querySelector('.modal-action-btn.danger');
     if(rejectBtn) {
         rejectBtn.style.width = '100%'; 
 
         if (item.status === 'Solved') {
-            // IF SOLVED: Fade button and prevent clicking
             rejectBtn.style.opacity = '0.5';
             rejectBtn.style.cursor = 'not-allowed';
             rejectBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i> Complaint Closed';
-            rejectBtn.onclick = function() {
-                alert("Complaint closed already");
-            };
+            rejectBtn.onclick = function() { alert("Complaint closed already"); };
+        } else if (item.status === 'Rejected') {
+            rejectBtn.style.opacity = '0.5';
+            rejectBtn.style.cursor = 'not-allowed';
+            rejectBtn.innerHTML = '<i class="ri-spam-line"></i> Already Rejected';
+            rejectBtn.onclick = function() { alert("Complaint already marked as Rejected."); };
         } else {
-            // IF PENDING: Show bright red button and allow reject
             rejectBtn.style.opacity = '1';
             rejectBtn.style.cursor = 'pointer';
             rejectBtn.innerHTML = '<i class="ri-spam-line"></i> Reject';
-            rejectBtn.onclick = function() {
-                updateStatus('Rejected');
-            };
+            rejectBtn.onclick = function() { updateStatus('Rejected'); };
         }
     }
 
@@ -188,10 +213,10 @@ function updateStatus(action) {
     if (action === 'Rejected') {
         data[currentItemIndex].status = 'Rejected';
         
-        // Simulation Alert
         alert("⚠️ Complaint Marked as SPAM.\n\n🔄 System Update: Caller flagged. AI model is retraining to filter this pattern.");
         
-        renderTable();
+        // Re-run filter logic to update the view instantly
+        filterTable();
         closeAnalyzeModal();
     } 
 }
@@ -245,19 +270,11 @@ function initMainChart() {
             scales: { 
                 x: { 
                     grid: { display: false },
-                    title: {
-                        display: true,
-                        text: 'Date of Month', 
-                        font: { weight: 'bold' }
-                    }
+                    title: { display: true, text: 'Date of Month', font: { weight: 'bold' } }
                 }, 
                 y: { 
                     beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Number of Complaints', 
-                        font: { weight: 'bold' }
-                    }
+                    title: { display: true, text: 'Number of Complaints', font: { weight: 'bold' } }
                 } 
             }
         }
