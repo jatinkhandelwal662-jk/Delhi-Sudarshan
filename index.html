@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+ <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,7 +29,7 @@
   </div>
 
   <div class="page-watermark">
-      <img src="delhi-logo.jpg" alt="Delhi Govt Watermark">
+      <img src="delhi-logo.jpg" alt="Delhi">
   </div>
 
   <div class="glass-container">
@@ -87,16 +87,28 @@
               </div>
               <div class="glass-panel">
                   <h3>Complaint Frequency</h3>
-                  <div class="chart-wrapper" style="height: 300px;">
+                  <div class="chart-wrapper" style="height: 360px;">
                       <canvas id="mainChart"></canvas>
                   </div>
               </div>
           </div>
 
-          <div id="complaints" class="view">
-              <header class="glass-header">
-                  <h1>Complaint's Record</h1>
-                  <p class="subtitle">Voice-to-Text Transmissions from Citizens.</p>
+        <div id="complaints" class="view">
+              <header class="glass-header header-with-filter">
+                  <div class="header-content">
+                      <h1>Complaint's Record</h1>
+                      <p class="subtitle">Voice-to-Text Transmissions from Citizens.</p>
+                  </div>
+                  
+                  <div class="filter-wrapper">
+                      <i class="ri-filter-3-line"></i>
+                      <select id="statusFilter" onchange="filterTable()">
+                          <option value="All">All Status</option>
+                          <option value="Pending">Pending Only</option>
+                          <option value="Solved">Solved</option>
+                          <option value="Rejected">Rejected</option>
+                      </select>
+                  </div>
               </header>
               
               <div class="glass-panel no-padding-panel">
@@ -116,6 +128,7 @@
                       </table>
                   </div>
               </div>
+          </div>
           </div> <div id="reports" class="view">
               <header class="glass-header">
                   <h1>Ministry Performance</h1>
@@ -273,4 +286,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
