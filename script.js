@@ -326,3 +326,4 @@ window.onclick = function(event) {
     const modal = document.getElementById('analyzeModal');
     if (event.target == modal) modal.style.display = "none";
 }
+
