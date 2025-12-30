@@ -426,107 +426,140 @@ td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px;
 }
 
 /* --- LOADING SCREEN STYLES --- */
+/* --- STORYTELLING LOADER (Voice-to-Vision) --- */
 #loader-screen {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100vh;
-    background: radial-gradient(circle at center, #1e293b, #0f172a); /* Dark Tech Background */
-    z-index: 9999; /* On top of everything */
+    background: #0f172a; /* Deep Government Blue */
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    transition: opacity 0.8s ease-out; /* Smooth fade out */
+    transition: opacity 0.8s ease-out;
 }
 
-.loader-content { text-align: center; position: relative; }
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
 
-/* 1. Logo Animation */
+/* 1. VOICE WAVE ANIMATION (Citizen Input) */
+.voice-visualizer {
+    display: flex;
+    gap: 6px;
+    height: 60px;
+    align-items: center;
+    margin-bottom: 30px;
+    /* After 2.5s, shrink and disappear to reveal logo */
+    animation: shrinkWave 0.5s ease-in-out forwards 2.5s;
+}
+
+.bar {
+    width: 8px;
+    background: linear-gradient(to top, #3b82f6, #06b6d4);
+    border-radius: 99px;
+    animation: voiceWave 1.2s ease-in-out infinite;
+}
+
+/* Make bars dance at different speeds */
+.bar:nth-child(1) { height: 20px; animation-delay: 0.1s; }
+.bar:nth-child(2) { height: 40px; animation-delay: 0.2s; }
+.bar:nth-child(3) { height: 50px; animation-delay: 0.0s; } /* Center Peak */
+.bar:nth-child(4) { height: 40px; animation-delay: 0.3s; }
+.bar:nth-child(5) { height: 20px; animation-delay: 0.4s; }
+
+/* 2. LOGO REVEAL (Government Output) */
 .logo-wrapper {
-    font-size: 4rem;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    /* Appears after wave is gone */
+    animation: revealBrand 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 2.8s;
+}
+
+.brand-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.hindi-text {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #06b6d4; /* Cyan */
+}
+
+.eng-text {
+    font-size: 3rem;
     font-weight: 800;
-    font-family: 'Outfit', sans-serif;
-    position: relative;
-    margin-bottom: 20px;
-    display: inline-block;
-    overflow: hidden; /* For scan effect */
-}
-
-.gov-text {
     color: white;
-    opacity: 0;
-    animation: fadeGov 0.5s ease-out forwards 0.5s; /* Appears after 0.5s */
+    letter-spacing: -1px;
 }
 
-.ai-text {
-    color: #3b82f6; /* Tech Blue */
-    text-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
-    opacity: 0;
-    display: inline-block;
-    transform: translateX(-20px);
-    animation: slideAI 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 1.2s; /* Slides in after Gov */
+/* 3. TAGLINE SLIDE UP */
+.tagline-mask {
+    overflow: hidden; /* Hides text until it slides up */
 }
 
-/* 2. Tagline Typing */
 .tagline {
     font-family: monospace;
     color: #94a3b8;
-    font-size: 1.2rem;
-    letter-spacing: 3px;
-    border-right: 2px solid #3b82f6; /* Cursor effect */
-    white-space: nowrap;
-    overflow: hidden;
-    width: 0; /* Hidden initially */
-    animation: typing 2s steps(30, end) forwards 2s, blink 0.7s step-end infinite;
-    margin: 0 auto 30px auto;
+    letter-spacing: 4px;
+    font-size: 0.9rem;
+    transform: translateY(100%);
+    animation: slideUpTag 0.6s ease forwards 3.2s;
 }
 
-/* 3. Loading Bar */
-.loading-bar-container {
-    width: 300px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    margin: 0 auto;
-    overflow: hidden;
-    position: relative;
-}
-
-.loading-bar {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, #3b82f6, #06b6d4);
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
-    animation: loadProgress 3.5s ease-in-out forwards;
-}
-
-.system-status {
-    margin-top: 10px;
+/* 4. STATUS TEXT (Bottom) */
+.status-container {
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #475569;
     font-family: monospace;
     font-size: 0.8rem;
-    color: #475569;
 }
 
-/* --- ANIMATION KEYFRAMES --- */
-@keyframes fadeGov { to { opacity: 1; } }
-
-@keyframes slideAI { 
-    to { opacity: 1; transform: translateX(0); } 
+.status-icon i {
+    animation: spin 2s linear infinite;
+    display: inline-block;
 }
 
-@keyframes typing {
-    from { width: 0; }
-    to { width: 100%; }
-}
-@keyframes blink { 50% { border-color: transparent; } }
+/* KEYFRAMES */
 
-@keyframes loadProgress {
-    0% { width: 0%; }
-    40% { width: 40%; }
-    70% { width: 60%; }
-    100% { width: 100%; }
+@keyframes voiceWave {
+    0%, 100% { height: 20px; opacity: 0.5; }
+    50% { height: 60px; opacity: 1; box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
 }
 
+@keyframes shrinkWave {
+    to { transform: scale(0); opacity: 0; height: 0; margin: 0; }
+}
+
+@keyframes revealBrand {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUpTag {
+    to { transform: translateY(0); }
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* EXIT CLASS */
+.loader-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+}
 /* --- DEPARTMENT REPORTS STYLES --- */
 
 /* Highlight Card (Gold Tint for Winner) */
@@ -614,4 +647,5 @@ td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px;
         /* If screen is very narrow, stack cards instead of 3 in a row */
         grid-template-columns: repeat(2, 1fr); 
     }
+
 }
