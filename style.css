@@ -1,4 +1,4 @@
-/* --- FRIEND'S THEME: Soft Aero Glass --- */
+/* ---Soft Aero Glass --- */
 :root {
     --bg-gradient: linear-gradient(135deg, #c4b5fd 0%, #bfdbfe 50%, #a5f3fc 100%);
     --glass-bg: rgba(255, 255, 255, 0.25);
@@ -282,7 +282,7 @@ td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px;
 
 /* Dividers and Links */
 .divider { color: #cbd5e1; }
-
+ 
 .support-link {
     color: #2563eb; /* Link Blue */
     text-decoration: none;
@@ -297,4 +297,58 @@ td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px;
 /* Responsive Hide for Small Screens */
 @media (max-width: 768px) {
     .footer-center { display: none; } /* Hide warning on phones to save space */
+}
+/* ================================= */
+/* FILTER DROPDOWN STYLES           */
+/* ================================= */
+
+/* Make Header a Flex Container */
+.header-with-filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-wrapper {
+    background: white;
+    padding: 8px 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.filter-wrapper i {
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+/* Custom Select Styling */
+#statusFilter {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
+    padding-right: 5px;
+}
+
+/* Responsive Fix for Filter */
+@media (max-width: 768px) {
+    .header-with-filter {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .filter-wrapper {
+        width: 100%;
+    }
+    #statusFilter {
+        width: 100%;
+    }
 }
