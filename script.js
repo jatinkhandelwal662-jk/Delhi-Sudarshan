@@ -1,5 +1,36 @@
 // script.js - Gov-AI Dashboard Logic (Fixed & Failsafe)
 
+document.addEventListener("DOMContentLoaded", () => {
+    
+    // STORYTELLING STATUS UPDATES
+    const statusText = document.querySelector('.changing-text');
+    if (statusText) {
+        // These steps match your "Voice to Vision" story
+        const states = [
+            "RECEIVING CITIZEN CALL...",   // 0s - 1s
+            "TRANSCRIBING AUDIO (HINDI)...", // 1s - 2s
+            "EXTRACTING LOCATION DATA...",   // 2s - 3s
+            "GENERATING OFFICER REPORT...",  // 3s - 4s
+            "SYSTEM READY."                 // 4s+
+        ];
+        
+        let step = 0;
+        // Faster cycle to fit the 4s loading time
+        const interval = setInterval(() => {
+            if (step < states.length) {
+                statusText.innerText = states[step];
+                step++;
+            } else {
+                clearInterval(interval);
+            }
+        }, 800);
+    }
+
+    // Keep your existing removal logic...
+    setTimeout(() => {
+        removeLoader();
+    }, 4500); 
+});
 // --- 1. ROBUST LOADER LOGIC ---
 document.addEventListener("DOMContentLoaded", () => {
     
@@ -226,4 +257,5 @@ function updateStatus(action) {
 window.onclick = function(event) {
     const modal = document.getElementById('analyzeModal');
     if (event.target == modal) modal.style.display = "none";
+
 }
