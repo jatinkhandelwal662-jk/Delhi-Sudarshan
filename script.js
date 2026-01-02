@@ -249,3 +249,64 @@ window.onclick = function(event) {
     const modal = document.getElementById('analyzeModal');
     if (event.target == modal) modal.style.display = "none";
 }
+
+// --- 8. NOTIFICATION CENTER LOGIC ---
+const notifications = [
+    { id: "SIG-8902", msg: "Street Light repaired in Vasant Kunj Block C.", dept: "BSES Rajdhani", time: "10 mins ago", type: "solved" },
+    { id: "SIG-5632", msg: "Road Divider reconstruction completed.", dept: "PWD Delhi", time: "1 hr ago", type: "solved" },
+    { id: "SYS-ALERT", msg: "High traffic load detected in server.", dept: "System Admin", time: "2 hrs ago", type: "alert" }
+];
+
+function renderNotifications() {
+    const list = document.getElementById('notifList');
+    const badge = document.getElementById('notifCount');
+    if(!list) return;
+
+    list.innerHTML = ''; // Clear current list
+    badge.innerText = notifications.length; // Update badge count
+
+    notifications.forEach(n => {
+        const item = `
+            <div class="notif-card ${n.type}">
+                <div class="n-top">
+                    <span class="n-id">${n.id}</span>
+                    <span class="n-time">${n.time}</span>
+                </div>
+                <p class="n-msg">${n.msg}</p>
+                <span class="n-dept"><i class="ri-government-line"></i> ${n.dept}</span>
+            </div>
+        `;
+        list.innerHTML += item;
+    });
+}
+
+function toggleNotifPanel() {
+    const panel = document.getElementById('notifPanel');
+    panel.classList.toggle('active');
+}
+
+// --- 9. SIMULATE LIVE INCOMING NOTIFICATION ---
+// This runs 5 seconds after the page loads to show the "Live" effect
+setTimeout(() => {
+    addNewNotification(
+        "SIG-9021", 
+        "✅ Water Leakage Fixed: Maintenance team has resolved the issue at Dwarka Sec-10.", 
+        "Delhi Jal Board", 
+        "Just Now", 
+        "solved"
+    );
+}, 5000);
+
+function addNewNotification(id, msg, dept, time, type) {
+    // Add to top of array
+    notifications.unshift({ id, msg, dept, time, type });
+    renderNotifications();
+    
+    // Play a subtle sound or visual cue (Optional)
+    const btn = document.querySelector('.notif-toggle-btn');
+    btn.style.transform = "scale(1.2)";
+    setTimeout(() => btn.style.transform = "scale(1)", 200);
+}
+
+// Initial Render
+renderNotifications();
