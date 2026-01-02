@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gov-AI | Future Governance</title>
+    <title>दिल्ली SUDARSHAN | Future Governance</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" href="favicon-ds.jpg" type="image/favicon-ds.jpg">
+    <link rel="shortcut icon" href="favicon-ds.jpg" type="image/jpg">
 </head>
 <body>
 
@@ -32,7 +32,7 @@
   <div class="glass-container">
       <aside class="sidebar">
           <div class="logo">
-              <div class="logo-icon"><i class="ri-global-line"></i></div>
+              <img src="favicon2.jpg" alt="Delhi Sudarshan Logo" class="main-logo-img">
               <h2>दिल्ली SUDARSHAN<span class="dot"></span></h2>
           </div>
           <nav>
@@ -100,7 +100,7 @@
               </header>
               <div class="stats-row">
                   <div class="stat-card highlight-card"><div class="badge-icon"><i class="ri-trophy-line"></i></div><h3>Top Performer</h3><h1 id="best-dept-name">MCD (South)</h1><p class="stat-sub">98% Resolution Rate</p><div class="progress-bar"><div class="fill success-bg" style="width: 98%"></div></div></div>
-                  <div class="stat-card"><h3>Fastest Action</h3><h1 id="fastest-dept-name">BSES Rajdhani</h1><p class="stat-sub">Avg Time: <span class="highlight-text">7 Hrs</span></p><div class="progress-bar"><div class="fill" style="width: 90%; background: #06b6d4;"></div></div></div>
+                  <div class="stat-card"><h3>Fastest Action</h3><h1 id="fastest-dept-name">BSES Rajdhani</h1><p class="stat-sub">Avg Time: <span class="highlight-text">1.2 Hrs</span></p><div class="progress-bar"><div class="fill" style="width: 90%; background: #06b6d4;"></div></div></div>
                   <div class="stat-card"><h3>Highest Load</h3><h1 id="busy-dept-name">PWD</h1><p class="stat-sub">450+ Active Tickets</p><div class="progress-bar"><div class="fill danger-bg" style="width: 85%"></div></div></div>
               </div>
               <div class="glass-panel chart-panel">
@@ -163,6 +163,21 @@
               </div>
           </div>
       </div>
+      <div class="notification-system">
+    <button class="notif-toggle-btn" onclick="toggleNotifPanel()">
+        <i class="ri-notification-3-line"></i>
+        <span class="notif-badge" id="notifCount">3</span>
+    </button>
+
+    <div class="notif-panel" id="notifPanel">
+        <div class="notif-header">
+            <h3>Department Updates</h3>
+            <button class="close-notif" onclick="toggleNotifPanel()">&times;</button>
+        </div>
+        <div class="notif-list" id="notifList">
+            </div>
+    </div>
+</div>
       <footer class="gov-footer">
     <div class="footer-left">
         <span>&copy; 2025 <strong>Government of NCT of Delhi</strong></span>
@@ -185,5 +200,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-
