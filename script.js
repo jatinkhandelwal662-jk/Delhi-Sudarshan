@@ -470,7 +470,7 @@ function toggleNotifPanel() {
 setTimeout(() => {
     addNewNotification(
         "SIG-9021", 
-        "✅ Water Leakage Fixed: Maintenance team has resolved the issue at Dwarka Sec-10.", 
+        "✅ Water Leakage Fixed: Maintenance team has resolved the issue at Defence Colony.", 
         "Delhi Jal Board", 
         "Just Now", 
         "solved"
@@ -490,6 +490,7 @@ function addNewNotification(id, msg, dept, time, type) {
 
 // Initial Render
 renderNotifications();
+
 
 
 
