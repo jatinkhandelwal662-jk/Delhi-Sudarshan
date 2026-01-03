@@ -402,11 +402,11 @@ function initMainChart() {
     window.myMainChart = new Chart(ctx.getContext('2d'), {
         type: 'line',
         data: {
-            labels: ['JAN', 'MAR', 'JUN', 'AUG', 'SEPT', 'NOV', 'DEC'],
-            datasets: [{ label: 'Received', data: [12000, 15560, 18083, 21043, 19023, 24087, 28021], borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', borderWidth: 3, tension: 0.4, fill: true },
-                       { label: 'Solved', data: [10000, 13078, 16008, 20099, 18008, 22056, 26000], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 3, tension: 0.4, fill: true }]
+            labels: ['JAN','FEB','MAR','APR','MAY','JUN','JULY','AUG','SEPT','OCT','NOV','DEC'],
+            datasets: [{ label: 'Received', data: [12000, 16546,15560,12876,19432, 22083, 21043, 19023,25876,27054,24087, 28021], borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', borderWidth: 3, tension: 0.4, fill: true },
+                       { label: 'Solved', data: [10000, 13078, 14008, 10099, 15008, 19056, 17000,15876,21987,23012,20342,26098], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 3, tension: 0.4, fill: true }]
         },
-        options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false }, title: { display: true, text: 'Date of Month', font: { weight: 'bold' } } }, y: { beginAtZero: true, title: { display: true, text: 'Number of Complaints', font: { weight: 'bold' } } } } }
+        options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false }, title: { display: true, text: 'Month', font: { weight: 'bold' } } }, y: { beginAtZero: true, title: { display: true, text: 'Number of Complaints', font: { weight: 'bold' } } } } }
     });
 }
 
@@ -490,4 +490,5 @@ function addNewNotification(id, msg, dept, time, type) {
 
 // Initial Render
 renderNotifications();
+
 
