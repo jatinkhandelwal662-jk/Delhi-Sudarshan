@@ -319,11 +319,15 @@ function renderTable(dataset) {
     });
 }
 
-// --- 5. MODAL LOGIC (FIXED) ---
+// --- 5. MODAL LOGIC (FINAL FIX: HANDLES BUTTONS & PHOTOS CORRECTLY) ---
 function openAnalyzeModal(index) {
+    // 1. CRITICAL: Set the global variable immediately
     currentItemIndex = index;
     const item = data[index];
 
+    console.log("🔍 Analyzing Item:", item.id);
+
+    // 2. Populate Text Fields
     if(document.getElementById('m-type')) document.getElementById('m-type').innerText = item.type;
     if(document.getElementById('m-status')) document.getElementById('m-status').innerText = item.status;
     if(document.getElementById('m-phone')) document.getElementById('m-phone').innerText = item.phone;
@@ -331,44 +335,72 @@ function openAnalyzeModal(index) {
     if(document.getElementById('m-dept')) document.getElementById('m-dept').innerText = item.dept;
     if(document.getElementById('m-desc')) document.getElementById('m-desc').innerText = item.desc;
     
-    // SAFETY CHECK: Only set Date if HTML element exists
     const dateElem = document.getElementById('m-date');
-    if (dateElem) {
-        dateElem.innerText = item.date || "N/A";
-    }
+    if (dateElem) dateElem.innerText = item.date || "N/A";
     
+    // 3. IMAGE LOGIC (The Hybrid Fix)
     const imgElem = document.getElementById('m-photo');
     if (imgElem) {
-        if (!item.img || item.img === "") {
-            imgElem.style.display = 'none'; 
-        } else {
+        // Reset display first
+        imgElem.style.display = 'none';
+
+        if (item.img && item.img !== "") {
             imgElem.style.display = 'block';
-            imgElem.src = item.img;
+            
+            // CHECK: Is it a Web Link (New Upload) or a Local File (Old Data)?
+            if (item.img.includes("http")) {
+                // CASE A: It is a URL (from Ngrok). 
+                // Browsers hate loading Ngrok images on Localhost. 
+                // We strip the URL and force it to load from your internal server.
+                let filename = item.img.split("/").pop(); // Get "SIG-1234.jpg"
+                
+                // ?t=... forces the browser to ignore cache and load the new image
+                imgElem.src = `http://localhost:5000/uploads/${filename}?t=${new Date().getTime()}`;
+                
+                console.log("📸 Loading New Upload via Localhost:", imgElem.src);
+            } else {
+                // CASE B: It is an OLD sample file (e.g., "Complaint Photoes/SIG-9021.jpg")
+                // We leave it exactly as is.
+                imgElem.src = item.img;
+            }
         }
     }
     
+    // 4. BUTTON LOGIC (The Reset Fix)
     const approveBtn = document.querySelector('.modal-action-btn.primary');
-    if(approveBtn) approveBtn.style.display = 'none'; 
+    if(approveBtn) approveBtn.style.display = 'none'; // Keep hidden
     
     const rejectBtn = document.querySelector('.modal-action-btn.danger');
     if(rejectBtn) {
+        // STEP A: COMPLETELY RESET THE BUTTON STATE
+        // This wakes it up if it was disabled by a previous "Solved" item
         rejectBtn.style.width = '100%'; 
         rejectBtn.style.opacity = '1';
         rejectBtn.style.cursor = 'pointer';
+        rejectBtn.disabled = false; // <--- This line is critical
+        rejectBtn.onclick = null;   // <--- clear old triggers
 
+        // STEP B: Apply Logic based on status
         if (item.status === 'Solved') {
-            rejectBtn.style.opacity = '0.5'; rejectBtn.style.cursor = 'not-allowed';
+            rejectBtn.style.opacity = '0.5'; 
+            rejectBtn.style.cursor = 'not-allowed';
             rejectBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i> Complaint Closed';
             rejectBtn.onclick = function() { alert("Complaint closed already"); };
-        } else if (item.status === 'Rejected') {
-            rejectBtn.style.opacity = '0.5'; rejectBtn.style.cursor = 'not-allowed';
+        } 
+        else if (item.status === 'Rejected') {
+            rejectBtn.style.opacity = '0.5'; 
+            rejectBtn.style.cursor = 'not-allowed';
             rejectBtn.innerHTML = '<i class="ri-spam-line"></i> Already Rejected';
             rejectBtn.onclick = function() { alert("Complaint already marked as Rejected."); };
-        } else {
+        } 
+        else {
+            // STEP C: Default "Active" State
             rejectBtn.innerHTML = '<i class="ri-spam-line"></i> Reject';
             rejectBtn.onclick = function() { updateStatus('Rejected'); };
         }
     }
+
+    // 5. Show the Modal
     document.getElementById('analyzeModal').style.display = 'flex';
 }
 
@@ -404,7 +436,7 @@ function initMainChart() {
         data: {
             labels: ['JAN','FEB','MAR','APR','MAY','JUN','JULY','AUG','SEPT','OCT','NOV','DEC'],
             datasets: [{ label: 'Received', data: [12000, 16546,15560,12876,19432, 22083, 21043, 19023,25876,27054,24087, 28021], borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', borderWidth: 3, tension: 0.4, fill: true },
-                       { label: 'Solved', data: [10000, 13078, 14008, 10099, 15008, 19056, 17000,15876,21987,23012,20342,26098], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 3, tension: 0.4, fill: true }]
+                        { label: 'Solved', data: [10000, 13078, 14008, 10099, 15008, 19056, 17000,15876,21987,23012,20342,26098], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 3, tension: 0.4, fill: true }]
         },
         options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false }, title: { display: true, text: 'Month', font: { weight: 'bold' } } }, y: { beginAtZero: true, title: { display: true, text: 'Number of Complaints', font: { weight: 'bold' } } } } }
     });
@@ -419,7 +451,7 @@ function initDeptChart() {
         data: {
             labels: ['PWD', 'Delhi Jal Board', 'BSES Rajdhani', 'MCD (South)'],
             datasets: [{ label: 'Received', data: [30050, 20765, 21021, 28987], backgroundColor: '#2563eb', borderRadius: 6 },
-                       { label: 'Resolved', data: [20654, 15098, 18043, 28407], backgroundColor: '#10b981', borderRadius: 6 }]
+                        { label: 'Resolved', data: [20654, 15098, 18043, 28407], backgroundColor: '#10b981', borderRadius: 6 }]
         },
         options: { responsive: true, maintainAspectRatio: false, animation: { duration: 1000, easing: 'easeOutQuart' }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { grid: { display: false } } } }
     });
@@ -492,5 +524,63 @@ function addNewNotification(id, msg, dept, time, type) {
 renderNotifications();
 
 
+// --- 9. REAL-TIME DATA SYNC (FINAL FIX: Updates table & photos automatically) ---
 
+async function fetchLiveComplaints() {
+  try {
+    // Fetch latest data from the backend
+    const res = await fetch("http://localhost:5000/api/complaints");
+    const serverData = await res.json();
 
+    let needsRender = false;
+
+    serverData.forEach(serverItem => {
+        // 1. Find if we already have this item locally
+        const localItem = data.find(d => d.id === serverItem.id);
+
+        if (!localItem) {
+            // CASE A: Brand New Complaint -> Add it
+            console.log("🔥 New Complaint Found:", serverItem.id);
+            data.unshift(serverItem); 
+            needsRender = true;
+            
+            if (typeof addNewNotification === "function") {
+                addNewNotification(serverItem.id, "New Complaint Received", serverItem.dept, "Live", "alert");
+            }
+        } else {
+            // CASE B: Existing Complaint -> Check for a new Photo URL
+            // If server has an image, and it's different from our empty local image...
+            if (serverItem.img && serverItem.img !== "" && localItem.img !== serverItem.img) {
+                
+                console.log("📸 New Photo Detected for:", serverItem.id);
+                
+                // 1. Update the local data with the new link & status
+                localItem.img = serverItem.img;
+                localItem.status = serverItem.status; 
+                
+                // 2. Mark for re-rendering
+                needsRender = true; 
+                
+                // 3. Trigger a notification
+                if (typeof addNewNotification === "function") {
+                    addNewNotification(serverItem.id, "Evidence Uploaded", serverItem.dept, "Just Now", "solved");
+                }
+            }
+        }
+    });
+
+    // 2. Refresh the table only if we found changes
+    if (needsRender) {
+        renderTable(); 
+        // Update charts
+        if (typeof initMainChart === "function") initMainChart();
+        if (typeof initDeptChart === "function") initDeptChart();
+    }
+
+  } catch (err) {
+    // console.log("Backend offline...");
+  }
+}
+
+// Keep the interval running
+setInterval(fetchLiveComplaints, 2000);
