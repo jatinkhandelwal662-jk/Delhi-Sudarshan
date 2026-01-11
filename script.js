@@ -349,7 +349,7 @@ function openAnalyzeModal(index) {
                 let filename = item.img.split("/").pop(); // Get "SIG-1234.jpg"
                 
                 // ?t=... forces the browser to ignore cache and load the new image
-                imgElem.src = `http://localhost:5000/uploads/${filename}?t=${new Date().getTime()}`;
+                imgElem.src = `https://delhi-sudarshan-backend.onrender.com/uploads/${filename}?t=${new Date().getTime()}`;
                 
                 console.log("📸 Loading New Upload via Localhost:", imgElem.src);
             } else {
@@ -411,7 +411,7 @@ async function updateStatus(action) {
 
         try {
             // CALL THE BACKEND API
-            const response = await fetch("http://localhost:5000/api/reject-complaint", {
+            const response = await fetch("https://delhi-sudarshan-backend.onrender.com/api/reject-complaint", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -555,7 +555,7 @@ renderNotifications();
 async function fetchLiveComplaints() {
   try {
     // Fetch latest data from the backend
-    const res = await fetch("http://localhost:5000/api/complaints");
+    const res = await fetch("https://delhi-sudarshan-backend.onrender.com/api/complaints");
     const serverData = await res.json();
 
     let needsRender = false;
@@ -610,3 +610,4 @@ async function fetchLiveComplaints() {
 
 // Keep the interval running
 setInterval(fetchLiveComplaints, 2000);
+
