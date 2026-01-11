@@ -1,7 +1,7 @@
 <div align="center">
   <img src="favicon2.jpg" alt="Delhi Sudarshan Logo" width="120" height="120">
   
-  # 🇮🇳 दिल्ली SUDARSHAN | Future Governance
+  # दिल्ली SUDARSHAN | Future Governance
   
   **Bridging Voice to Vision — An AI-Powered Civic Command Center**
   
@@ -32,27 +32,12 @@
 
 ---
 
-## 🖼️ Interface Gallery
-
-| **Mission Control** | **Citizen Uplink (Mobile)** |
-|:---:|:---:|
-| <img src="screenshot-dashboard.jpg" alt="Dashboard" width="400"> | <img src="screenshot-call.jpg" alt="Citizen Call" width="200"> |
-| *Real-time Governance Dashboard* | *AI Voice Interface for Citizens* |
-
----
-
 ## 🛠️ Tech Stack
 
-* **Frontend:** HTML5, CSS3 (Glassmorphism UI), JavaScript (ES6+), Chart.js
+* **Frontend:** HTML5, CSS, JavaScript, Chart.js
 * **Backend:** Node.js, Express.js
-* **Communication:** Twilio Voice SDK (WebRTC), Amazon Polly (Neural TTS)
+* **Communication:** Twilio Voice SDK (WebRTC), Amazon Polly (Neural TTS), Twilio (SMS)
 * **Tunneling:** Ngrok (For secure public access to localhost)
-
 ---
-
-## ⚡ How to Run
-
-### 1. Clone the Repository
-```bash
-git clone [https://github.com/your-username/Delhi-Sudarshan.git](https://github.com/your-username/Delhi-Sudarshan.git)
-cd Delhi-Sudarshan
+🤝 Contributors
+Team Tars - Development & Design
