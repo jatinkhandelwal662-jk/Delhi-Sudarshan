@@ -2,6 +2,7 @@
 
 // GLOBAL VARIABLE TO TRACK OPEN COMPLAINT
 let currentItemIndex = null;
+let isHindi = false;
 
 // --- 1. DATASETS ---
 let data = [
@@ -617,89 +618,104 @@ const translations = {
     "Officer ID": "अधिकारी आईडी",
     "System Online": "सिस्टम ऑनलाइन",
     "City Monitor": "शहर निगरानी",
-    "Real-time AI surveillance": "AI आधारित निगरानी",
     "Total Reports": "कुल रिपोर्ट",
-    "Resolved": "हल किया गया",
+    "Solved": "हल किया गया",      // Changed from 'Resolved' to match your Data
     "Pending": "लंबित",
+    "Overdue": "देर हुई",         // Added for Overdue status
+    "Rejected": "अस्वीकृत",       // Added for Rejected status
+    "Analyze": "विश्लेषण करें",    // Added for Table Button
     "Complaint Frequency": "शिकायत आवृत्ति",
-    "Complaint's Record": "शिकायत रिकॉर्ड",
-    "Voice-to-Text Transmissions": "नागरिकों से वॉयस संदेश",
     "Signal ID": "सिग्नल आईडी",
     "Type": "प्रकार",
     "Location": "स्थान",
     "Status": "स्थिति",
     "Action": "कार्रवाई",
-    "Department Performance": "विभाग प्रदर्शन",
-    "Top Performer": "शीर्ष प्रदर्शन",
-    "Fastest Action": "सबसे तेज कार्रवाई",
-    "Highest Load": "सर्वाधिक भार",
-    "Profile": "प्रोफाइल",
     "Department": "विभाग",
     "Region": "क्षेत्र",
-    "Contact": "संपर्क",
-    "Analysis": "विश्लेषण",
+    "Description": "विवरण",
+    "Phone": "फोन",
+    "Date": "दिनांक",
+    "Photo Evidence": "फोटो साक्ष्य",
     "Approve": "स्वीकृत",
     "Reject": "अस्वीकृत",
-    "Live Incident Map": "लाइव घटना मानचित्र"
+    "Close": "बंद करें"
 };
 
-function toggleLanguage() {
-    isHindi = !isHindi;
-    const btn = document.querySelector('.lang-btn');
-    
-    // Update Button Text
-    if (btn) btn.innerText = isHindi ? "🇮🇳 HI / 🇺🇸 EN" : "🇺🇸 EN / 🇮🇳 HI";
-
-    // 2. Walk through every text node in the document
-    const walker = document.createTreeWalker(
-        document.body,
-        NodeFilter.SHOW_TEXT,
-        null,
-        false
-    );
-
+// 1. SEPARATE THE TRANSLATION LOGIC
+function applyHindiToPage() {
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
     let node;
     while (node = walker.nextNode()) {
         const text = node.nodeValue.trim();
-        if (!text) continue; // Skip empty space
+        if (!text) continue;
 
-        if (isHindi) {
-            // ENGLISH TO HINDI
-            if (translations[text]) {
-                node.nodeValue = translations[text];
-            } else {
-                // Try partial match for complex sentences
-                for (const [eng, hin] of Object.entries(translations)) {
-                    if (node.nodeValue.includes(eng)) {
-                        node.nodeValue = node.nodeValue.replace(eng, hin);
-                    }
-                }
-            }
+        // Check dictionary
+        if (translations[text]) {
+            node.nodeValue = translations[text];
         } else {
-            // HINDI TO ENGLISH (Reverse Lookup)
+            // Partial matches
             for (const [eng, hin] of Object.entries(translations)) {
-                if (node.nodeValue.includes(hin)) {
-                    node.nodeValue = node.nodeValue.replace(hin, eng);
+                if (text.includes(eng) && !text.includes(hin)) {
+                    node.nodeValue = node.nodeValue.replace(eng, hin);
                 }
             }
         }
     }
 }
-document.getElementById("pdfBtn").addEventListener("click", () => {
-    // Force all views to show
-    document.querySelectorAll(".view").forEach(v => {
-        v.classList.add("force-print");
+
+// 2. UPDATE TOGGLE FUNCTION
+function toggleLanguage() {
+    isHindi = !isHindi;
+    const btn = document.querySelector('.lang-btn');
+    if (btn) btn.innerText = isHindi ? "🇮🇳 HI / 🇺🇸 EN" : "🇺🇸 EN / 🇮🇳 HI";
+
+    if (isHindi) {
+        applyHindiToPage();
+    } else {
+        // Reload page to purely reset to English (Easiest way to fix all text)
+        location.reload(); 
+    }
+}
+
+// 3. UPDATE RENDER TABLE (To keep Hindi active)
+function renderTable(dataset) {
+    const tbody = document.getElementById('tableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    const displayData = dataset || data;
+
+    if (displayData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#64748b;">No records found.</td></tr>';
+        return;
+    }
+
+    displayData.forEach((item) => {
+        let statusClass = 'st-pending';
+        if (item.status === 'Solved') statusClass = 'st-solved';
+        if (item.status === 'Rejected') statusClass = 'st-rejected';
+        if (item.status === 'Overdue') statusClass = 'st-overdue';
+
+        let rowClass = "";
+        if (item.status === 'Overdue') rowClass = "row-overdue";
+        if (!item.img || item.img === "") rowClass += " row-no-photo";
+
+        const originalIndex = data.indexOf(item);
+
+        const row = `
+            <tr class="${rowClass}">
+                <td style="font-family: monospace; color: var(--primary); font-weight:600;">${item.id}</td>
+                <td>${item.type}</td>
+                <td>${item.loc}</td>
+                <td><span class="status-badge ${statusClass}">${item.status}</span></td>
+                <td><button class="btn-action" onclick="openAnalyzeModal(${originalIndex})">Analyze</button></td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
     });
 
-    // Wait for layout
-    setTimeout(() => {
-        window.print();
-
-        // Restore normal view after print
-        document.querySelectorAll(".view").forEach(v => {
-            v.classList.remove("force-print");
-        });
-    }, 500);
-});
-
+    // 🟢 CRITICAL ADDITION: Re-apply Hindi if active
+    if (isHindi) {
+        applyHindiToPage();
+    }
+}
 
