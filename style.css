@@ -485,3 +485,104 @@ td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px;
 @media (max-width: 480px) {
     .notif-panel { width: 100%; right: -100%; }
 }
+
+/* ============================================================
+   📄 CHIEF SECRETARY REPORT MODE (Print All 3 Pages)
+   ============================================================ */
+@media print {
+    /* 1. RESET THE CANVAS */
+    body, html {
+        background: white !important;
+        color: black !important;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* 2. HIDE THE UI (Sidebar, Buttons, Modals, Nav, Filters) */
+    .sidebar, 
+    .notification-system, 
+    .modal-overlay, 
+    .gov-footer,
+    #loader-screen,
+    .filter-wrapper, 
+    .badge-live, 
+    .nav-btn,
+    .lang-btn,
+    button /* Hide all buttons */
+    {
+        display: none !important;
+    }
+
+    /* 3. SET LAYOUT FOR PAPER */
+    .glass-container {
+        display: block !important;
+        grid-template-columns: 1fr !important; /* Remove sidebar grid */
+    }
+    .content-area {
+        padding: 0 !important;
+        overflow: visible !important;
+    }
+
+    /* 4. FORCE ALL TABS TO SHOW (The Magic Trick) */
+    .view {
+        display: block !important; /* Force show hidden tabs */
+        opacity: 1 !important;
+        visibility: visible !important;
+        position: relative !important;
+        margin-bottom: 50px;
+        page-break-after: always; /* Force new page after each section */
+    }
+
+    /* 5. PAGE SPECIFIC STYLING */
+    
+    /* PAGE 1: CITY MONITOR (Stats) */
+    #dashboard header::after {
+        content: " - WEEKLY EXECUTIVE BRIEFING";
+        font-weight: bold;
+        color: #ef4444;
+    }
+    .stats-row {
+        display: flex !important;
+        justify-content: space-between;
+        margin-bottom: 30px;
+    }
+    .stat-card {
+        border: 1px solid #000;
+        box-shadow: none !important;
+        color: black !important;
+    }
+
+    /* PAGE 2: COMPLAINTS RECORD (Table) */
+    #complaints {
+        page-break-before: always;
+    }
+    table {
+        font-size: 10pt;
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #333;
+        color: black !important;
+    }
+    /* Hide Action Column for Print */
+    th:last-child, td:last-child { display: none; }
+
+    /* PAGE 3: DEPARTMENT REPORTS */
+    #reports {
+        page-break-before: always;
+    }
+
+    /* 6. OFFICIAL FOOTER ON EVERY PAGE */
+    .view::after {
+        content: "CONFIDENTIAL - GOVT OF NCT DELHI | Chief Secretary";
+        display: block;
+        text-align: center;
+        font-size: 9pt;
+        color: #666;
+        border-top: 1px solid #ccc;
+        padding-top: 10px;
+        margin-top: 30px;
+    }
+}
