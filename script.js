@@ -638,7 +638,7 @@ const translations = {
     "Photo Evidence": "फोटो साक्ष्य",
     "Approve": "स्वीकृत",
     "Reject": "अस्वीकृत",
-    "Close": "बंद करें"
+    "Close": "बंद करें",
     "Complaint's Record":"शिकायत का रिकॉर्ड",
     "All" :"सभी",
     "Performance":"प्रदर्शन",
@@ -648,7 +648,7 @@ const translations = {
     "Public Grievance Commission":"लोक शिकायत आयोग",
     "South Delhi":"दक्षिणी दिल्ली",
     "Official ID" : "आधिकारिक आईडी",
-    "Public Nodal Officer":"सार्वजनिक नोडल अधिकारी",
+    "Public Nodal Officer":"सार्वजनिक नोडल अधिकारी"
 };
 
 // 1. SEPARATE THE TRANSLATION LOGIC
@@ -728,5 +728,6 @@ function renderTable(dataset) {
         applyHindiToPage();
     }
 }
+
 
 
