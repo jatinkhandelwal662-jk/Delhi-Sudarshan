@@ -586,3 +586,38 @@ td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px;
         margin-top: 30px;
     }
 }
+
+/* CRITICAL ROW STYLING (Red Alert) */
+.row-critical td {
+    background: #fef2f2 !important; /* Light Red Background */
+    border-top: 1px solid #ef4444;
+    border-bottom: 1px solid #ef4444;
+}
+
+.row-critical td:first-child { 
+    border-left: 5px solid #dc2626 !important; /* Thick Red Border on Left */
+}
+
+.row-critical td:last-child { 
+    border-right: 1px solid #ef4444; 
+}
+
+/* Pulsing Urgent Badge */
+.badge-urgent {
+    background: #dc2626; 
+    color: white; 
+    padding: 3px 8px; 
+    border-radius: 6px;
+    font-size: 0.7rem; 
+    font-weight: 800; 
+    margin-right: 6px;
+    display: inline-block;
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.4);
+    animation: blink-animation 1.5s infinite;
+}
+
+@keyframes blink-animation {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+}
