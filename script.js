@@ -2,6 +2,7 @@
 
 // GLOBAL VARIABLE TO TRACK OPEN COMPLAINT
 let currentItemIndex = null;
+let isHindi = false;
 
 // --- 1. DATASETS ---
 let data = [
@@ -10,6 +11,11 @@ let data = [
         phone: "+91 98765 43210", dept: "Delhi Jal Board (DJB)", 
         img: "Complaint Photoes/SIG-9021.jpg",
         desc: "Huge water leakage near the metro station gate 2. It has been flowing for 4 hours and causing traffic jam."
+    },
+    {   id:"SIG-7004",type:"Illegal Garbage Dump", loc:"Gate 2, CR Park",status:"Solved", date: "2025-12-28",
+        phone:"+91 98758 76412", dept:"MCD",
+        img:"Complaint Photoes/SIG-7144.jpg",
+        desc:"Illegal garbage dumping in causing problem major problems to nearby residents."
     },
     { 
         id: "SIG-8902", type: "Street Light", loc: "Vasant Kunj", status: "Solved", date: "2025-10-15",
@@ -36,6 +42,11 @@ let data = [
     },
     {   id: "SIG-5102",type: "Power Fluctuations",loc: "CR Park Pocket-4",status: "Pending", date: "2025-01-10",
         phone: "+91 98456 22337",dept: "BSES Rajdhani", img:"", desc: "Voltage is fluctuating."
+    },
+    {   id:"SIG-7001",type:"Dead Animal", loc:"Gate 8, CR Park",status:"Solved", date: "2025-12-28",
+        phone:"+91 98003 76412", dept:"MCD",
+        img:"Complaint Photoes/SIG-7001",
+        desc:"Dead animal body causing problem major problems to nearby residents."
     },
     {  id: "SIG-3101",type: "Garbage Not Collected",loc: "CR Parlk Central Park",status: "Pending", date: "2025-12-29",
        phone: "+91 97654 25678",dept: "MCD", img:"Complaint Photoes/SIG-3101.webp", desc: "Garbage overflowing."
@@ -279,11 +290,37 @@ function filterTable() {
     renderTable(filteredData);
 }
 
+// Helper: Check if a complaint is dangerous
+function isCritical(item) {
+    // Keywords that trigger an EMERGENCY response
+    const dangerWords = [
+        "burst", "manhole", "open", "spark", "wire", "current", 
+        "fire", "accident", "collapse", "sewer overflow", "gas"
+    ];
+    
+    // Check both Type and Description
+    const text = (item.type + " " + item.desc).toLowerCase();
+    return dangerWords.some(word => text.includes(word));
+}
+
+// 3. UPDATED RENDER TABLE (With Priority Sorting)
 function renderTable(dataset) {
-    const tbody     = document.getElementById('tableBody');
-    if(!tbody) return;
+    const tbody = document.getElementById('tableBody');
+    if (!tbody) return;
     tbody.innerHTML = '';
-    const displayData = dataset || data;
+    
+    // Use dataset if provided, else use global data
+    let displayData = dataset || [...data]; // Create a copy to sort
+
+    // 🔴 SORTING LOGIC: Critical -> Overdue -> Normal
+    displayData.sort((a, b) => {
+        const aCrit = isCritical(a);
+        const bCrit = isCritical(b);
+        
+        if (aCrit && !bCrit) return -1; // A goes to top
+        if (!aCrit && bCrit) return 1;  // B goes to top
+        return 0; // Keep original order otherwise
+    });
 
     if (displayData.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#64748b;">No records found.</td></tr>';
@@ -291,28 +328,45 @@ function renderTable(dataset) {
     }
 
     displayData.forEach((item) => {
-        let statusClass = 'st-pending'; 
-        if (item.status === 'Solved') statusClass = 'st-solved';     
-        if (item.status === 'Rejected') statusClass = 'st-rejected'; 
-        if (item.status === 'Overdue') statusClass = 'st-overdue'; 
-        
-        let rowClass = "";
-        if (item.status === 'Overdue') rowClass = "row-overdue";
-        if (!item.img || item.img === "") rowClass += " row-no-photo"; 
+        let statusClass = 'st-pending';
+        if (item.status === 'Solved') statusClass = 'st-solved';
+        if (item.status === 'Rejected') statusClass = 'st-rejected';
+        if (item.status === 'Overdue') statusClass = 'st-overdue';
 
-        const originalIndex = data.indexOf(item);
+        let rowClass = "";
+        let typeHtml = item.type; // Default Type Text
+
+        // 🚨 CRITICAL CHECK
+        if (isCritical(item) && item.status !== 'Solved' && item.status !== 'Rejected') {
+            rowClass = "row-critical"; // Apply Red Style
+            typeHtml = `<span class="badge-urgent">⚡ URGENT</span> ${item.type}`;
+        }
+        // Overdue Check (Secondary Priority)
+        else if (item.status === 'Overdue') {
+            rowClass = "row-overdue";
+        }
+        
+        // No Photo Check
+        if (!item.img || item.img === "") rowClass += " row-no-photo";
+
+        // Find original index for the button action
+        const originalIndex = data.findIndex(d => d.id === item.id);
 
         const row = `
             <tr class="${rowClass}">
                 <td style="font-family: monospace; color: var(--primary); font-weight:600;">${item.id}</td>
-                <td>${item.type}</td>
-                <td>${item.loc}</td>
+                <td>${typeHtml}</td> <td>${item.loc}</td>
                 <td><span class="status-badge ${statusClass}">${item.status}</span></td>
                 <td><button class="btn-action" onclick="openAnalyzeModal(${originalIndex})">Analyze</button></td>
             </tr>
         `;
         tbody.innerHTML += row;
     });
+
+    // Re-apply Hindi if active
+    if (isHindi) {
+        applyHindiToPage();
+    }
 }
 
 // --- 5. MODAL LOGIC (FINAL FIX: HANDLES BUTTONS & PHOTOS CORRECTLY) ---
@@ -407,7 +461,7 @@ async function updateStatus(action) {
         const reason = prompt("Enter Rejection Reason:", "Photo is unclear");
         if (!reason) return;
 
-        alert("📞 Calling Virtual Citizen Phone (WebRTC)...");
+        alert("Calling Virtual Citizen Phone (WebRTC)...");
 
         try {
             // CALL THE BACKEND API
@@ -424,7 +478,7 @@ async function updateStatus(action) {
 
             if (result.success) {
                 data[currentItemIndex].status = "Rejected";
-                alert("✅ Complaint Rejected.\n🔔 The Citizen Page should be ringing!");
+                alert("Complaint Rejected.\n🔔 The Citizen Page should be ringing!");
                 filterTable();
                 closeAnalyzeModal();
             } else {
@@ -610,3 +664,257 @@ async function fetchLiveComplaints() {
 
 // Keep the interval running
 setInterval(fetchLiveComplaints, 2000);
+
+
+// --- 10. ADVANCED AI CLUSTERING (Department + Locality) ---
+let isClusterMode = false;
+
+//to extracting the "Main Area" from a messy address
+function getLocality(address) {
+    const normalize = address.toLowerCase();
+    
+    //Define the main areas you expect in your demo
+    if (normalize.includes("cr park") || normalize.includes("crpark")) return "CR Park";
+    if (normalize.includes("okhla")) return "Okhla Industrial Area";
+    if (normalize.includes("vasant kunj")) return "Vasant Kunj";
+    if (normalize.includes("defence colony")) return "Defence Colony";
+    if (normalize.includes("lajpat")) return "Lajpat Nagar";
+    if (normalize.includes("kalkaji")) return "Kalkaji";
+    if (normalize.includes("saket")) return "Saket";
+    if (normalize.includes("janakpuri")) return "Janakpuri";
+    
+    return address; // Fallback: Use full address if no keyword matches
+}
+
+function toggleClusterMode() {
+    isClusterMode = !isClusterMode;
+    const btn = document.querySelector('button[onclick="toggleClusterMode()"]');
+    
+    if (isClusterMode) {
+        if(btn) {
+            btn.style.background = "var(--primary)";
+            btn.style.color = "white";
+            btn.innerHTML = '<i class="ri-node-tree"></i> Show Raw List';
+        }
+        renderClusteredTable();
+    } else {
+        if(btn) {
+            btn.style.background = "";
+            btn.style.color = "";
+            btn.innerHTML = '<i class="ri-node-tree"></i> AI Cluster View';
+        }
+        renderTable(); 
+    }
+}
+
+function renderClusteredTable() {
+    const tbody = document.getElementById('tableBody');
+    if(!tbody) return;
+    tbody.innerHTML = '';
+
+    // 1. Group Data by "Department + Locality"
+    const clusters = {};
+    
+    data.forEach(item => {
+        // 🟢 CHANGED: Include 'Solved' AND 'Work Not Done' items in the Audit view
+        if (item.status !== 'Solved' && item.status !== 'Work Not Done') return; 
+        
+        const locality = getLocality(item.loc);
+        const key = `${item.dept}-${locality}`; // GROUPING KEY
+        
+        if (!clusters[key]) {
+            clusters[key] = {
+                id: `AUDIT-${Math.floor(Math.random()*10000)}`, 
+                rowId: `row-${key.replace(/[^a-zA-Z0-9]/g, '')}`, 
+                dept: item.dept,
+                loc: locality, 
+                count: 0,
+                ids: [], 
+                types: new Set(),
+                isVerified: false,
+                isFailed: false // Track failures
+            };
+        }
+        
+        if (item.isVerified) clusters[key].isVerified = true;
+        if (item.status === 'Work Not Done') clusters[key].isFailed = true;
+
+        clusters[key].count++;
+        clusters[key].ids.push(item.id);
+        clusters[key].types.add(item.type);
+    });
+
+    const clusterArray = Object.values(clusters);
+    
+    if (clusterArray.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">No Solved Clusters available for Audit.</td></tr>';
+        return;
+    }
+
+    // 2. Render the Clusters
+    clusterArray.forEach((cluster) => {
+        const issueSummary = Array.from(cluster.types).join(", ").substring(0, 50) + (cluster.types.size > 2 ? "..." : "");
+
+        // Default Styles
+        let rowStyle = "background: rgba(240, 253, 244, 0.5); border-left: 4px solid #10b981;";
+        let statusBadge = '<span class="status-badge st-pending" style="background:#e2e8f0; color:#475569;">Unverified</span>';
+        let actionButton = `
+            <button class="btn-action" style="background-color: #2563eb; color: white;" 
+                onclick="openGroupVerifyModal('${cluster.ids.join(',')}', '${cluster.dept}', '${cluster.loc}', ${cluster.count}, '${cluster.rowId}')">
+                <i class="ri-spy-line"></i> Surprise Audit
+            </button>`;
+
+        // 🟢 STATE 1: VERIFIED (GREEN)
+        if (cluster.isVerified) {
+            rowStyle = "background: rgba(22, 163, 74, 0.2); border-left: 4px solid #059669;";
+            statusBadge = '<span class="status-badge st-solved" style="background:#059669; color:white;"><i class="ri-shield-check-fill"></i> VERIFIED GENUINE</span>';
+            actionButton = '<button class="btn-action" style="background-color: #059669; color: white; cursor: default; opacity: 0.8;"><i class="ri-check-double-line"></i> Audit Passed</button>';
+        }
+
+        // 🔴 STATE 2: FAILED (RED) - "Work Not Done"
+        if (cluster.isFailed) {
+            rowStyle = "background: rgba(239, 68, 68, 0.15); border-left: 4px solid #ef4444;";
+            statusBadge = '<span class="status-badge st-rejected" style="background:#ef4444; color:white;"><i class="ri-alert-line"></i> WORK NOT DONE</span>';
+            actionButton = '<button class="btn-action" style="background-color: #ef4444; color: white; cursor: not-allowed; opacity: 0.8;"><i class="ri-alarm-warning-line"></i> Flagged</button>';
+        }
+
+        const row = `
+            <tr id="${cluster.rowId}" class="cluster-row" style="${rowStyle}">
+                <td style="font-weight:bold; color: #1e293b; font-family:monospace;">${cluster.id}</td>
+                <td style="font-weight:600;">
+                    ${cluster.dept} <br>
+                    <span style="font-size:0.8em; color:#64748b; font-weight:normal;">Claimed Fixed: ${issueSummary}</span>
+                </td>
+                <td>
+                    <i class="ri-map-pin-range-line"></i> ${cluster.loc} 
+                    <span class="status-badge st-solved" style="font-size:0.7em; margin-left:5px;">${cluster.count} Claims</span>
+                </td>
+                <td class="cluster-status">${statusBadge}</td>
+                <td class="cluster-action">${actionButton}</td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+}
+// 4. The "Surprise Audit" Action
+async function openGroupVerifyModal(ids, dept, loc, count, rowId) {
+    const confirmAction = confirm(
+        `🕵️‍♂️ INITIATE SURPRISE AUDIT? \n\n` +
+        `Action: System will dial a citizen. We will wait for their response.`
+    );
+
+    if (confirmAction) {
+        alert(`Connecting... Please wait for audit to be done.`);
+
+        try {
+            const response = await fetch("https://delhi-sudarshan-backend.onrender.com/api/audit-cluster", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ loc, dept, count })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                const callSid = result.callSid;
+                console.log("Tracking Call:", callSid);
+                
+                // Poll for status every 2 seconds
+                const poller = setInterval(async () => {
+                    const check = await fetch(`https://delhi-sudarshan-backend.onrender.com/api/check-audit-status/${callSid}`);
+                    const data = await check.json();
+                    
+                    console.log("Audit Status:", data.status);
+
+                    if (data.status === '1') {
+                        clearInterval(poller);
+                        markClusterVerified(rowId, loc, count, ids);
+                    } 
+                    else if (data.status === '2') {
+                        clearInterval(poller);
+                        markClusterFailed(rowId, loc, count, ids);
+                    }
+                }, 2000);
+
+            } else {
+                alert("Audit Call Failed: " + result.error);
+            }
+
+        } catch (err) {
+            console.error(err);
+            alert("Server Error.");
+        }
+    }
+}
+
+// Helper to update UI visuals
+function markClusterVerified(rowId, loc, count, ids) {
+    alert(`AUDIT PASSED!\n\nCitizen confirmed the work is genuine.\nMarking cluster as "Verified Clean".`);
+    const idArray = ids.split(',');
+    idArray.forEach(id => {
+        const item = data.find(d => d.id === id);
+        if (item) {
+            item.isVerified = true; // This saves the status in memory
+        }
+    });       
+    //  VISUAL UPDATE: Turn the Row to "Verified Green"
+    const row = document.getElementById(rowId);
+    if (row) {
+        row.style.borderLeft = "4px solid #059669"; 
+        row.style.background = "rgba(22, 163, 74, 0.2)"; 
+        row.style.transition = "all 0.5s ease";
+
+        const statusCell = row.querySelector('.cluster-status');
+        if (statusCell) {
+            statusCell.innerHTML = '<span class="status-badge st-solved" style="background:#059669; color:white;"><i class="ri-shield-check-fill"></i> VERIFIED GENUINE</span>';
+        }
+
+        // Change Action Button to "Audit Complete"
+        const actionCell = row.querySelector('.cluster-action');
+        if (actionCell) {
+            actionCell.innerHTML = '<button class="btn-action" style="background-color: #059669; color: white; cursor: default; opacity: 0.8;"><i class="ri-check-double-line"></i> Audit Passed</button>';
+        }
+    }
+    
+    // Add a notification
+    if (typeof addNewNotification === "function") {
+        addNewNotification("AUDIT-BOT", `Surprise check in ${loc} passed. ${count} tickets verified.`, "AI Auditor", "Just Now", "solved");
+    }
+}
+// Helper to update UI visuals for FAILURE (Press 2)
+function markClusterFailed(rowId, loc, count, ids) {
+    alert(`AUDIT DONE!\n\nCitizen reported the work is NOT done.\nFlagging cluster for Corruption Check.`);
+            
+    // 1. Update Data Model
+    const idArray = ids.split(',');
+    idArray.forEach(id => {
+        const item = data.find(d => d.id === id);
+        if (item) {
+            item.status = 'Work Not Done'; // 🔴 Change status text
+            item.isVerified = false; 
+        }
+    });
+
+    // 2. VISUAL UPDATE: Turn the Row Red
+    const row = document.getElementById(rowId);
+    if (row) {
+        row.style.borderLeft = "4px solid #ef4444"; 
+        row.style.background = "rgba(239, 68, 68, 0.15)"; 
+        row.style.transition = "all 0.5s ease";
+
+        const statusCell = row.querySelector('.cluster-status');
+        if (statusCell) {
+            statusCell.innerHTML = '<span class="status-badge st-rejected" style="background:#ef4444; color:white;"><i class="ri-alert-line"></i> WORK NOT DONE</span>';
+        }
+
+        const actionCell = row.querySelector('.cluster-action');
+        if (actionCell) {
+            actionCell.innerHTML = '<button class="btn-action" style="background-color: #ef4444; color: white; cursor: not-allowed; opacity: 0.8;"><i class="ri-alarm-warning-line"></i> Flagged</button>';
+        }
+    }
+    
+    // Add a notification
+    if (typeof addNewNotification === "function") {
+        addNewNotification("CORRUPTION-ALERT!", `Audit FAILED in ${loc}. Citizen denied resolution.`, "AI Auditor", "Just Now", "alert");
+    }
+}
