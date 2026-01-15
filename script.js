@@ -918,3 +918,4 @@ function markClusterFailed(rowId, loc, count, ids) {
         addNewNotification("CORRUPTION-ALERT!", `Audit FAILED in ${loc}. Citizen denied resolution.`, "AI Auditor", "Just Now", "alert");
     }
 }
+
