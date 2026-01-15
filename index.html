@@ -42,12 +42,12 @@
               <button class="nav-btn" onclick="openTab('officer')"><i class="ri-shield-user-line"></i> <span>Officer ID</span></button>
           </nav>
           <div style="text-align: center; margin-top: 20px;">
-              <button onclick="window.print()" style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: bold; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); margin: 10px;">
-                  <i class="ri-file-pdf-line"></i> Generate Official Report
-              </button>
-          </div>
-          <div class="status-box"><span class="status-dot"></span> System Online</div>
-      </aside>
+            <button onclick="window.print()" style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: bold; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); margin: 10px;">
+                <i class="ri-file-pdf-line"></i> Generate Official Report
+            </button>
+           </div>
+           <div class="status-box"><span class="status-dot"></span> System Online</div>
+        </aside>
 
       <main class="content-area">
           <div id="dashboard" class="view active-view">
@@ -84,6 +84,9 @@
                           <option value="Overdue" style="color:red; font-weight:bold;">⚠️ Overdue (>7 Days)</option>
                           <option value="NoEvidence" style="color:#d97706; font-weight:bold;">📷 Missing Evidence</option>
                       </select>
+                      <button class="filter-btn" onclick="toggleClusterMode()">
+                        <i class="ri-node-tree"></i> AI Cluster View
+                      </button>
                   </div>
               </header>
               <div class="glass-panel no-padding-panel">
@@ -185,7 +188,7 @@
 </div>
       <footer class="gov-footer">
     <div class="footer-left">
-        <span>&copy; 2026 <strong>Government of NCT of Delhi</strong></span>
+        <span>&copy; 2025 <strong>Government of NCT of Delhi</strong></span>
         <span class="divider">|</span>
         <span>Developed by Team Sudarshan</span>
     </div>
@@ -205,10 +208,4 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-
-
 
