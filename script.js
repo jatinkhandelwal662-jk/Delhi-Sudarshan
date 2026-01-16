@@ -142,7 +142,7 @@ let data = [
         desc: "Unmarked speed breaker causing vehicles to jump."
     },
     { 
-        id: "SIG-9207", type: "Manhole Cover Missing", loc: "Saket", status: "Pending", date: "2026-01-02",
+        id: "SIG-9207", type: "Manhole Cover Missing", loc: "Saket", status: "Pending", date: "2026-01-16",
         phone: "+91 99900 11223", dept: "PWD Delhi", 
         img: "Complaint Photoes/SIG-9207.webp", 
         desc: "Open manhole in front of PVR Anupam. Very risky."
@@ -190,7 +190,7 @@ let data = [
         desc: "Electric pole bent after being hit by a truck."
     },
     { 
-        id: "SIG-9401", type: "Pipeline Burst", loc: "Vasant Kunj Sector A", status: "Pending", date: "2026-01-01",
+        id: "SIG-9401", type: "Pipeline Burst", loc: "Sector A,Vasant Kunj", status: "Solved", date: "2026-01-15",
         phone: "+91 98101 23456", dept: "Delhi Jal Board (DJB)", 
         img: "Complaint Photoes/SIG-9401.jpeg", 
         desc: "Main supply pipe burst, gallons of water wasting."
@@ -917,6 +917,7 @@ function markClusterFailed(rowId, loc, count, ids) {
         addNewNotification("CORRUPTION-ALERT!", `Audit FAILED in ${loc}. Citizen denied resolution.`, "AI Auditor", "Just Now", "alert");
     }
 }
+
 
 
 
