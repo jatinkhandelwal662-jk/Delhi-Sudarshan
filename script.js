@@ -142,10 +142,10 @@ let data = [
         desc: "Unmarked speed breaker causing vehicles to jump."
     },
     { 
-        id: "SIG-9207", type: "Manhole Cover Missing", loc: "Saket", status: "Pending", date: "2026-01-16",
+        id: "SIG-9207", type: "Road divider", loc: "Saket", status: "Pending", date: "2026-01-15",
         phone: "+91 99900 11223", dept: "PWD Delhi", 
         img: "Complaint Photoes/SIG-9207.webp", 
-        desc: "Open manhole in front of PVR Anupam. Very risky."
+        desc: "Broken road divider in front of PVR Anupam. Very risky."
     },
     { 
         id: "SIG-9301", type: "Street Light Off", loc: "Green Park", status: "Pending", date: "2025-12-28",
@@ -917,6 +917,7 @@ function markClusterFailed(rowId, loc, count, ids) {
         addNewNotification("CORRUPTION-ALERT!", `Audit FAILED in ${loc}. Citizen denied resolution.`, "AI Auditor", "Just Now", "alert");
     }
 }
+
 
 
 
