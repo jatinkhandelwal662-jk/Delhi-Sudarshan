@@ -36,7 +36,7 @@
 
 * **Frontend:** HTML5, CSS, JavaScript, Chart.js
 * **Backend:** Node.js, Express.js
-* **Communication:** Twilio Voice SDK (WebRTC), Amazon Polly (Neural TTS), Twilio (SMS)
+* **Communication:** Twilio Voice SDK (WebRTC), Google Gemini 2.5 flash(Audio-to-Audio Processing), Twilio (SMS)
 * **Tunneling:** Ngrok (For secure public access to localhost)
 ---
 🤝 Contributors
