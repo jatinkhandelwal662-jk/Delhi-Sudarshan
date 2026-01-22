@@ -25,7 +25,7 @@ It acts as an **intelligent middleware** that tunnels into existing government l
 
 ### 🔗 [CLICK HERE TO VIEW LIVE DASHBOARD](https://jatinkhandelwal662-jk.github.io/Delhi-Sudarshan-frontend/)<br>
 **VAANI:** [Click Here To Talk to Vaani](https://vaani-khaki.vercel.app)<br>
-**CITIZEN CALL DEMO:** [Click Here For Citizen Call Demo](https://delhi-sudarshan-backend.onrender.com/citizen.html) 
+**CITIZEN CALL DEMO:** [Click Here For Citizen Call Demo](https://delhi-sudarshan-backend.onrender.com/citizen.html target="blank") 
 
 ---
 
