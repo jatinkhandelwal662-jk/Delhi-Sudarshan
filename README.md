@@ -29,6 +29,10 @@ It acts as an **intelligent middleware** that tunnels into existing government l
 
 ## ✨ Key Features (The USP)
 
+### 🎙️ Zero-UI Accessibility
+* **No App Required:** Designed for the 47% of the population that is elderly or digitally illiterate.
+* **Language Agnostic:** The system speaks fluid Hindi and English, bridging the digital divide.
+
 ### 🕵️‍♂️ The "Surprise Audit" (Anti-Corruption Loop)
 * **Trust, but Verify:** The system doesn't just log complaints; it verifies them. 
 * **One-Click Cluster Audit:** The Nodal Officer can trigger a random verification check with a single click. The AI Agent targets a **citizen group** (clustered by specific Area and Department) and calls them to verify if the work claimed by the contractor was actually completed.
@@ -41,9 +45,14 @@ It acts as an **intelligent middleware** that tunnels into existing government l
 ### ⚡ Sub-500ms Latency (Real-Time)
 * **Gemini 2.5 Native Audio:** We bypass traditional Speech-to-Text delays. By streaming raw audio tokens, our voice agent (`Vaani`) responds in **under 500ms**, making the conversation feel natural and human-like during emergencies.
 
-### 🎙️ Zero-UI Accessibility
-* **No App Required:** Designed for the 47% of the population that is elderly or digitally illiterate.
-* **Language Agnostic:** The system speaks fluid Hindi and English, bridging the digital divide.
+### 🛡️ Human-in-the-Loop (Ethical Guardrails)
+* **AI Efficiency, Human Authority:** The AI autonomously handles intake, categorization, department routing, and priority verification. However, it **cannot reject** a complaint.
+* **Mandatory Officer Review:** The power to reject is strictly reserved for the Nodal Officer. If a complaint is invalid, the officer must manually reject it and record a specific reason. 
+* **Automated Feedback:** Once rejected by the officer, the AI Agent immediately calls the citizen to explain the specific reason for rejection, ensuring total transparency.
+
+### 📞 Proactive "Don't Call Us" Model
+* **Outbound-First Communication:** We flipped the traditional model. Citizens do not need to call daily to check their status.
+* **Event-Triggered Updates:** The AI Agent (`Vaani`) proactively calls the citizen **only** when a significant status change occurs (Solved, Rejected, Audit, or Overdue). This reduces anxiety for the citizen and call volume for the department.
 
 ---
 
