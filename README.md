@@ -72,7 +72,7 @@ It acts as an **intelligent middleware** that tunnels into existing government l
 * **Backend:** Node.js, Express.js (Stateless Middleware)
 * **AI Core:** Google Gemini 2.5 Flash (Native Audio-to-Audio Processing)
 * **Telephony:** Twilio Voice SDK (WebRTC) & Programmable SMS
-* **Deployment:** GitHub Pages (Frontend) + Render (Backend)
+* **Deployment:** GitHub Pages (Frontend) + Render (Backend) + Vercel(AI-Voice Agent)
 
 ---
 
