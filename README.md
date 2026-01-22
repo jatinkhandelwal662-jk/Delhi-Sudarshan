@@ -24,6 +24,8 @@
 It acts as an **intelligent middleware** that tunnels into existing government legacy databases, enabling real-time AI surveillance, corruption checks, and instant citizen communication without requiring expensive data migration.
 
 ### 🔗 [CLICK HERE TO VIEW LIVE DASHBOARD](https://jatinkhandelwal662-jk.github.io/Delhi-Sudarshan-frontend/)
+**VAANI:** [Click Here To Talk to Vaani](https://vaani-khaki.vercel.app) 
+**CITIZEN CALL DEMO:** [Click Here For Citizen Call Demo](https://delhi-sudarshan-backend.onrender.com/citizen.html) 
 
 ---
 
