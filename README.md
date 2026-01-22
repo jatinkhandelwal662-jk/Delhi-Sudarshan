@@ -79,6 +79,8 @@ To ensure rapid response times and pinpoint accountability, we have moved away f
 * **Pinpoint Accountability:** Complaints are instantly mapped to the specific Zonal Nodal officer. This eliminates "passing the buck" between departments, as the jurisdiction is locked at the moment of the call.
 * **Rapid Mobilization:** The Zonal AI Agent dispatches tickets directly to the nearest local field unit, bypassing central routing delays and cutting reaction time by 40%.
 
+---
+
 ## 🛠️ Tech Stack
 
 * **Frontend:** HTML5, CSS3 (Glassmorphism), JavaScript (ES6+), Chart.js
