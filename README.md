@@ -66,6 +66,19 @@ It acts as an **intelligent middleware** that tunnels into existing government l
 
 ---
 
+## 📍 Operational Strategy: Zonal Decentralization
+
+To ensure rapid response times and pinpoint accountability, we have moved away from a single "clogged" central helpline. **Delhi Sudarshan** implements a **Hyper-Local Operational Model** by dividing the capital into four strategic zones:
+
+### 🧭 The 4-Zone Command Structure
+* **South Zone | North Zone | East Zone | West Zone**
+* Each zone is assigned a **Dedicated "Delhi Sudarshan" Helpline Number**.
+
+### 🚀 Why This Matters?
+* **High-Speed Response (Load Balancing):** By distributing call volume across four distinct nodes, we prevent system crashes during high-volume events (e.g., monsoon waterlogging) and ensure citizens never face a "Line Busy" tone.
+* **Pinpoint Accountability:** Complaints are instantly mapped to the specific Zonal Nodal officer. This eliminates "passing the buck" between departments, as the jurisdiction is locked at the moment of the call.
+* **Rapid Mobilization:** The Zonal AI Agent dispatches tickets directly to the nearest local field unit, bypassing central routing delays and cutting reaction time by 40%.
+
 ## 🛠️ Tech Stack
 
 * **Frontend:** HTML5, CSS3 (Glassmorphism), JavaScript (ES6+), Chart.js
