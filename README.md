@@ -74,5 +74,6 @@ It acts as an **intelligent middleware** that tunnels into existing government l
 ---
 
 <div align="center">
-  <p><em>Built with ❤️ for the Citizens of Delhi.</em></p>
+  <p><em>Giving a voice to the unheard. Dedicated to the service of the Nation and the people of Delhi. 🇮🇳</em></p>
+  <p><strong>"We do not force the citizen to learn technology; we force technology to adapt to the citizen."</strong></p>
 </div>
