@@ -94,12 +94,6 @@ To ensure rapid response times and pinpoint accountability, we have moved away f
 
 ---
 
-## 🤝 Contributors
-
-**Team Tars** - *Development, Design & Architecture*
-
----
-
 <div align="center">
   <p><em>Giving a voice to the unheard. Dedicated to the service of the Nation and the people of Delhi.</em></p>
   <p><strong>"We do not force the citizen to learn technology; we force technology to adapt to the citizen."</strong></p>
