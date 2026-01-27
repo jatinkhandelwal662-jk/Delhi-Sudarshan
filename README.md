@@ -11,7 +11,7 @@
 
   <p align="center">
     A next-generation governance OS for the <strong>Government of NCT of Delhi</strong>. <br>
-    Features <strong>"Legacy Tunneling"</strong> architecture, <strong>"Surprise Audit"</strong> verification loops, and <strong>Zero-UI</strong> citizen interaction.
+    Features <strong>"Legacy Tunneling"</strong> architecture, <strong>"Citizen Feedback Loop"</strong> verification loops, and <strong>Zero-UI</strong> citizen interaction.
   </p>
 </div>
 
@@ -36,10 +36,10 @@ It acts as an **intelligent middleware** that tunnels into existing government l
 * **No App Required:** Designed for the 47% of the population that is elderly or digitally illiterate.
 * **Language Agnostic:** The system speaks fluid Hindi and English, bridging the digital divide.
 
-### 🕵️‍♂️ The "Surprise Audit" (Anti-Corruption Loop)
-* **Trust, but Verify:** The system doesn't just log complaints; it verifies them. 
-* **One-Click Cluster Audit:** The Nodal Officer can trigger a random verification check with a single click. The AI Agent targets a **citizen group** (clustered by specific Area and Department) and calls them to verify if the work claimed by the contractor was actually completed.
-* **Corruption Flagging:** If the citizens deny the resolution, the entire cluster is immediately flagged for inspection and marked as "Work Not Done."
+### ✅ The "Citizen Feedback Loop"
+* **Closing the Loop:** The system ensures that a complaint isn't just "Closed" in the database, but truly "Resolved" on the ground. It creates a digital chain of trust between the government and the citizen.
+* **AI-Driven Service Validation:** The Nodal Officer acts as a quality controller. With a single click, the AI Agent conducts a "Satisfaction Check" by calling a specific citizen group to confirm the resolution meets their expectations.
+* **Gap Analysis & Auto-Reopen:** If citizens report that the issue persists, the system identifies the service gap and automatically re-opens the tickets for priority attention. This guarantees 100% service delivery without manual field visits.
 
 ### 🚇 Legacy Tunneling Architecture
 * **Zero-Migration:** Instead of replacing old government SQL servers (which is costly and slow), Sudarshan acts as a **Stateless Overlay**.
