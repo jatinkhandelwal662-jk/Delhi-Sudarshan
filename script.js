@@ -2,7 +2,6 @@
 
 // GLOBAL VARIABLE TO TRACK OPEN COMPLAINT
 let currentItemIndex = null;
-let isHindi = false;
 
 // --- 1. DATASETS ---
 let data = [
@@ -361,11 +360,6 @@ function renderTable(dataset) {
         `;
         tbody.innerHTML += row;
     });
-
-    // Re-apply Hindi if active
-    if (isHindi) {
-        applyHindiToPage();
-    }
 }
 
 // --- 5. MODAL LOGIC (FINAL FIX: HANDLES BUTTONS & PHOTOS CORRECTLY) ---
@@ -715,7 +709,6 @@ function renderClusteredTable() {
     const clusters = {};
     
     data.forEach(item => {
-        // 🟢 CHANGED: Include 'Solved' AND 'Work Not Done' items in the Audit view
         if (item.status !== 'Solved' && item.status !== 'Work Not Done') return; 
         
         const locality = getLocality(item.loc);
@@ -723,7 +716,7 @@ function renderClusteredTable() {
         
         if (!clusters[key]) {
             clusters[key] = {
-                id: `AUDIT-${Math.floor(Math.random()*10000)}`, 
+                id: `GRP-${Math.floor(Math.random()*10000)}`, 
                 rowId: `row-${key.replace(/[^a-zA-Z0-9]/g, '')}`, 
                 dept: item.dept,
                 loc: locality, 
@@ -763,14 +756,14 @@ function renderClusteredTable() {
                 <i class="ri-spy-line"></i> Surprise Audit
             </button>`;
 
-        // 🟢 STATE 1: VERIFIED (GREEN)
+        // 🟢 STATE 1: VERIFIED
         if (cluster.isVerified) {
             rowStyle = "background: rgba(22, 163, 74, 0.2); border-left: 4px solid #059669;";
             statusBadge = '<span class="status-badge st-solved" style="background:#059669; color:white;"><i class="ri-shield-check-fill"></i> VERIFIED GENUINE</span>';
             actionButton = '<button class="btn-action" style="background-color: #059669; color: white; cursor: default; opacity: 0.8;"><i class="ri-check-double-line"></i> Audit Passed</button>';
         }
 
-        // 🔴 STATE 2: FAILED (RED) - "Work Not Done"
+        // 🔴 STATE 2: FAILED (RED) -
         if (cluster.isFailed) {
             rowStyle = "background: rgba(239, 68, 68, 0.15); border-left: 4px solid #ef4444;";
             statusBadge = '<span class="status-badge st-rejected" style="background:#ef4444; color:white;"><i class="ri-alert-line"></i> WORK NOT DONE</span>';
@@ -795,10 +788,9 @@ function renderClusteredTable() {
         tbody.innerHTML += row;
     });
 }
-// 4. The "Surprise Audit" Action
 async function openGroupVerifyModal(ids, dept, loc, count, rowId) {
     const confirmAction = confirm(
-        `🕵️‍♂️ INITIATE SURPRISE AUDIT? \n\n` +
+        `INITIATE call? \n\n` +
         `Action: System will dial a citizen. We will wait for their response.`
     );
 
@@ -848,7 +840,7 @@ async function openGroupVerifyModal(ids, dept, loc, count, rowId) {
 
 // Helper to update UI visuals
 function markClusterVerified(rowId, loc, count, ids) {
-    alert(`AUDIT PASSED!\n\nCitizen confirmed the work is genuine.\nMarking cluster as "Verified Clean".`);
+    alert(`SERVICE VALIDATED!\n\nThe Citizen has confirmed satisfaction with the resolution.\n\nTicket is now permanently CLOSED.`);
     const idArray = ids.split(',');
     idArray.forEach(id => {
         const item = data.find(d => d.id === id);
@@ -856,7 +848,6 @@ function markClusterVerified(rowId, loc, count, ids) {
             item.isVerified = true; // This saves the status in memory
         }
     });       
-    //  VISUAL UPDATE: Turn the Row to "Verified Green"
     const row = document.getElementById(rowId);
     if (row) {
         row.style.borderLeft = "4px solid #059669"; 
@@ -865,31 +856,29 @@ function markClusterVerified(rowId, loc, count, ids) {
 
         const statusCell = row.querySelector('.cluster-status');
         if (statusCell) {
-            statusCell.innerHTML = '<span class="status-badge st-solved" style="background:#059669; color:white;"><i class="ri-shield-check-fill"></i> VERIFIED GENUINE</span>';
+            statusCell.innerHTML = '<span class="status-badge st-solved" style="background:#059669; color:white;"><i class="ri-shield-check-fill"></i> VERIFIED</span>';
         }
 
-        // Change Action Button to "Audit Complete"
         const actionCell = row.querySelector('.cluster-action');
         if (actionCell) {
-            actionCell.innerHTML = '<button class="btn-action" style="background-color: #059669; color: white; cursor: default; opacity: 0.8;"><i class="ri-check-double-line"></i> Audit Passed</button>';
+            actionCell.innerHTML = '<button class="btn-action" style="background-color: #059669; color: white; cursor: default; opacity: 0.8;"><i class="ri-check-double-line"></i>Citizen Assurance check done.</button>';
         }
     }
     
     // Add a notification
     if (typeof addNewNotification === "function") {
-        addNewNotification("AUDIT-BOT", `Surprise check in ${loc} passed. ${count} tickets verified.`, "AI Auditor", "Just Now", "solved");
+        addNewNotification("CITIZEN ASSURANCE SYSTEM", `Service validation in ${loc} successful. ${count} tickets verified.`, "QA-System", "Just Now", "solved");
     }
 }
 // Helper to update UI visuals for FAILURE (Press 2)
 function markClusterFailed(rowId, loc, count, ids) {
-    alert(`AUDIT DONE!\n\nCitizen reported the work is NOT done.\nFlagging cluster for Corruption Check.`);
-            
+    alert(`DISCREPANCY DETECTED\n\nCitizen reports the issue persists on the ground.\n\nAction: Ticket Re-opened for Priority Rectification.`);            
     // 1. Update Data Model
     const idArray = ids.split(',');
     idArray.forEach(id => {
         const item = data.find(d => d.id === id);
         if (item) {
-            item.status = 'Work Not Done'; // 🔴 Change status text
+            item.status = 'Action Required'; 
             item.isVerified = false; 
         }
     });
@@ -903,7 +892,7 @@ function markClusterFailed(rowId, loc, count, ids) {
 
         const statusCell = row.querySelector('.cluster-status');
         if (statusCell) {
-            statusCell.innerHTML = '<span class="status-badge st-rejected" style="background:#ef4444; color:white;"><i class="ri-alert-line"></i> WORK NOT DONE</span>';
+            statusCell.innerHTML = '<span class="status-badge st-rejected" style="background:#ef4444; color:white;"><i class="ri-alert-line"></i>Ticket Reopen</span>';
         }
 
         const actionCell = row.querySelector('.cluster-action');
@@ -914,9 +903,11 @@ function markClusterFailed(rowId, loc, count, ids) {
     
     // Add a notification
     if (typeof addNewNotification === "function") {
-        addNewNotification("CORRUPTION-ALERT!", `Audit FAILED in ${loc}. Citizen denied resolution.`, "AI Auditor", "Just Now", "alert");
+        addNewNotification("DISCREPANCY DETECTED!", `Gap Identified in ${loc}. Citizen denied resolution.`, "Citizen Assurance", "Just Now", "alert");
     }
 }
+
+
 
 
 
