@@ -26,7 +26,7 @@ It acts as an **intelligent middleware** that tunnels into existing government l
 ### 🔗 [**CLICK HERE TO VIEW LIVE DASHBOARD**](https://jatinkhandelwal662-jk.github.io/Delhi-Sudarshan-frontend/)<br>
 
 **VAANI:** [Click Here To Talk to Vaani](https://vaani-khaki.vercel.app) | **Open this on a mobile device** how citizen can register a complaint through our ai voice agent. <br>
-**CITIZEN CALL DEMO:** [Click Here For Citizen Call Demo](https://delhi-sudarshan-backend.onrender.com/citizen.html) | **Open this on a mobile device** to receive the "Surprise Audit" call from the AI.
+**CITIZEN CALL DEMO:** [Click Here For Citizen Call Demo](https://delhi-sudarshan-backend.onrender.com/citizen.html) | **Open this on a mobile device** to receive the call from the AI.
 
 ---
 
