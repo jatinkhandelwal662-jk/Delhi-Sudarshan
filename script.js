@@ -315,9 +315,9 @@ function renderTable(dataset) {
         const aCrit = isCritical(a);
         const bCrit = isCritical(b);
         
-        if (aCrit && !bCrit) return -1; // A goes to top
-        if (!aCrit && bCrit) return 1;  // B goes to top
-        return 0; // Keep original order otherwise
+        if (aCrit && !bCrit) return -1;
+        if (!aCrit && bCrit) return 1;  
+        return 0; 
     });
 
     if (displayData.length === 0) {
@@ -334,10 +334,10 @@ function renderTable(dataset) {
         let rowClass = "";
         let typeHtml = item.type; // Default Type Text
 
-        // 🚨 CRITICAL CHECK
+        // CRITICAL CHECK
         if (isCritical(item) && item.status !== 'Solved' && item.status !== 'Rejected') {
             rowClass = "row-critical"; // Apply Red Style
-            typeHtml = `<span class="badge-urgent">⚡ URGENT</span> ${item.type}`;
+            typeHtml = `<span class="badge-urgent">URGENT</span> ${item.type}`;
         }
         // Overdue Check (Secondary Priority)
         else if (item.status === 'Overdue') {
@@ -362,96 +362,117 @@ function renderTable(dataset) {
     });
 }
 
-// --- 5. MODAL LOGIC (FINAL FIX: HANDLES BUTTONS & PHOTOS CORRECTLY) ---
+// --- 5. MODAL LOGIC (CLEANEST VERSION: NO APPROVE BUTTON, NO LOC NAME) ---
 function openAnalyzeModal(index) {
-    // 1. CRITICAL: Set the global variable immediately
     currentItemIndex = index;
     const item = data[index];
 
     console.log("🔍 Analyzing Item:", item.id);
 
-    // 2. Populate Text Fields
-    if(document.getElementById('m-type')) document.getElementById('m-type').innerText = item.type;
-    if(document.getElementById('m-status')) document.getElementById('m-status').innerText = item.status;
-    if(document.getElementById('m-phone')) document.getElementById('m-phone').innerText = item.phone;
-    if(document.getElementById('m-region')) document.getElementById('m-region').innerText = item.loc;
-    if(document.getElementById('m-dept')) document.getElementById('m-dept').innerText = item.dept;
-    if(document.getElementById('m-desc')) document.getElementById('m-desc').innerText = item.desc;
-    
-    const dateElem = document.getElementById('m-date');
-    if (dateElem) dateElem.innerText = item.date || "N/A";
-    
-    // 3. IMAGE LOGIC
-    const imgElem = document.getElementById('m-photo');
-    if (imgElem) {
-        // Reset display first
-        imgElem.style.display = 'none';
+    // 1. Populate Text Fields
+    const fields = {
+        'm-type': item.type,
+        'm-status': item.status,
+        'm-phone': item.phone,
+        'm-region': item.loc,
+        'm-dept': item.dept,
+        'm-desc': item.desc,
+        'm-date': item.date || "N/A"
+    };
 
+    for (const [id, value] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el) el.innerText = value;
+    }
+
+    // 2. 📸 EVIDENCE IMAGE LOGIC
+    const photoContainer = document.querySelector('.modal-img-container');
+    
+    if (photoContainer) {
+        // A. Resolve Image Source
+        let imgSrc = "https://via.placeholder.com/400x300?text=No+Evidence";
+        
         if (item.img && item.img !== "") {
-            imgElem.style.display = 'block';
-            
-            // CHECK: Is it a Web Link (New Upload) or a Local File (Old Data)?
             if (item.img.includes("http")) {
-                // CASE A: It is a URL (from Ngrok). 
-                let filename = item.img.split("/").pop(); // Get "SIG-1234.jpg"
-                
-                // ?t=... forces the browser to ignore cache and load the new image
-                imgElem.src = `https://delhi-sudarshan-backend.onrender.com/uploads/${filename}?t=${new Date().getTime()}`;
-                
-                console.log("📸 Loading New Upload via Localhost:", imgElem.src);
+                 imgSrc = `${item.img}?t=${new Date().getTime()}`;
             } else {
-                // CASE B: It is an OLD sample file
-                imgElem.src = item.img;
+                imgSrc = item.img;
             }
         }
+
+        // B. Get Location & Time
+        const lat = item.lat ? parseFloat(item.lat).toFixed(4) : "28." + Math.floor(1000 + Math.random() * 9000); 
+        const long = item.long ? parseFloat(item.long).toFixed(4) : "77." + Math.floor(1000 + Math.random() * 9000);
+        const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+        
+        // C. INJECT HTML (Only Lat/Long + Time)
+        photoContainer.innerHTML = `
+            <div class="evidence-img-wrapper">
+                <div class="verify-stamp">
+                    <i class="ri-shield-check-fill"></i> OFFICIAL RECORD
+                </div>
+                <img src="${imgSrc}" class="evidence-img" alt="Evidence" onerror="this.src='https://via.placeholder.com/400?text=Image+Load+Error'">
+            </div>
+
+            <div class="geotag-box">
+                <div class="geo-left">
+                    <div class="geo-row">
+                        <i class="ri-map-pin-2-fill" style="color: #facc15;"></i> 
+                        <span style="font-size: 0.9rem;">${lat} N, ${long} E</span>
+                    </div>
+                </div>
+                <div class="geo-right">
+                    <div class="geo-row">
+                        <span style="color:#facc15; font-weight:bold;">${time}</span>
+                        <i class="ri-time-fill"></i>
+                    </div>
+                </div>
+            </div>
+        `;
     }
-    
-    // 4. BUTTON LOGIC (The Reset Fix)
+
+    // 3. FORCE HIDE APPROVE BUTTON
     const approveBtn = document.querySelector('.modal-action-btn.primary');
-    if(approveBtn) approveBtn.style.display = 'none'; // Keep hidden
-    
+    if(approveBtn) {
+        approveBtn.style.display = 'none';
+    }
+
+    // 4. Reset Reject Button Logic
     const rejectBtn = document.querySelector('.modal-action-btn.danger');
     if(rejectBtn) {
-        // STEP A: COMPLETELY RESET THE BUTTON STATE
-        rejectBtn.style.width = '100%'; 
+        rejectBtn.disabled = false;
         rejectBtn.style.opacity = '1';
         rejectBtn.style.cursor = 'pointer';
-        rejectBtn.disabled = false; //This line is critical
-        rejectBtn.onclick = null;  
+        
+        // Clone to clear old event listeners
+        const newBtn = rejectBtn.cloneNode(true);
+        rejectBtn.parentNode.replaceChild(newBtn, rejectBtn);
 
-        // STEP B: based on status
+        // Make Reject Button Full Width since Approve is gone
+        newBtn.style.width = "100%"; 
+
         if (item.status === 'Solved') {
-            rejectBtn.style.opacity = '0.5'; 
-            rejectBtn.style.cursor = 'not-allowed';
-            rejectBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i> Complaint Closed';
-            rejectBtn.onclick = function() { alert("Complaint closed already"); };
-        } 
-        else if (item.status === 'Rejected') {
-            rejectBtn.style.opacity = '0.5'; 
-            rejectBtn.style.cursor = 'not-allowed';
-            rejectBtn.innerHTML = '<i class="ri-spam-line"></i> Already Rejected';
-            rejectBtn.onclick = function() { alert("Complaint already marked as Rejected."); };
-        } 
-        else {
-            // STEP C: Default State
-            rejectBtn.innerHTML = '<i class="ri-spam-line"></i> Reject';
-            rejectBtn.onclick = function() { updateStatus('Rejected'); };
+            newBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i> Closed';
+            newBtn.disabled = true;
+            newBtn.style.opacity = '0.6';
+        } else {
+            newBtn.innerHTML = '<i class="ri-spam-line"></i> Reject';
+            newBtn.onclick = function() { updateStatus('Rejected'); };
         }
     }
 
     // 5. Show the Modal
     document.getElementById('analyzeModal').style.display = 'flex';
 }
-
 function closeAnalyzeModal() { document.getElementById('analyzeModal').style.display = 'none'; }
 
-// WEBRTC REJECT FUNCTION (ONLY THIS PART IS MODIFIED)
+// WEBRTC REJECT FUNCTION
 async function updateStatus(action) {
     if (currentItemIndex === null) return;
     const item = data[currentItemIndex];
 
     if (action === 'Rejected') {
-        const reason = prompt("Enter Rejection Reason:", "Photo is unclear");
+        const reason = prompt("Enter Rejection Reason:", "...............");
         if (!reason) return;
 
         alert("Calling Virtual Citizen Phone (WebRTC)...");
@@ -598,7 +619,6 @@ function addNewNotification(id, msg, dept, time, type) {
 renderNotifications();
 
 // --- 9. REAL-TIME DATA SYNC ---
-// 🟢 UPDATED FETCH FUNCTION (Connects to Ngrok + Fixes Warning Page)
 async function fetchLiveComplaints() {
   try {
     // Fetch latest data from the backend
@@ -613,7 +633,7 @@ async function fetchLiveComplaints() {
 
         if (!localItem) {
             // CASE A: Brand New Complaint -> Add it
-            console.log("🔥 New Complaint Found:", serverItem.id);
+            console.log("New Complaint Found:", serverItem.id);
             data.unshift(serverItem); 
             needsRender = true;
             
@@ -621,15 +641,17 @@ async function fetchLiveComplaints() {
                 addNewNotification(serverItem.id, "New Complaint Received", serverItem.dept, "Live", "alert");
             }
         } else {
-            // CASE B: Existing Complaint -> Check for a new Photo URL
             // If server has an image, and it's different from our empty local image...
             if (serverItem.img && serverItem.img !== "" && localItem.img !== serverItem.img) {
                 
-                console.log("📸 New Photo Detected for:", serverItem.id);
+                console.log(" New Photo Detected for:", serverItem.id);
                 
                 // 1. Update the local data with the new link & status
                 localItem.img = serverItem.img;
                 localItem.status = serverItem.status; 
+                
+                localItem.lat = serverItem.lat;
+                localItem.long = serverItem.long;
                 
                 // 2. Mark for re-rendering
                 needsRender = true; 
@@ -643,7 +665,7 @@ async function fetchLiveComplaints() {
     });
 
     // 2. Refresh the table only if we found changes
-    if (needsRender) {
+    if (needsRender){
         renderTable(); 
         // Update charts
         if (typeof initMainChart === "function") initMainChart();
@@ -654,7 +676,6 @@ async function fetchLiveComplaints() {
     // console.log("Backend offline...");
   }
 }
-
 // Keep the interval running
 setInterval(fetchLiveComplaints, 2000);
 
@@ -687,14 +708,14 @@ function toggleClusterMode() {
         if(btn) {
             btn.style.background = "var(--primary)";
             btn.style.color = "white";
-            btn.innerHTML = '<i class="ri-node-tree"></i> Show Raw List';
+            btn.innerHTML = '<i class="ri-file-list-line" style="color: white"></i>Show List';
         }
         renderClusteredTable();
     } else {
         if(btn) {
             btn.style.background = "";
             btn.style.color = "";
-            btn.innerHTML = '<i class="ri-node-tree"></i> AI Cluster View';
+            btn.innerHTML = '<i class="ri-node-tree"></i>Cluster View';
         }
         renderTable(); 
     }
@@ -763,7 +784,7 @@ function renderClusteredTable() {
             actionButton = '<button class="btn-action" style="background-color: #059669; color: white; cursor: default; opacity: 0.8;"><i class="ri-check-double-line"></i> Audit Passed</button>';
         }
 
-        // 🔴 STATE 2: FAILED (RED) -
+        // 🔴 STATE 2: FAILED (RED)
         if (cluster.isFailed) {
             rowStyle = "background: rgba(239, 68, 68, 0.15); border-left: 4px solid #ef4444;";
             statusBadge = '<span class="status-badge st-rejected" style="background:#ef4444; color:white;"><i class="ri-alert-line"></i> WORK NOT DONE</span>';
@@ -906,7 +927,6 @@ function markClusterFailed(rowId, loc, count, ids) {
         addNewNotification("DISCREPANCY DETECTED!", `Gap Identified in ${loc}. Citizen denied resolution.`, "Citizen Assurance", "Just Now", "alert");
     }
 }
-
 
 
 
