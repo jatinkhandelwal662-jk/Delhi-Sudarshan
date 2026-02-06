@@ -774,7 +774,7 @@ function renderClusteredTable() {
         let actionButton = `
             <button class="btn-action" style="background-color: #2563eb; color: white;" 
                 onclick="openGroupVerifyModal('${cluster.ids.join(',')}', '${cluster.dept}', '${cluster.loc}', ${cluster.count}, '${cluster.rowId}')">
-                <i class="ri-spy-line"></i> Surprise Audit
+                <i class="ri-spy-line"></i> Quality Assurance
             </button>`;
 
         // 🟢 STATE 1: VERIFIED
@@ -927,6 +927,7 @@ function markClusterFailed(rowId, loc, count, ids) {
         addNewNotification("DISCREPANCY DETECTED!", `Gap Identified in ${loc}. Citizen denied resolution.`, "Citizen Assurance", "Just Now", "alert");
     }
 }
+
 
 
 
