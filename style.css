@@ -88,6 +88,70 @@ body {
 .filter-wrapper i { color: var(--primary); font-size: 1.1rem; }
 #statusFilter { border: none; outline: none; background: transparent; font-family: 'Outfit', sans-serif; font-size: 0.95rem; color: var(--text); font-weight: 600; cursor: pointer; padding-right: 5px; }
 
+/* --- CLUSTER VIEW BUTTON (Glassmorphism) --- */
+.filter-btn {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 
+        0 4px 15px rgba(31, 38, 135, 0.1),
+        inset 0 0 10px rgba(255, 255, 255, 0.2);
+    color: var(--primary);
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: 0.5s;
+}
+
+.filter-btn:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 
+        0 8px 25px rgba(37, 99, 235, 0.25),
+        0 0 15px rgba(255, 255, 255, 0.4);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+.filter-btn:hover::before {
+    left: 100%;
+}
+
+.filter-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
+
+.filter-btn i {
+    font-size: 1.1rem;
+    transition: transform 0.4s ease;
+}
+
+.filter-btn:hover i {
+    transform: rotate(15deg) scale(1.1);
+    color: #e0f2fe; /* Lighten icon on hover */
+    filter: drop-shadow(0 0 5px var(--primary));
+}
+
+
 /* --- TABLE & ROW STYLES (FIXED) --- */
 .glass-panel { background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 25px; padding: 30px; flex: 1; overflow: hidden; box-shadow: var(--glass-shadow); }
 .no-padding-panel { padding: 0; display: flex; flex-direction: column; }
@@ -213,6 +277,35 @@ td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px;
 }
 
 /* ========================================= */
+
+/* --- LIVE MAP STYLES --- */
+.map-wrapper { position: relative; width: 100%; height: 100%; }
+.live-map { width: 100%; height: 100%; border-radius: 0; }
+.map-controls { position: absolute; right: 18px; top: 18px; z-index: 600; }
+.control-card { background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); border-radius: 16px; padding: 14px; width: 220px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.04); }
+.control-card h4 { margin: 0 0 8px 0; font-size: 0.9rem; color: var(--text); }
+.legend-item { display:flex; align-items:center; gap:8px; margin:6px 0; color:var(--text-muted); font-weight:600; }
+.legend-dot { width:12px; height:12px; border-radius:50%; display:inline-block; }
+.legend-dot.pending { background: #f59e0b; box-shadow: 0 0 6px rgba(245,158,11,0.15); }
+.legend-dot.solved { background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.15); }
+.legend-dot.overdue { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,0.15); }
+
+/* Make table rows clickable when live-map is active */
+tr[onclick] { cursor: pointer; transition: background 0.12s ease; }
+tr[onclick]:hover td { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+
+.flash-row td { background: linear-gradient(90deg, rgba(37,99,235,0.06), rgba(6,182,212,0.04)); transform: translateY(-4px); box-shadow: 0 10px 30px rgba(37,99,235,0.06); transition: all 0.4s; }
+
+/* Leaflet popup glass style */
+.leaflet-popup-content-wrapper { background: rgba(255,255,255,0.95); border-radius: 12px; padding: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+.leaflet-popup-content { color: var(--text); font-weight: 600; }
+.leaflet-popup-tip { background: rgba(255,255,255,0.95); }
+
+/* Responsive adjustments for map */
+@media (max-width: 1000px) {
+    .control-card { width: 180px; right: 10px; top: 10px; }
+}
+
 /* OFFICER PROFILE*/
 /* ========================================= */
 
