@@ -351,11 +351,11 @@ function renderTable(dataset) {
         const originalIndex = data.findIndex(d => d.id === item.id);
 
         const row = `
-            <tr class="${rowClass}">
+            <tr class="${rowClass}" onclick="focusComplaint('${item.id}')">
                 <td style="font-family: monospace; color: var(--primary); font-weight:600;">${item.id}</td>
                 <td>${typeHtml}</td> <td>${item.loc}</td>
                 <td><span class="status-badge ${statusClass}">${item.status}</span></td>
-                <td><button class="btn-action" onclick="openAnalyzeModal(${originalIndex})">Analyze</button></td>
+                <td><button class="btn-action" onclick="event.stopPropagation(); openAnalyzeModal(${originalIndex})">Analyze</button></td>
             </tr>
         `;
         tbody.innerHTML += row;
@@ -680,7 +680,198 @@ async function fetchLiveComplaints() {
 setInterval(fetchLiveComplaints, 2000);
 
 
-// --- 10. ADVANCED AI CLUSTERING (Department + Locality) ---
+// --- 10. MAP INTEGRATION: LIVE MAP, CLUSTERS, FILTERS ---
+
+// Map globals
+let map, markerCluster, markersIndex = {};
+let mapClusteringEnabled = true; // default
+
+function initMap() {
+    const mapEl = document.getElementById('map');
+    if (!mapEl) return;
+
+    map = L.map('map', { zoomControl: true, preferCanvas: true }).setView([28.6139, 77.2090], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors', maxZoom: 19
+    }).addTo(map);
+
+    markerCluster = L.markerClusterGroup({ chunkedLoading: true, showCoverageOnHover: false });
+
+    // add initial markers
+    buildMapMarkers();
+
+    // Populate department filter from data
+    populateDepartmentFilter();
+
+    // When user opens liveMap tab, invalidate size
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => {
+        setTimeout(() => { if (map) map.invalidateSize(); }, 250);
+    }));
+}
+
+function createIcon(status) {
+    const color = status === 'Solved' ? '#10b981' : (status === 'Overdue' ? '#ef4444' : '#f59e0b');
+    return L.divIcon({
+        className: 'custom-marker',
+        html: `<div style="background:${color}; width:18px; height:18px; border-radius:50%; box-shadow:0 4px 12px rgba(0,0,0,0.25); border: 2px solid white;"></div>`,
+        iconSize: [22, 22], iconAnchor: [11, 11]
+    });
+}
+
+function getCoordinatesFor(item) {
+    // Hardcoded map of neighbourhoods to precise coords (Delhi sample)
+    const lookup = {
+        'Defence Colony': [28.5700, 77.2325],
+        'Vasant Kunj': [28.5355, 77.1754],
+        'CR Park': [28.5453, 77.2696],
+        'Okhla NSIC': [28.5450, 77.2684],
+        'Janakpuri': [28.6420, 77.0910],
+        'Govindpuri': [28.5518, 77.2454],
+        'Lajpat Nagar II': [28.5692, 77.2432],
+        'Saket': [28.5244, 77.2121],
+        'Kalkaji Extension': [28.5600, 77.2500],
+        'Malviya Nagar': [28.5428, 77.2210],
+        'Sarojini Nagar': [28.5730, 77.1988],
+        'Green Park': [28.5500, 77.1967],
+        'Hauz Khas': [28.5467, 77.2014],
+        'Mehrauli-Badarpur Road': [28.5140, 77.2100],
+        'Saket': [28.5244, 77.2121],
+        'Nehru Place': [28.5494, 77.2591],
+        'Outer Ring Road, Chirag Delhi': [28.5365, 77.2390]
+    };
+
+    if (item.lat && item.long) return [parseFloat(item.lat), parseFloat(item.long)];
+    if (item.loc && lookup[item.loc]) return lookup[item.loc];
+
+    // fallback: random-ish within a bounding box of Delhi
+    const lat = 28.4 + Math.random() * 0.5; // 28.4 - 28.9
+    const lng = 76.9 + Math.random() * 0.7; // 76.9 - 77.6
+    return [parseFloat(lat.toFixed(6)), parseFloat(lng.toFixed(6))];
+}
+
+function buildMapMarkers() {
+    if (!map) return;
+
+    markerCluster.clearLayers();
+    markersIndex = {};
+
+    const statusFilter = document.getElementById('mapStatusFilter') ? document.getElementById('mapStatusFilter').value : 'All';
+    const deptFilter = document.getElementById('mapDeptFilter') ? document.getElementById('mapDeptFilter').value : 'All';
+
+    data.forEach(item => {
+        // apply map filters
+        if (statusFilter !== 'All' && item.status !== statusFilter) return;
+        if (deptFilter !== 'All' && item.dept !== deptFilter) return;
+
+        const coords = getCoordinatesFor(item);
+        const icon = createIcon(item.status);
+        const marker = L.marker(coords, { icon: icon });
+
+        const popupHtml = `
+            <div style="min-width:220px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                    <div style="font-weight:800; color:var(--primary); font-family:monospace;">${item.id}</div>
+                    <div style="font-size:0.8rem; color:#64748b;">${item.date || 'N/A'}</div>
+                </div>
+                <div style="margin-top:8px; font-weight:700;">${item.type}</div>
+                <div style="margin-top:6px; color:#475569; font-weight:600;">${item.loc}</div>
+                <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-size:0.85rem; color:#0f172a; font-weight:800;">${item.dept}</div>
+                    <div><span class="status-badge ${item.status === 'Solved' ? 'st-solved' : item.status === 'Overdue' ? 'st-overdue' : 'st-pending'}">${item.status}</span></div>
+                </div>
+                <div style="margin-top:8px; display:flex; gap:8px;">
+                    <button class="btn-action" style="flex:1" onclick="event.stopPropagation(); openAnalyzeModal(${data.findIndex(d=>d.id===item.id)})">Analyze</button>
+                    <button class="btn-action" style="background:#2563eb;color:white;" onclick="event.stopPropagation(); focusComplaint('${item.id}')"><i class="ri-map-pin-user-line"></i></button>
+                </div>
+            </div>
+        `;
+
+        marker.bindPopup(popupHtml);
+
+        // store by id for quick reference
+        markersIndex[item.id] = marker;
+
+        if (mapClusteringEnabled) markerCluster.addLayer(marker);
+        else marker.addTo(map);
+    });
+
+    if (mapClusteringEnabled) map.addLayer(markerCluster);
+}
+
+function toggleMapClustering() {
+    mapClusteringEnabled = !mapClusteringEnabled;
+    const btn = document.getElementById('mapClusterToggle');
+    if (btn) btn.style.background = mapClusteringEnabled ? 'var(--primary)' : '';
+    buildMapMarkers();
+}
+
+function applyMapFilters() {
+    buildMapMarkers();
+}
+
+function populateDepartmentFilter() {
+    const deptSet = new Set();
+    data.forEach(d => { if (d.dept) deptSet.add(d.dept); });
+    const select = document.getElementById('mapDeptFilter');
+    if (!select) return;
+    const existing = new Set(Array.from(select.options).map(o => o.value));
+    deptSet.forEach(d => { if (!existing.has(d)) { const opt = document.createElement('option'); opt.value = d; opt.text = d; select.appendChild(opt); } });
+}
+
+function focusComplaint(id) {
+    if (!map || !markersIndex[id]) {
+        // attempt to build marker and then focus
+        buildMapMarkers();
+    }
+    const marker = markersIndex[id];
+    if (!marker) return;
+    if (!map.hasLayer(marker)) marker.addTo(map);
+    map.setView(marker.getLatLng(), 16, { animate: true });
+    marker.openPopup();
+
+    // Visual pulse effect on marker by toggling style
+    const el = marker._icon;
+    if (el) {
+        el.style.transition = 'transform 0.3s ease';
+        el.style.transform = 'scale(1.4)';
+        setTimeout(() => { if (el) el.style.transform = 'scale(1)'; }, 700);
+    }
+
+    // also scroll table to row (if present) and highlight briefly
+    const rows = document.querySelectorAll('#tableBody tr');
+    rows.forEach(r => {
+        const firstCell = r.querySelector('td');
+        if (firstCell && firstCell.innerText.trim() === id) {
+            r.scrollIntoView({behavior:'smooth', block:'center'});
+            r.classList.add('flash-row');
+            setTimeout(()=> r.classList.remove('flash-row'), 1200);
+        }
+    });
+}
+
+function fitToAllMarkers() {
+    if (!map) return;
+    try {
+        const bounds = mapClusteringEnabled ? markerCluster.getBounds() : L.featureGroup(Object.values(markersIndex)).getBounds();
+        if (bounds && bounds.isValid()) map.fitBounds(bounds.pad(0.2));
+    } catch (e) { console.warn('No valid bounds yet.'); }
+}
+
+function centerToCity() { if (map) map.setView([28.6139, 77.2090], 12); }
+
+// ensure map is initialized on DOM ready
+window.addEventListener('load', function() { setTimeout(() => { initMap(); }, 800); });
+
+// Hook into live update to refresh markers when new items appear
+const originalFetchLiveComplaints = fetchLiveComplaints;
+fetchLiveComplaints = async function() {
+    await originalFetchLiveComplaints();
+    // rebuild markers to include any new coordinates
+    if (map) buildMapMarkers();
+}
+
+// --- 11. ADVANCED AI CLUSTERING (Department + Locality) ---
 let isClusterMode = false;
 
 //to extracting the "Main Area" from a messy address
@@ -774,7 +965,7 @@ function renderClusteredTable() {
         let actionButton = `
             <button class="btn-action" style="background-color: #2563eb; color: white;" 
                 onclick="openGroupVerifyModal('${cluster.ids.join(',')}', '${cluster.dept}', '${cluster.loc}', ${cluster.count}, '${cluster.rowId}')">
-                <i class="ri-spy-line"></i> Quality Assurance
+                <i class="ri-spy-line"></i> Surprise Audit
             </button>`;
 
         // 🟢 STATE 1: VERIFIED
@@ -927,13 +1118,3 @@ function markClusterFailed(rowId, loc, count, ids) {
         addNewNotification("DISCREPANCY DETECTED!", `Gap Identified in ${loc}. Citizen denied resolution.`, "Citizen Assurance", "Just Now", "alert");
     }
 }
-
-
-
-
-
-
-
-
-
-
