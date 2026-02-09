@@ -1,7 +1,7 @@
 <div align="center">
   <img src="favicon2.jpg" alt="Delhi Sudarshan Logo" width="120" height="120">
   
-  # दिल्ली SUDARSHAN | Future Governance
+  # दिल्ली SUDARSHAN | The Future of Governance
   
   **Bridging Voice to Vision — An AI-Powered Civic Command Center**
   
@@ -10,87 +10,106 @@
   [![Voice](https://img.shields.io/badge/Voice_AI-Gemini_2.5_Flash-4285F4?style=for-the-badge&logo=google)](https://deepmind.google/technologies/gemini/)
 
   <p align="center">
-    A next-generation governance OS for the <strong>Government of NCT of Delhi</strong>. <br>
-    Features <strong>"Legacy Tunneling"</strong> architecture, <strong>"Citizen Feedback Loop"</strong> verification loops, and <strong>Zero-UI</strong> citizen interaction.
+    <strong>"We do not force the citizen to learn technology; we force technology to adapt to the citizen."</strong>
   </p>
 </div>
 
 ---
 
-## 🚀 Overview
+## ❓ What is Delhi Sudarshan? (In Simple Words)
 
-**Delhi Sudarshan** is a centralized command center designed to streamline public grievance redressal. Unlike traditional apps that require citizens to be tech-savvy, Sudarshan uses a **Voice-First (Zero-UI)** approach. 
+Imagine a grandmother in Delhi who cannot read, write, or use a smartphone app. Today, if she sees a broken street light or garbage pile, she has no easy way to complain. 
 
-It acts as an **intelligent middleware** that tunnels into existing government legacy databases, enabling real-time AI surveillance, corruption checks, and instant citizen communication without requiring expensive data migration.
-
-### 🔗 [**CLICK HERE TO VIEW LIVE DASHBOARD**]https://delhi-sudarshan-frontend.vercel.app/<br>
-
-**VAANI:** [Click Here To Talk to Vaani](https://vaani-khaki.vercel.app) | **Open this on a mobile device** how citizen can register a complaint through our ai voice agent. <br>
-**CITIZEN CALL DEMO:** [Click Here For Citizen Call Demo](https://delhi-sudarshan-backend.onrender.com/citizen.html) | **Open this on a mobile device** to receive the call from the AI.
-
----
-
-## ✨ Key Features (The USP)
-
-### 🎙️ Zero-UI Accessibility
-* **No App Required:** Designed for the 47% of the population that is elderly or digitally illiterate.
-* **Language Agnostic:** The system speaks fluid Hindi and English, bridging the digital divide.
-
-### ✅ The "Citizen Feedback Loop"
-* **Closing the Loop:** The system ensures that a complaint isn't just "Closed" in the database, but truly "Resolved" on the ground. It creates a digital chain of trust between the government and the citizen.
-* **AI-Driven Service Validation:** The Nodal Officer acts as a quality controller. With a single click, the AI Agent conducts a "Satisfaction Check" by calling a specific citizen group to confirm the resolution meets their expectations.
-* **Gap Analysis & Auto-Reopen:** If citizens report that the issue persists, the system identifies the service gap and automatically re-opens the tickets for priority attention. This guarantees 100% service delivery without manual field visits.
-
-### 🚇 Legacy Tunneling Architecture
-* **Zero-Migration:** Instead of replacing old government SQL servers (which is costly and slow), Sudarshan acts as a **Stateless Overlay**.
-* **Seamless Integration:** It "tunnels" into legacy MCD/PWD databases to read/write data, allowing for instant deployment at 10% of the cost of traditional digital transformation.
-
-### ⚡ Sub-500ms Latency (Real-Time)
-* **Gemini 2.5 Native Audio:** We bypass traditional Speech-to-Text delays. By streaming raw audio tokens, our voice agent (`Vaani`) responds in **under 500ms**, making the conversation feel natural and human-like during emergencies.
-
-### 🛡️ Human-in-the-Loop (Ethical Guardrails)
-* **AI Efficiency, Human Authority:** The AI autonomously handles intake, categorization, department routing, and priority verification. However, it **cannot reject** a complaint.
-* **Mandatory Officer Review:** The power to reject is strictly reserved for the Nodal Officer. If a complaint is invalid, the officer must manually reject it and record a specific reason. 
-* **Automated Feedback:** Once rejected by the officer, the AI Agent immediately calls the citizen to explain the specific reason for rejection, ensuring total transparency.
-
-### 📞 Proactive "Don't Call Us" Model
-* **Outbound-First Communication:** We flipped the traditional model. Citizens do not need to call daily to check their status.
-* **Event-Triggered Updates:** The AI Agent (`Vaani`) proactively calls the citizen **only** when a significant status change occurs (Solved, Rejected, Audit, or Overdue). This reduces anxiety for the citizen and call volume for the department.
+**Delhi Sudarshan** changes that. 
+It is a **Voice-First AI System** that acts like a helpful government officer.
+1.  **She speaks** to our AI (Vaani) in Hindi or English.
+2.  **The AI listens**, understands the problem, and files a complaint instantly.
+3.  **The Government Dashboard** updates in real-time.
+4.  **The AI verifies** if the work is actually done by calling the citizen back.
 
 ---
 
-## 📡 Dashboard Capabilities
+## ⚠️ IMPORTANT: How to Test the Demo (Please Read)
 
-* **Mission Control:** A futuristic **Glassmorphism-based** dashboard displaying live city stats, resolution rates, and pending tickets.
-* **Live Signals:** Real-time feed of incoming voice complaints with status indicators (Overdue, Solved, Pending).
-* **Department Analytics:** Interactive visualization (Chart.js) to monitor the performance load of **PWD, DJB, BSES, and MCD**.
-* **Notification Center:** Live pop-up alerts for new complaints and evidence uploads.
-* **Officer Profile:** Digital verification profile for the nodal officer with secure access levels.
+Since this is a **Prototype** running in a **Developer Sandbox Environment**, we have strict security restrictions on sending SMS to prevent spam.
 
----
+To see the **Live SMS Confirmation**, you must use one of our **Verified Tester Numbers** when the AI asks for your phone number.
 
-## 📍 Operational Strategy: Zonal Decentralization
+### 🔢 Use These Numbers for the Full Experience:
+If you speak one of these numbers to the AI, you will receive the live SMS shown below:
+1. **+91 78385 29756**
+2. **+91 96508 45738**
+3. **+91 74192 99176**
+4. **+91 78272 14552**
 
-To ensure rapid response times and pinpoint accountability, we have moved away from a single "clogged" central helpline. **Delhi Sudarshan** implements a **Hyper-Local Operational Model** by dividing the capital into four strategic zones:
+> **Note:** If you use your *own* unregistered number, the AI will still **accept your complaint** and update the dashboard successfully, but you **will not receive the SMS** due to telecom sandbox regulations.
 
-### 🧭 The 4-Zone Command Structure
-* **South Zone | North Zone | East Zone | West Zone**
-* Each zone is assigned a **Dedicated "Delhi Sudarshan" Helpline Number**.
-
-### 🚀 Why This Matters?
-* **High-Speed Response (Load Balancing):** By distributing call volume across four distinct nodes, we prevent system crashes during high-volume events (e.g., monsoon waterlogging) and ensure citizens never face a "Line Busy" tone.
-* **Pinpoint Accountability:** Complaints are instantly mapped to the specific Zonal Nodal officer. This eliminates "passing the buck" between departments, as the jurisdiction is locked at the moment of the call.
-* **Rapid Mobilization:** The Zonal AI Agent dispatches tickets directly to the nearest local field unit, bypassing central routing delays and cutting reaction time by 40%.
+### 📱 Visual Proof: The SMS You Will Receive
+<div align="center">
+  <img src="sms_preview.jpg" alt="SMS Confirmation Screenshot" width="300" style="border-radius: 15px; border: 2px solid #ddd;">
+  <p><em>Example of the automated confirmation SMS sent by the system.</em></p>
+</div>
 
 ---
 
-## 🛠️ Tech Stack
+## 🔗 Live Project Links
 
-* **Frontend:** HTML5, CSS3 (Glassmorphism), JavaScript (ES6+), Chart.js
+| Component | Link | Purpose |
+| :--- | :--- | :--- |
+| **🗣️ Talk to Vaani (AI Agent)** | [**Click Here to Speak**](https://vaani-khaki.vercel.app) | **Start Here.** Open this on your mobile to file a voice complaint. |
+| **💻 Officer Dashboard** | [**View Dashboard**](https://delhi-sudarshan-frontend.vercel.app/) | See how the government views and manages complaints in real-time. |
+| **📞 Citizen Audit Call** | [**Trigger Audit Call**](https://delhi-sudarshan-backend.onrender.com/citizen.html) | Simulate the AI calling a citizen to verify if work is done. |
+
+---
+
+## 📖 The User Journey (How it Works)
+
+### Step 1: The Citizen Speaks (Zero-UI)
+The user opens the **Vaani** link. They don't need to type anything. They just say:
+> *"Namaste, there is a huge pile of garbage in Laxmi Nagar."*
+
+The AI (Gemini 2.5) processes this in **under 0.5 seconds**, extracts the location ("Laxmi Nagar") and category ("MCD/Garbage"), and asks for a phone number.
+
+### Step 2: The System Records
+The complaint instantly appears on the **Officer Dashboard**. 
+* **Registered Number:** The user gets an instant SMS with a Complaint ID.
+* **Unregistered Number:** The complaint is logged on the dashboard (System Logic Works), but SMS is skipped.
+
+### Step 3: The Officer Acts
+The Nodal Officer sees the complaint. Instead of manually sorting it, the AI has already assigned it to the correct department (e.g., Sanitation Dept).
+
+### Step 4: The "Audit Loop" (Unique Feature)
+This is our magic. When a contractor says "Work Done," the officer clicks **"Audit Cluster"**.
+The AI **calls the citizen back** and asks:
+> *"The department says your issue is resolved. Is this true? Press 1 for Yes, 2 for No."*
+
+If the citizen says "No," the complaint automatically re-opens. This ensures no fake resolutions.
+
+---
+
+## ✨ Why is this Special?
+
+### 1. 🎙️ Zero-UI Accessibility
+Most apps are for the top 50% of educated people. Our system is for the **47% who are elderly or cannot read**. If you can speak, you can use Delhi Sudarshan.
+
+### 2. ✅ The "Citizen Feedback Loop"
+We don't just take complaints; we verify them. By automating the feedback call, we stop corruption where contractors claim work is done without actually doing it.
+
+### 3. 🚇 Legacy Tunneling
+We don't ask the government to delete their old computers. Our system sits on top of their old databases (like a tunnel), making it cheap and fast to deploy.
+
+### 4. 🛡️ Human-in-the-Loop
+The AI helps, but the Human decides. The AI can accept complaints, but only a Human Officer can reject them. This prevents AI errors from hurting citizens.
+
+---
+
+## 🛠️ Technology Stack
+
+* **Frontend:** HTML5, CSS3 (Glassmorphism), JavaScript
 * **Backend:** Node.js, Express.js (Stateless Middleware)
-* **AI Core:** Google Gemini 2.5 Flash (Native Audio-to-Audio Processing)
-* **Telephony:** Twilio Voice SDK (WebRTC) & Programmable SMS
-* **Deployment:** GitHub Pages (Frontend) + Render (Backend) + Vercel(AI-Voice Agent)
+* **AI Brain:** Google Gemini 2.5 Flash (Native Audio Processing)
+* **Telephony:** Twilio Voice SDK & SMS
+* **Deployment:** GitHub Pages + Render + Vercel
 
 ---
 
