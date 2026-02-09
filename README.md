@@ -46,7 +46,7 @@ If you speak one of these numbers to the AI, you will receive the live SMS shown
 
 ### 📱 Visual Proof: The SMS You Will Receive
 <div align="center">
-  <img src="sms_preview.jpg" alt="SMS Confirmation Screenshot" width="300" style="border-radius: 15px; border: 2px solid #ddd;">
+  <img src="sms_preview.jpeg" alt="SMS Confirmation Screenshot" width="300" style="border-radius: 15px; border: 2px solid #ddd;">
   <p><em>Example of the automated confirmation SMS sent by the system.</em></p>
 </div>
 
