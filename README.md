@@ -66,9 +66,9 @@ If you speak one of these numbers to the AI, you will receive the live SMS shown
 
 ### Step 1: The Citizen Speaks (Zero-UI)
 The user opens the **Vaani** link. They don't need to type anything. They just say:
-> *"Namaste, there is a huge pile of garbage in Laxmi Nagar."*
+> *"Namaste, there is a huge pile of garbage in CR park."*
 
-The AI (Gemini 2.5) processes this in **under 0.5 seconds**, extracts the location ("Laxmi Nagar") and category ("MCD/Garbage"), and asks for a phone number.
+The AI (Gemini 2.5) processes this in **under 0.5 seconds**, extracts the location ("CR Park") and category ("MCD/Garbage"), and asks for a phone number.
 
 ### Step 2: The System Records
 The complaint instantly appears on the **Officer Dashboard**. 
