@@ -1,885 +1,1161 @@
-/* ========================================= */
-/* STYLE.CSS */
-/* ========================================= */
-
-:root {
-    --bg-gradient: linear-gradient(135deg, #c4b5fd 0%, #bfdbfe 50%, #a5f3fc 100%);
-    --glass-bg: rgba(255, 255, 255, 0.25);
-    --glass-border: rgba(255, 255, 255, 0.6);
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-    --text: #1e293b;
-    --text-muted: #64748b;
-    --primary: #2563eb;
-    --success: #10b981;
-    --danger: #ef4444;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
-
-body {
-    background: var(--bg-gradient);
-    background-size: 200% 200%;
-    animation: gradientMove 15s ease infinite;
-    color: var(--text);
-    height: 100vh;
-    overflow: hidden; 
-    position: relative;
-}
-
-@keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-.page-watermark {
-    position: fixed; bottom: 0; left: 270px;
-    width: calc(100% - 270px); height: 55%; z-index: -1;
-    display: flex; align-items: flex-end; justify-content: center;
-    pointer-events: none; opacity: 0.08;
-}
-.page-watermark img { width: 80%; max-width: 900px; height: auto; object-fit: contain; object-position: bottom center; filter: contrast(1.2); }
-
-.glass-container {
-    position: relative; z-index: 1; display: flex; height: 100vh; padding: 25px; gap: 25px;
-}
-
-/* SIDEBAR */
-.sidebar {
-    width: 270px;
-    min-width: 270px; flex-shrink: 0;
-    background: rgba(30, 58, 138, 0.05); backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border); border-radius: 30px; padding: 35px 25px;
-    display: flex; flex-direction: column; box-shadow: var(--glass-shadow);
-}
-.logo { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
-.logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, #2563eb, #06b6d4); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); }
-.nav-btn { background: transparent; border: none; width: 100%; padding: 16px; margin-bottom: 8px; text-align: left; color: var(--text-muted); font-size: 1rem; border-radius: 14px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; font-weight: 500; }
-.nav-btn:hover { background: rgba(255,255,255,0.4); color: var(--primary); }
-.nav-btn.active { background: white; color: var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.05); font-weight: 600; }
-.status-box { margin-top: auto; padding: 15px; background: rgba(255,255,255,0.3); border-radius: 14px; font-size: 0.8rem; display: flex; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,0.5); color: var(--text); font-weight: 500; }
-.status-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
-
-/* CONTENT */
-.content-area {
-    flex: 1; min-width: 0; position: relative; border-radius: 30px; overflow: hidden;
-}
-.view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 10px; animation: fadeUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-.active-view { display: flex; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(30px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-.glass-header { margin-bottom: 25px; padding: 25px; background: var(--glass-bg); backdrop-filter: blur(25px); border-radius: 25px; border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); }
-.badge-live { font-size: 0.7rem; background: #fee2e2; color: #ef4444; padding: 4px 10px; border-radius: 20px; vertical-align: middle; border: 1px solid #fecaca; }
-.subtitle { color: var(--text-muted); font-size: 0.95rem; margin-top: 5px; }
-
-/* STATS */
-.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 25px; }
-.stat-card { background: var(--glass-bg); backdrop-filter: blur(25px); padding: 30px; border-radius: 25px; border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); transition: transform 0.3s; }
-.stat-card:hover { transform: translateY(-5px); }
-.stat-card h3 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
-.stat-card h1 { font-size: 2.8rem; font-weight: 700; color: var(--text); }
-.progress-bar { width: 100%; height: 8px; background: rgba(0,0,0,0.05); border-radius: 10px; margin-top: 20px; }
-.fill { height: 100%; background: var(--text); border-radius: 10px; }
-.success { color: var(--success); } .success-bg { background: var(--success); }
-.danger { color: var(--danger); } .danger-bg { background: var(--danger); }
-
-/* --- FILTER --- */
-.header-with-filter { display: flex; justify-content: space-between; align-items: center; }
-.filter-wrapper { background: white; padding: 8px 15px; border-radius: 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
-.filter-wrapper i { color: var(--primary); font-size: 1.1rem; }
-#statusFilter { border: none; outline: none; background: transparent; font-family: 'Outfit', sans-serif; font-size: 0.95rem; color: var(--text); font-weight: 600; cursor: pointer; padding-right: 5px; }
-
-/* --- CLUSTER VIEW BUTTON (Glassmorphism) --- */
-.filter-btn {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 
-        0 4px 15px rgba(31, 38, 135, 0.1),
-        inset 0 0 10px rgba(255, 255, 255, 0.2);
-    color: var(--primary);
-    padding: 10px 20px;
-    border-radius: 30px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    letter-spacing: 0.5px;
-    position: relative;
-    overflow: hidden;
-}
-
-.filter-btn::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transition: 0.5s;
-}
-
-.filter-btn:hover {
-    transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 
-        0 8px 25px rgba(37, 99, 235, 0.25),
-        0 0 15px rgba(255, 255, 255, 0.4);
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-}
-
-.filter-btn:hover::before {
-    left: 100%;
-}
-
-.filter-btn:active {
-    transform: translateY(1px);
-    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
-}
-
-.filter-btn i {
-    font-size: 1.1rem;
-    transition: transform 0.4s ease;
-}
-
-.filter-btn:hover i {
-    transform: rotate(15deg) scale(1.1);
-    color: #e0f2fe; /* Lighten icon on hover */
-    filter: drop-shadow(0 0 5px var(--primary));
-}
-
-
-/* --- TABLE & ROW STYLES (FIXED) --- */
-.glass-panel { background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 25px; padding: 30px; flex: 1; overflow: hidden; box-shadow: var(--glass-shadow); }
-.no-padding-panel { padding: 0; display: flex; flex-direction: column; }
-
-/* ENHANCED SCROLL LOGIC (From your code) */
-.table-wrapper { 
-    overflow-y: auto; 
-    flex: 1; 
-    padding: 20px 30px; 
-    height: 55vh; 
-}
-
-/* THE FIX: height: auto !important stops the spreading */
-table { 
-    width: 100%; 
-    height: auto !important; /* Forces rows to stack compactly */
-    border-collapse: separate; 
-    border-spacing: 0 8px; 
-    padding: 0 15px; 
-}
-
-th { 
-    position: sticky; top: 0; z-index: 100; 
-    background: rgba(219, 234, 254, 0.98); 
-    backdrop-filter: blur(12px); 
-    color: #1e3a8a; font-weight: 700; 
-    padding: 18px 20px; 
-    font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; 
-    border-bottom: 2px solid rgba(255,255,255,0.5); 
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
-}
-th:first-child { border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
-th:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
-
-td { 
-    padding: 15px; 
-    background: rgba(255,255,255,0.4); 
-    border-top: 1px solid rgba(255,255,255,0.6); 
-    border-bottom: 1px solid rgba(255,255,255,0.6); 
-    vertical-align: middle;
-}
-td:first-child { border-top-left-radius: 12px; border-bottom-left-radius: 12px; border-left: 1px solid rgba(255,255,255,0.6); }
-td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-right: 1px solid rgba(255,255,255,0.6); }
-
-/* --- ROW HIGHLIGHTS --- */
-.row-overdue td { background: #fef2f2 !important; border-top: 1px solid #fecaca; border-bottom: 1px solid #fecaca; }
-.row-overdue td:first-child { border-left: 1px solid #fecaca; }
-.row-overdue td:last-child { border-right: 1px solid #fecaca; }
-
-.row-no-photo td { background: #fffbeb !important; border-top: 1px solid #fde68a; border-bottom: 1px solid #fde68a; }
-.row-no-photo td:first-child { border-left: 1px solid #fde68a; }
-.row-no-photo td:last-child { border-right: 1px solid #fde68a; }
-
-.table-wrapper::-webkit-scrollbar { width: 8px; }
-.table-wrapper::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); }
-.table-wrapper::-webkit-scrollbar-thumb { background: #bfdbfe; border-radius: 10px; }
-.table-wrapper::-webkit-scrollbar-thumb:hover { background: #60a5fa; }
-
-.btn-action { background: white; border: 1px solid rgba(0,0,0,0.05); color: var(--primary); padding: 8px 18px; border-radius: 10px; cursor: pointer; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.btn-action:hover { background: var(--primary); color: white; }
-
-/* Status Badges */
-.status-badge { padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
-.st-pending { color: #d97706; background: #fef3c7; border: 1px solid #fde68a; }
-.st-solved { color: #059669; background: #d1fae5; border: 1px solid #a7f3d0; }
-.st-rejected { color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; }
-.st-overdue { color: #fff; background: #ef4444; border: 1px solid #dc2626; box-shadow: 0 2px 5px rgba(239,68,68,0.3); }
-
-/* --- FOOTER --- */
-.gov-footer { position: fixed; bottom: 0; left: 0; width: 100%; height: 32px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(0, 0, 0, 0.1); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 999; font-family: 'Segoe UI', sans-serif; font-size: 0.7rem; color: #475569; }
-.footer-left, .footer-right { display: flex; align-items: center; gap: 10px; }
-.footer-center { position: absolute; left: 50%; transform: translateX(-50%); }
-.security-warning { color: #dc2626; font-weight: 700; font-size: 0.65rem; background: rgba(220, 38, 38, 0.05); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(220, 38, 38, 0.15); }
-.support-link { color: #2563eb; text-decoration: none; font-weight: 600; }
-
-/* --- REPORTS & OFFICER --- */
-.highlight-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(254, 243, 199, 0.3)); border: 1px solid rgba(251, 191, 36, 0.4); position: relative; }
-.badge-icon { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: #fef3c7; color: #d97706; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-.chart-panel { min-height: 400px; display: flex; flex-direction: column; }
-.chart-wrapper { flex: 1; position: relative; width: 100%; }
-.profile-container { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; padding: 20px; }
-.glass-card-large { width: 100%; max-width: 600px; background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 40px; padding: 45px; text-align: center; }
-.avatar-img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 5px solid rgba(255, 255, 255, 0.8); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2); }
-.header-text h1 { font-size: 2.2rem; color: #1e293b; font-weight: 800; }
-.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; text-align: left; }
-.info-box { background: rgba(255, 255, 255, 0.5); padding: 15px 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.6); display: flex; align-items: center; gap: 15px; }
-
-/* --- MODAL --- */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(5px); z-index: 1000; display: none; justify-content: center; align-items: center; }
-.glass-modal-box { width: 700px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-radius: 24px; padding: 30px; position: relative; }
-.close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 2rem; color: var(--text-muted); cursor: pointer; }
-.modal-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
-.modal-body { display: flex; gap: 25px; }
-.modal-img-container { flex: 1; border-radius: 16px; overflow: hidden; height: 250px; border: 4px solid white; position: relative; }
-.modal-img-container img { width: 100%; height: 100%; object-fit: cover; }
-.modal-details { flex: 1.2; display: flex; flex-direction: column; gap: 15px; }
-.desc-box { background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255, 255, 255, 0.8); padding: 12px; border-radius: 12px; max-height: 80px; overflow-y: auto; font-size: 0.9rem; }
-.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-.action-buttons { margin-top: auto; display: flex; gap: 10px; }
-.modal-action-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.modal-action-btn.primary { background: var(--success); color: white; }
-.modal-action-btn.danger { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
-
-/* --- LOADER --- */
-#loader-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: #0f172a; z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: opacity 0.8s ease-out; }
-.voice-visualizer { display: flex; gap: 6px; height: 60px; align-items: center; margin-bottom: 30px; animation: shrinkWave 0.5s ease-in-out forwards 2.5s; }
-.bar { width: 8px; background: linear-gradient(to top, #3b82f6, #06b6d4); border-radius: 99px; animation: voiceWave 1.2s ease-in-out infinite; }
-.bar:nth-child(1) { height: 20px; animation-delay: 0.1s; } .bar:nth-child(2) { height: 40px; animation-delay: 0.2s; } .bar:nth-child(3) { height: 50px; } .bar:nth-child(4) { height: 40px; animation-delay: 0.3s; } .bar:nth-child(5) { height: 20px; animation-delay: 0.4s; }
-.logo-wrapper { text-align: center; opacity: 0; transform: translateY(20px); animation: revealBrand 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 2.8s; }
-.hindi-text { font-size: 2.5rem; font-weight: 700; color: #06b6d4; }
-.eng-text { font-size: 3rem; font-weight: 800; color: white; letter-spacing: -1px; }
-.tagline { font-family: monospace; color: #94a3b8; letter-spacing: 4px; font-size: 0.9rem; transform: translateY(100%); animation: slideUpTag 0.6s ease forwards 3.2s; }
-.status-container { margin-top: 50px; color: #475569; font-family: monospace; font-size: 0.8rem; }
-@keyframes voiceWave { 0%, 100% { height: 20px; opacity: 0.5; } 50% { height: 60px; opacity: 1; } }
-@keyframes shrinkWave { to { transform: scale(0); opacity: 0; height: 0; margin: 0; } }
-@keyframes revealBrand { to { opacity: 1; transform: translateY(0); } }
-@keyframes slideUpTag { to { transform: translateY(0); } }
-
-/* --- RESPONSIVE FIX --- */
-@media (max-width: 1366px), (max-height: 800px) {
-    body, .glass-container { overflow: auto; height: auto; min-height: 100vh; }
-    .sidebar { height: auto; min-height: 100vh; }
-}
-
-/* ========================================= */
-
-/* --- LIVE MAP STYLES --- */
-.map-wrapper { position: relative; width: 100%; height: 100%; }
-.live-map { width: 100%; height: 100%; border-radius: 0; }
-.map-controls { position: absolute; right: 18px; top: 18px; z-index: 600; }
-.control-card { background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); border-radius: 16px; padding: 14px; width: 220px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.04); }
-.control-card h4 { margin: 0 0 8px 0; font-size: 0.9rem; color: var(--text); }
-.legend-item { display:flex; align-items:center; gap:8px; margin:6px 0; color:var(--text-muted); font-weight:600; }
-.legend-dot { width:12px; height:12px; border-radius:50%; display:inline-block; }
-.legend-dot.pending { background: #f59e0b; box-shadow: 0 0 6px rgba(245,158,11,0.15); }
-.legend-dot.solved { background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.15); }
-.legend-dot.overdue { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,0.15); }
-
-/* Make table rows clickable when live-map is active */
-tr[onclick] { cursor: pointer; transition: background 0.12s ease; }
-tr[onclick]:hover td { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
-
-.flash-row td { background: linear-gradient(90deg, rgba(37,99,235,0.06), rgba(6,182,212,0.04)); transform: translateY(-4px); box-shadow: 0 10px 30px rgba(37,99,235,0.06); transition: all 0.4s; }
-
-/* Leaflet popup glass style */
-.leaflet-popup-content-wrapper { background: rgba(255,255,255,0.95); border-radius: 12px; padding: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
-.leaflet-popup-content { color: var(--text); font-weight: 600; }
-.leaflet-popup-tip { background: rgba(255,255,255,0.95); }
-
-/* Responsive adjustments for map */
-@media (max-width: 1000px) {
-    .control-card { width: 180px; right: 10px; top: 10px; }
-}
-
-/* OFFICER PROFILE*/
-/* ========================================= */
-
-.profile-container {
-    width: 100%; height: 100%;
-    display: flex; justify-content: center; align-items: center;
-    padding: 20px;
-}
-
-.glass-card-large {
-    width: 100%; max-width: 750px; /* Wider card like the image */
-    background: rgba(255, 255, 255, 0.25); /* More transparent glass */
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 40px;
-    padding: 50px;
-    text-align: center;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
-}
-
-/* Avatar with Verify Badge */
-.profile-header {
-    display: flex; flex-direction: column; align-items: center; margin-bottom: 40px;
-}
-.avatar-wrapper { position: relative; margin-bottom: 20px; }
-
-.avatar-img { 
-    width: 140px; height: 140px; 
-    border-radius: 50%; 
-    object-fit: cover; 
-    border: 5px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.15);
-}
-
-.verify-badge {
-    position: absolute; bottom: 5px; right: 5px;
-    background: #0f172a; /* Dark badge like image */
-    color: white;
-    border-radius: 50%; width: 34px; height: 34px;
-    display: flex; align-items: center; justify-content: center;
-    border: 3px solid white;
-    font-size: 1rem;
-}
-
-/* Typography Matches */
-.header-text h1 { 
-    font-size: 2.8rem; /* Big & Bold */
-    color: #1e293b; 
-    font-weight: 900; /* Extra Bold */
-    margin-bottom: 5px;
-    letter-spacing: -0.5px;
-}
-.designation { 
-    font-size: 1.1rem; 
-    color: #475569; 
-    font-weight: 500; 
-}
-
-/* Info Grid (The 4 Boxes) */
-.info-grid {
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 20px;
-    margin-top: 20px;
-    text-align: left;
-}
-
-.info-box {
-    background: rgba(255, 255, 255, 0.65); /* Milky White */
-    padding: 20px 25px;
-    border-radius: 24px; /* Rounded Pill Shape */
-    border: 1px solid rgba(255,255,255,0.8);
-    display: flex; 
-    align-items: center; 
-    gap: 18px;
-    transition: transform 0.2s ease;
-}
-
-.info-box:hover {
-    background: rgba(255, 255, 255, 0.9);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-}
-
-/* Blue Icons */
-.icon-box { 
-    width: 50px; height: 50px;
-    background: #e0f2fe; /* Very Light Blue */
-    color: #0284c7;      /* Vibrant Sky Blue */
-    border-radius: 16px; 
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem;
-}
-
-/* Labels & Values */
-.info-text { display: flex; flex-direction: column; }
-
-.label { 
-    font-size: 0.7rem; 
-    color: #94a3b8; 
-    font-weight: 700; 
-    text-transform: uppercase; 
-    letter-spacing: 0.5px;
-    margin-bottom: 3px;
-}
-
-.value { 
-    font-size: 1.05rem; 
-    color: #0f172a; /* Dark Black/Blue */
-    font-weight: 700; 
-    line-height: 1.2;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .info-grid { grid-template-columns: 1fr; }
-    .glass-card-large { padding: 30px; }
-}
-
-/* ================================= */
-/* NEW LOGO STYLING                  */
-/* ================================= */
-
-.main-logo-img {
-    height: 55px; /* Matches the previous icon+text height */
-    width: auto;  /* Maintains aspect ratio */
-    max-width: 100%; /* Prevents it from overflowing sidebar */
-    object-fit: contain;
-    border-radius: 8px; /* Slight curve to look professional */
-    display: block;
-    padding-right: 7px;
-}
-
-/* Update .logo container to remove old flex gaps if necessary */
-.logo {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start; /* Aligns logo to left */
-    margin-bottom: 40px;
-    gap: 0; /* Remove gap since it's now just one image */
-}
-
-/* ================================= */
-/* NOTIFICATION CENTER STYLES        */
-/* ================================= */
-
-/* 1. Floating Bell Button */
-.notif-toggle-btn {
-    position: fixed;
-    top: 25px;
-    right: 25px;
-    width: 50px;
-    height: 50px;
-    background: white;
-    border: none;
-    border-radius: 50%;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    cursor: pointer;
-    z-index: 1100; /* Above everything */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: var(--text);
-    transition: 0.3s;
-}
-
-.notif-toggle-btn:hover {
-    transform: rotate(15deg) scale(1.1);
-    color: var(--primary);
-}
-
-/* Red Badge Counter */
-.notif-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: var(--danger);
-    color: white;
-    font-size: 0.7rem;
-    font-weight: 700;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid white;
-    animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes bounceIn {
-    0% { transform: scale(0); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-}
-
-/* 2. Sliding Panel */
-.notif-panel {
-    position: fixed;
-    top: 0;
-    right: -400px; /* Hidden by default */
-    width: 350px;
-    height: 100vh;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px);
-    border-left: 1px solid rgba(255,255,255,0.6);
-    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
-    z-index: 1050; /* Below Bell, Above Content */
-    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    flex-direction: column;
-}
-
-.notif-panel.active {
-    right: 0; /* Slide in */
-}
-
-/* Panel Header */
-.notif-header {
-    padding: 25px;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255,255,255,0.5);
-}
-
-.notif-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--text); }
-.close-notif { background: none; border: none; font-size: 2rem; cursor: pointer; color: var(--text-muted); }
-
-/* Notification List */
-.notif-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-/* Individual Notification Card */
-.notif-card {
-    background: white;
-    padding: 15px;
-    border-radius: 12px;
-    border-left: 4px solid var(--primary); /* Default Blue */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-    animation: slideInRight 0.4s ease forwards;
-}
-
-@keyframes slideInRight {
-    from { opacity: 0; transform: translateX(20px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
-/* Solved Type */
-.notif-card.solved { border-left-color: var(--success); }
-.notif-card.alert { border-left-color: var(--danger); }
-
-.n-top { display: flex; justify-content: space-between; margin-bottom: 5px; }
-.n-id { font-family: monospace; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
-.n-time { font-size: 0.7rem; color: #94a3b8; }
-
-.n-msg { font-size: 0.9rem; color: var(--text); font-weight: 500; line-height: 1.4; }
-.n-dept { font-size: 0.75rem; color: var(--primary); font-weight: 600; margin-top: 5px; display: block; }
-
-/* Responsive */
-@media (max-width: 480px) {
-    .notif-panel { width: 100%; right: -100%; }
-}
-/* ============================================================
-   📄 CHIEF SECRETARY REPORT MODE
-   ============================================================ */
-@media print {
-    /* 1. RESET THE CANVAS */
-    body, html {
-        background: white !important;
-        color: black !important;
-        width: 100%;
-        margin: 0;
-        padding: 0;
+// script.js
+
+// GLOBAL VARIABLE TO TRACK OPEN COMPLAINT
+let currentItemIndex = null;
+
+// --- 1. DATASETS ---
+let data = [
+    { 
+        id: "SIG-9021", type: "Water Leakage", loc: "Defence Colony", status: "Pending", date: "2025-01-01",
+        phone: "+91 98765 43210", dept: "Delhi Jal Board (DJB)", 
+        img: "Complaint Photoes/SIG-9021.jpg",
+        desc: "Huge water leakage near the metro station gate 2. It has been flowing for 4 hours and causing traffic jam.",
+        lat: "28.5733", long: "77.2361"
+    },
+    {   id:"SIG-7004",type:"Illegal Garbage Dump", loc:"Gate 2, CR Park",status:"Solved", date: "2025-12-28",
+        phone:"+91 98758 76412", dept:"MCD",
+        img:"Complaint Photoes/SIG-7144.jpg",
+        desc:"Illegal garbage dumping in causing problem major problems to nearby residents.",
+        lat: "28.5453", long: "77.2696"
+    },
+    { 
+        id: "SIG-8902", type: "Street Light", loc: "Vasant Kunj", status: "Solved", date: "2025-10-15",
+        phone: "+91 99887 76655", dept: "BSES Rajdhani", 
+        img: "Complaint Photoes/SIG-8902.jpg",
+        desc: "Street lights in Block C are not working for the last 3 nights. It is very dark and unsafe for women.",
+        lat: "28.5355", long: "77.1754"
+    },
+    { 
+        id: "SIG-7721", type: "Deep Pothole", loc: "Okhala NSIC", status: "Pending", date: "2025-11-20", 
+        phone: "+91 88776 65544", dept: "PWD Delhi", 
+        img:"Complaint Photoes/SIG-7721.webp",
+        desc: "A very deep pothole in the middle of the left lane. Two bikes slipped today morning. Urgent repair needed.",
+        lat: "28.5450", long: "77.2684"
+    },
+    {   id:"SIG-7144",type:"Illegal Garbage Dump", loc:"Faridabad",status:"Pending", date: "2025-12-28",
+        phone:"+91 98758 76412", dept:"MCD",
+        img:"Complaint Photoes/SIG-7144.jpg",
+        desc:"Illegal garbage dumping in dwarka sector 3 causing problem major problems to nearby residents.",
+        lat: "28.4089", long: "77.3178"
+    },
+    {   id:"SIG-5632", type:"Damaged Road Dividers", loc:"Janakpuri", status:"Solved", date: "2025-09-10",
+        phone:"+91 98563 45442",dept:"PWD Delhi", img: "Complaint Photoes/SIG-5632.avif", desc:"Road divider is damaged.",
+        lat: "28.6420", long: "77.0910"
+    },
+    {   id: "SIG-2904",type: "Contaminated Water",loc: "Govindpuri",status: "Solved", date: "2025-08-05",
+        phone: "+91 98223 34456",dept: "Delhi Jal Board", img: "Complaint Photoes/SIG-2904.jpg", desc: "Tap water is muddy.",
+        lat: "28.5518", long: "77.2454"
+    },
+    {   id: "SIG-5102",type: "Power Fluctuations",loc: "CR Park Pocket-4",status: "Pending", date: "2025-01-10",
+        phone: "+91 98456 22337",dept: "BSES Rajdhani", img:"", desc: "Voltage is fluctuating.",
+        lat: "28.5410", long: "77.2670"
+    },
+    {   id:"SIG-7001",type:"Dead Animal", loc:"Gate 8, CR Park",status:"Solved", date: "2025-12-28",
+        phone:"+91 98003 76412", dept:"MCD",
+        img:"Complaint Photoes/SIG-7001",
+        desc:"Dead animal body causing problem major problems to nearby residents.",
+        lat: "28.5440", long: "77.2680"
+    },
+    {  id: "SIG-3101",type: "Garbage Not Collected",loc: "CR Park Central Park",status: "Pending", date: "2025-12-29",
+       phone: "+91 97654 25678",dept: "MCD", img:"Complaint Photoes/SIG-3101.webp", desc: "Garbage overflowing.",
+       lat: "28.5460", long: "77.2700"
+    },
+    {  id: "SIG-4134",type: "Unsafe Barricades",loc: "ITO",status: "Solved", date: "2025-07-20",
+       phone: "+91 97654 52233",dept: "PWD Delhi", img: "", desc: "Temporary barricades unstable.",
+       lat: "28.6270", long: "77.2430"
+    },
+    {  id: "SIG-1121",type: "Water Supply Timing",loc: "Saket",status: "Pending", date: "2025-02-15",
+       phone: "+91 98134 52123",dept: "DJB", img: "", desc: "Water supply timings irregular.",
+       lat: "28.5244", long: "77.2121"
+    },
+    { 
+        id: "SIG-9101", type: "Garbage Overflow", loc: "Lajpat Nagar II", status: "Pending", date: "2026-01-01",
+        phone: "+91 98991 12233", dept: "MCD", 
+        img: "Complaint Photoes/SIG-9101.avif", 
+        desc: "Dustbin near Central Market is overflowing onto the street.",
+        lat: "28.5692", long: "77.2432"
+    },
+    { 
+        id: "SIG-9102", type: "Dead Animal", loc: "Kalkaji Extension", status: "Solved", date: "2025-12-20",
+        phone: "+91 99882 23344", dept: "MCD", 
+        img: "Complaint Photoes/SIG-9102.webp", 
+        desc: "Dead stray dog causing foul smell near Block K park.",
+        lat: "28.5600", long: "77.2500"
+    },
+    { 
+        id: "SIG-9103", type: "Construction Debris", loc: "Greater Kailash I", status: "Pending", date: "2025-12-30",
+        phone: "+91 88771 12233", dept: "MCD", 
+        img: "Complaint Photoes/SIG-9103.webp", 
+        desc: "Illegal dumping of construction waste (malba) on the sidewalk.",
+        lat: "28.5532", long: "77.2415"
+    },
+    { 
+        id: "SIG-9104", type: "Blocked Drain", loc: "South Ext Part 1", status: "Pending", date: "2025-12-28",
+        phone: "+91 91234 56789", dept: "MCD", 
+        img: "Complaint Photoes/SIG-9104.jpg", 
+        desc: "Small roadside drain blocked by plastic, water stagnating.",
+        lat: "28.5710", long: "77.2220"
+    },
+    { 
+        id: "SIG-9105", type: "Unswept Roads", loc: "Malviya Nagar", status: "Solved", date: "2025-11-15",
+        phone: "+91 99112 23344", dept: "MCD", 
+        img: "Complaint Photoes/SIG-9105.jpg", 
+        desc: "Safai karamchari has not visited Block B for 3 days.",
+        lat: "28.5428", long: "77.2210"
+    },
+    { 
+        id: "SIG-9106", type: "Public Toilet Dirty", loc: "Nehru Place", status: "Pending", date: "2026-01-02",
+        phone: "+91 98110 09988", dept: "MCD", 
+        img: "Complaint Photoes/SIG-9106.jpg", 
+        desc: "Public toilet near electronics market is unusable and dirty.",
+        lat: "28.5494", long: "77.2591"
+    },
+    { 
+        id: "SIG-9107", type: "Illegal Hawker", loc: "Sarojini Nagar", status: "Pending", date: "2025-12-25",
+        phone: "+91 77665 54433", dept: "MCD", 
+        img: "Complaint Photoes/SIG-9107.avif", 
+        desc: "Hawkers blocking the entry to the metro station.",
+        lat: "28.5730", long: "77.1988"
+    },
+    { 
+        id: "SIG-9108", type: "Park Maintenance", loc: "Defence Colony", status: "Solved", date: "2025-10-10",
+        phone: "+91 99881 12299", dept: "MCD", 
+        img: "Complaint Photoes/SIG-9108.webp", 
+        desc: "Broken benches and overgrown grass in the C-Block park.",
+        lat: "28.5720", long: "77.2350"
+    },
+    { 
+        id: "SIG-9201", type: "Deep Pothole", loc: "Outer Ring Road, Chirag Delhi", status: "Pending", date: "2025-12-29",
+        phone: "+91 98765 11223", dept: "PWD", 
+        img: "Complaint Photoes/SIG-9201.webp", 
+        desc: "Massive pothole on the flyover descent, dangerous for bikers.",
+        lat: "28.5365", long: "77.2390"
+    },
+    { 
+        id: "SIG-9202", type: "Broken Footpath", loc: "Hauz Khas", status: "Pending", date: "2025-12-31",
+        phone: "+91 98100 22334", dept: "PWD", 
+        img: "Complaint Photoes/SIG-9202.jpg", 
+        desc: "Tiles missing on the footpath near the market entrance.",
+        lat: "28.5467", long: "77.2014"
+    },
+    { 
+        id: "SIG-9203", type: "Fallen Signboard", loc: "Mehrauli-Badarpur Road", status: "Solved", date: "2025-11-25",
+        phone: "+91 99551 12233", dept: "PWD", 
+        img: "Complaint Photoes/SIG-9203.jpg", 
+        desc: "Direction signboard fell down due to wind.",
+        lat: "28.5140", long: "77.2100"
+    },
+    { 
+        id: "SIG-9204", type: "Waterlogging", loc: "Pul Prahladpur Underpass", status: "Pending", date: "2026-01-01",
+        phone: "+91 88223 34455", dept: "PWD", 
+        img: "Complaint Photoes/SIG-9204.webp", 
+        desc: "Underpass starting to flood after light rain.",
+        lat: "28.5020", long: "77.2950"
+    },
+    { 
+        id: "SIG-9205", type: "Damaged Divider", loc: "August Kranti Marg", status: "Solved", date: "2025-09-15",
+        phone: "+91 97112 23344", dept: "PWD", 
+        img: "Complaint Photoes/SIG-9205.webp", 
+        desc: "Car hit the divider, stones scattered on road.",
+        lat: "28.5550", long: "77.2200"
+    },
+    { 
+        id: "SIG-9206", type: "Speed Breaker Issue", loc: "Vasant Vihar", status: "Pending", date: "2025-12-27",
+        phone: "+91 98115 56677", dept: "PWD", 
+        img: "Complaint Photoes/SIG-9206.webp", 
+        desc: "Unmarked speed breaker causing vehicles to jump.",
+        lat: "28.5650", long: "77.1550"
+    },
+    { 
+        id: "SIG-9207", type: "Road divider", loc: "Saket", status: "Pending", date: "2026-01-15",
+        phone: "+91 99900 11223", dept: "PWD", 
+        img: "Complaint Photoes/SIG-9207.webp", 
+        desc: "Broken road divider in front of PVR Anupam. Very risky.",
+        lat: "28.5250", long: "77.2110"
+    },
+    { 
+        id: "SIG-9301", type: "Street Light Off", loc: "Green Park", status: "Pending", date: "2025-12-28",
+        phone: "+91 98188 77665", dept: "BSES Rajdhani", 
+        img: "Complaint Photoes/SIG-9301.jpg", 
+        desc: "Entire row of street lights off in R-Block.",
+        lat: "28.5500", long: "77.1967"
+    },
+    { 
+        id: "SIG-9302", type: "No power", loc: "Okhla Phase 3", status: "Pending", date: "2026-01-01",
+        phone: "+91 98711 22334", dept: "BSES Rajdhani", 
+        img: "", 
+        desc: "No power in the area since 5 hours.",
+        lat: "28.5450", long: "77.2750"
+    },
+    { 
+        id: "SIG-9303", type: "Power Cut", loc: "Chhatarpur", status: "Solved", date: "2025-12-15",
+        phone: "+91 99110 02233", dept: "BSES Rajdhani", 
+        img: "", 
+        desc: "No electricity for 6 hours in the Enclave area.",
+        lat: "28.5050", long: "77.1850"
+    },
+    { 
+        id: "SIG-9304", type: "Hanging Wires", loc: "Kotla Mubarakpur", status: "Pending", date: "2025-12-26",
+        phone: "+91 98112 23344", dept: "BSES Rajdhani", 
+        img: "Complaint Photoes/SIG-9304.webp", 
+        desc: "Loose electrical wires hanging very low over the street.",
+        lat: "28.5770", long: "77.2280"
+    },
+    { 
+        id: "SIG-9305", type: "Meter Box Open", loc: "Sarita Vihar", status: "Pending", date: "2025-12-30",
+        phone: "+91 88001 12233", dept: "BSES Rajdhani", 
+        img: "Complaint Photoes/SIG-9305.avif", 
+        desc: "Main meter box door is broken and accessible to kids.",
+        lat: "28.5350", long: "77.3000"
+    },
+    { 
+        id: "SIG-9306", type: "Voltage Fluctuation", loc: "Khanpur", status: "Solved", date: "2025-08-20",
+        phone: "+91 99887 76655", dept: "BSES Rajdhani", 
+        img: "", 
+        desc: "High voltage surge damaged home appliances.",
+        lat: "28.5150", long: "77.2300"
+    },
+    { 
+        id: "SIG-9307", type: "Pole Bent", loc: "Sangam Vihar", status: "Pending", date: "2026-01-02",
+        phone: "+91 98765 43211", dept: "BSES Rajdhani", 
+        img: "Complaint Photoes/SIG-9307.jpg", 
+        desc: "Electric pole bent after being hit by a truck.",
+        lat: "28.5080", long: "77.2400"
+    },
+    { 
+        id: "SIG-9401", type: "Pipeline Burst", loc: "Sector A, Vasant Kunj", status: "Solved", date: "2026-01-15",
+        phone: "+91 98101 23456", dept: "Delhi Jal Board (DJB)", 
+        img: "Complaint Photoes/SIG-9401.jpeg", 
+        desc: "Main supply pipe burst, gallons of water wasting.",
+        lat: "28.5200", long: "77.1650"
+    },
+    { 
+        id: "SIG-9402", type: "Dirty Water", loc: "Govindpuri", status: "Solved", date: "2025-12-10",
+        phone: "+91 99552 23344", dept: "Delhi Jal Board (DJB)", 
+        img: "Complaint Photoes/SIG-9402.webp", 
+        desc: "Tap water is black and smelling like sewage.",
+        lat: "28.5520", long: "77.2450"
+    },
+    { 
+        id: "SIG-9403", type: "No Water Supply", loc: "Safdarjung Enclave", status: "Pending", date: "2026-01-02",
+        phone: "+91 98113 34455", dept: "Delhi Jal Board (DJB)", 
+        img: "", 
+        desc: "No water supply in Block B for the last 48 hours.",
+        lat: "28.5630", long: "77.1990"
+    },
+    { 
+        id: "SIG-9404", type: "Sewer Overflow", loc: "Bhogal", status: "Pending", date: "2025-12-29",
+        phone: "+91 88002 23344", dept: "Delhi Jal Board (DJB)", 
+        img: "Complaint Photoes/SIG-9404.png", 
+        desc: "Sewer water backflowing into ground floor houses.",
+        lat: "28.5850", long: "77.2480"
+    },
+    { 
+        id: "SIG-9405", type: "Tanker Request", loc: "Neb Sarai", status: "Solved", date: "2025-06-15",
+        phone: "+91 99114 45566", dept: "Delhi Jal Board (DJB)", 
+        img: "", 
+        desc: "Urgent need for water tanker, borewell dried up.",
+        lat: "28.5130", long: "77.2020"
+    },
+    { 
+        id: "SIG-9406", type: "Leakage at Meter", loc: "Jangpura", status: "Pending", date: "2025-12-27",
+        phone: "+91 98712 23344", dept: "Delhi Jal Board (DJB)", 
+        img: "", 
+        desc: "Water leaking from the connection point near meter.",
+        lat: "28.5830", long: "77.2450"
+    },
+    { 
+        id: "SIG-9407", type: "Low Pressure", loc: "East of Kailash", status: "Pending", date: "2025-12-31",
+        phone: "+91 99998 87766", dept: "Delhi Jal Board (DJB)", 
+        img: "", 
+        desc: "Water pressure is too low to reach overhead tanks.",
+        lat: "28.5580", long: "77.2450"
     }
+];
 
-    /* 2. HIDE THE UI (Sidebar, Buttons, Modals, Nav, Filters) */
-    .sidebar, 
-    .notification-system, 
-    .modal-overlay, 
-    .gov-footer,
-    #loader-screen,
-    .filter-wrapper, 
-    .badge-live, 
-    .nav-btn,
-    .lang-btn,
-    button /* Hide all buttons */
-    {
-        display: none !important;
-    }
-
-    /* 3. SET LAYOUT FOR PAPER */
-    .glass-container {
-        display: block !important;
-        grid-template-columns: 1fr !important; /* Remove sidebar grid */
-    }
-    .content-area {
-        padding: 0 !important;
-        overflow: visible !important;
-    }
-
-    /* 4. FORCE ALL TABS TO SHOW (The Magic Trick) */
-    .view {
-        display: block !important; /* Force show hidden tabs */
-        opacity: 1 !important;
-        visibility: visible !important;
-        position: relative !important;
-        margin-bottom: 50px;
-        page-break-after: always; /* Force new page after each section */
-    }
-
-    /* 5. PAGE SPECIFIC STYLING */
+// --- 2. LOADER & INIT ---
+document.addEventListener("DOMContentLoaded", () => {
+    checkOverdue(); 
     
-    /* PAGE 1: CITY MONITOR (Stats) */
-    #dashboard header::after {
-        content: " - WEEKLY EXECUTIVE BRIEFING";
-        font-weight: bold;
-        color: #ef4444;
+    const statusText = document.querySelector('.changing-text');
+    if (statusText) {
+        const states = ["RECEIVING CITIZEN CALL...", "TRANSCRIBING AUDIO...", "EXTRACTING LOCATION...", "GENERATING REPORT...", "SYSTEM READY."];
+        let step = 0;
+        const interval = setInterval(() => {
+            if (step < states.length) { statusText.innerText = states[step]; step++; } 
+            else { clearInterval(interval); }
+        }, 800);
     }
-    .stats-row {
-        display: flex !important;
-        justify-content: space-between;
-        margin-bottom: 30px;
+    setTimeout(() => { removeLoader(); }, 4500); 
+    renderTable(); 
+    initMainChart();
+    initDeptChart(); // Added explicit call if needed, safe if function exists
+});
+
+function removeLoader() {
+    const loader = document.getElementById('loader-screen');
+    if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 800); }
+}
+
+// --- 3. OVERDUE LOGIC ---
+function checkOverdue() {
+    const today = new Date("2025-12-31"); 
+    
+    data.forEach(item => {
+        if(item.date) {
+            const complaintDate = new Date(item.date);
+            const diffTime = Math.abs(today - complaintDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            
+            if (item.status === 'Pending' && diffDays > 7) {
+                item.status = 'Overdue';
+            }
+        }
+    });
+}
+
+// --- 4. FILTER & RENDER ---
+function filterTable() {
+    const filterElem = document.getElementById('statusFilter');
+    const filterValue = filterElem ? filterElem.value : 'All';
+    let filteredData = [];
+    
+    if (filterValue === 'All') {
+        filteredData = data;
+    } else if (filterValue === 'NoEvidence') {
+        filteredData = data.filter(item => !item.img || item.img === "");
+    } else {
+        filteredData = data.filter(item => item.status === filterValue);
     }
-    .stat-card {
-        border: 1px solid #000;
-        box-shadow: none !important;
-        color: black !important;
+    renderTable(filteredData);
+}
+
+// Helper: Check if a complaint is dangerous
+function isCritical(item) {
+    // Keywords that trigger an EMERGENCY response
+    const dangerWords = [
+        "burst", "manhole","spark","collapse"
+    ];
+    
+    // Check both Type and Description
+    const text = (item.type + " " + item.desc).toLowerCase();
+    return dangerWords.some(word => text.includes(word));
+}
+
+// 3. UPDATED RENDER TABLE (With Priority Sorting)
+function renderTable(dataset) {
+    const tbody = document.getElementById('tableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    // Use dataset if provided, else use global data
+    let displayData = dataset || [...data]; // Create a copy to sort
+
+    // 🔴 SORTING LOGIC: Critical -> Overdue -> Normal
+    displayData.sort((a, b) => {
+        const aCrit = isCritical(a);
+        const bCrit = isCritical(b);
+        
+        if (aCrit && !bCrit) return -1;
+        if (!aCrit && bCrit) return 1;  
+        return 0; 
+    });
+
+    if (displayData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#64748b;">No records found.</td></tr>';
+        return;
     }
 
-    /* PAGE 2: COMPLAINTS RECORD (Table) */
-    #complaints {
-        page-break-before: always;
+    displayData.forEach((item) => {
+        let statusClass = 'st-pending';
+        if (item.status === 'Solved') statusClass = 'st-solved';
+        if (item.status === 'Rejected') statusClass = 'st-rejected';
+        if (item.status === 'Overdue') statusClass = 'st-overdue';
+
+        let rowClass = "";
+        let typeHtml = item.type; // Default Type Text
+
+        // CRITICAL CHECK
+        if (isCritical(item) && item.status !== 'Solved' && item.status !== 'Rejected') {
+            rowClass = "row-critical"; // Apply Red Style
+            typeHtml = `<span class="badge-urgent">URGENT</span> ${item.type}`;
+        }
+        // Overdue Check (Secondary Priority)
+        else if (item.status === 'Overdue') {
+            rowClass = "row-overdue";
+        }
+        
+        // No Photo Check
+        if (!item.img || item.img === "") rowClass += " row-no-photo";
+
+        // Find original index for the button action
+        const originalIndex = data.findIndex(d => d.id === item.id);
+
+        const row = `
+            <tr class="${rowClass}" onclick="focusComplaint('${item.id}')">
+                <td style="font-family: monospace; color: var(--primary); font-weight:600;">${item.id}</td>
+                <td>${typeHtml}</td> <td>${item.loc}</td>
+                <td><span class="status-badge ${statusClass}">${item.status}</span></td>
+                <td><button class="btn-action" onclick="event.stopPropagation(); openAnalyzeModal(${originalIndex})">Analyze</button></td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+}
+
+// --- 5. MODAL LOGIC (CLEANEST VERSION: NO APPROVE BUTTON, NO LOC NAME) ---
+function openAnalyzeModal(index) {
+    currentItemIndex = index;
+    const item = data[index];
+
+    console.log("🔍 Analyzing Item:", item.id);
+
+    // 1. Populate Text Fields
+    const fields = {
+        'm-type': item.type,
+        'm-status': item.status,
+        'm-phone': item.phone,
+        'm-region': item.loc,
+        'm-dept': item.dept,
+        'm-desc': item.desc,
+        'm-date': item.date || "N/A"
+    };
+
+    for (const [id, value] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el) el.innerText = value;
     }
-    table {
-        font-size: 10pt;
-        width: 100%;
-        border-collapse: collapse;
-    }
-    th, td {
-        border: 1px solid #333;
-        color: black !important;
-    }
-    /* Hide Action Column for Print */
-    th:last-child, td:last-child { display: none; }
 
-    /* PAGE 3: DEPARTMENT REPORTS */
-    #reports {
-        page-break-before: always;
-    }
+    // 2. 📸 EVIDENCE IMAGE LOGIC
+    const photoContainer = document.querySelector('.modal-img-container');
+    
+    if (photoContainer) {
+        // A. Resolve Image Source
+        let imgSrc = "https://via.placeholder.com/400x300?text=No+Evidence";
+        
+        if (item.img && item.img !== "") {
+            if (item.img.includes("http")) {
+                 imgSrc = `${item.img}?t=${new Date().getTime()}`;
+            } else {
+                imgSrc = item.img;
+            }
+        }
 
-    /* 6. OFFICIAL FOOTER ON EVERY PAGE */
-    .view::after {
-        content: "CONFIDENTIAL - GOVT OF NCT DELHI | Chief Secretary";
-        display: block;
-        text-align: center;
-        font-size: 9pt;
-        color: #666;
-        border-top: 1px solid #ccc;
-        padding-top: 10px;
-        margin-top: 30px;
-    }
-}
-/* ============================================================
-   🛡️ OFFICIAL STAMP
-   ============================================================ */
-@media print {
+        // B. Get Location & Time
+        const lat = item.lat ? parseFloat(item.lat).toFixed(4) : "28." + Math.floor(1000 + Math.random() * 9000); 
+        const long = item.long ? parseFloat(item.long).toFixed(4) : "77." + Math.floor(1000 + Math.random() * 9000);
+        const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+        
+        // C. INJECT HTML (Only Lat/Long + Time)
+        photoContainer.innerHTML = `
+            <div class="evidence-img-wrapper">
+                <div class="verify-stamp">
+                    <i class="ri-shield-check-fill"></i> OFFICIAL RECORD
+                </div>
+                <img src="${imgSrc}" class="evidence-img" alt="Evidence" onerror="this.src='https://via.placeholder.com/400?text=Image+Load+Error'">
+            </div>
 
-    /* Officer page container */
-    #profile {
-        position: relative !important;
-        page-break-before: always;
-    }
-
-    /* Big diagonal stamp text */
-    #profile::before {
-        content: "OFFICIAL  •  DELHI SUDARSHAN";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) rotate(-28deg);
-        font-size: 88px;
-        font-weight: 900;
-        letter-spacing: 6px;
-        color: rgba(180, 0, 0, 0.18);
-        z-index: 999;
-        white-space: nowrap;
-        pointer-events: none;
+            <div class="geotag-box">
+                <div class="geo-left">
+                    <div class="geo-row">
+                        <i class="ri-map-pin-2-fill" style="color: #facc15;"></i> 
+                        <span style="font-size: 0.9rem;">${lat} N, ${long} E</span>
+                    </div>
+                </div>
+                <div class="geo-right">
+                    <div class="geo-row">
+                        <span style="color:#facc15; font-weight:bold;">${time}</span>
+                        <i class="ri-time-fill"></i>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
-    /* Circular government seal */
-    #profile::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 520px;
-        height: 520px;
-        border: 8px solid rgba(180, 0, 0, 0.18);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 998;
-        pointer-events: none;
+    // 3. FORCE HIDE APPROVE BUTTON
+    const approveBtn = document.querySelector('.modal-action-btn.primary');
+    if(approveBtn) {
+        approveBtn.style.display = 'none';
+    }
+
+    // 4. Reset Reject Button Logic
+    const rejectBtn = document.querySelector('.modal-action-btn.danger');
+    if(rejectBtn) {
+        rejectBtn.disabled = false;
+        rejectBtn.style.opacity = '1';
+        rejectBtn.style.cursor = 'pointer';
+        
+        // Clone to clear old event listeners
+        const newBtn = rejectBtn.cloneNode(true);
+        rejectBtn.parentNode.replaceChild(newBtn, rejectBtn);
+
+        // Make Reject Button Full Width since Approve is gone
+        newBtn.style.width = "100%"; 
+
+        if (item.status === 'Solved') {
+            newBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i> Closed';
+            newBtn.disabled = true;
+            newBtn.style.opacity = '0.6';
+        } else {
+            newBtn.innerHTML = '<i class="ri-spam-line"></i> Reject';
+            newBtn.onclick = function() { updateStatus('Rejected'); };
+        }
+    }
+
+    // 5. Show the Modal
+    document.getElementById('analyzeModal').style.display = 'flex';
+}
+function closeAnalyzeModal() { document.getElementById('analyzeModal').style.display = 'none'; }
+
+// WEBRTC REJECT FUNCTION
+async function updateStatus(action) {
+    if (currentItemIndex === null) return;
+    const item = data[currentItemIndex];
+
+    if (action === 'Rejected') {
+        const reason = prompt("Enter Rejection Reason:", "...............");
+        if (!reason) return;
+
+        alert("Calling Virtual Citizen Phone (WebRTC)...");
+
+        try {
+            // CALL THE BACKEND API
+            const response = await fetch("https://delhi-sudarshan-backend.onrender.com/api/reject-complaint", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: item.id,
+                    reason: reason
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                data[currentItemIndex].status = "Rejected";
+                alert("Complaint Rejected.\n🔔 The Citizen Page should be ringing!");
+                filterTable();
+                closeAnalyzeModal();
+            } else {
+                alert(" Call failed: " + result.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Backend Error. Ensure server.js is running.");
+        }
+    }
+    
+    if (action === "Solved") {
+        data[currentItemIndex].status = "Solved";
+        filterTable();
+        closeAnalyzeModal();
     }
 }
 
-
-/* CRITICAL ROW STYLING (Red Alert) */
-.row-critical td {
-    background: #fef2f2 !important; /* Light Red Background */
-    border-top: 1px solid #ef4444;
-    border-bottom: 1px solid #ef4444;
+// --- 6. CHARTS ---
+function openTab(tabName) {
+    document.querySelectorAll('.view').forEach(view => view.classList.remove('active-view'));
+    const targetView = document.getElementById(tabName);
+    if(targetView) targetView.classList.add('active-view');
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    const clickedBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.onclick && b.onclick.toString().includes(tabName));
+    if(clickedBtn) clickedBtn.classList.add('active');
+    if (tabName === 'reports') { setTimeout(initDeptChart, 100); }
 }
 
-.row-critical td:first-child { 
-    border-left: 5px solid #dc2626 !important; /* Thick Red Border on Left */
+function initMainChart() {
+    const ctx = document.getElementById('mainChart');
+    if(!ctx) return;
+    if(window.myMainChart) window.myMainChart.destroy(); 
+    window.myMainChart = new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: ['JAN','FEB','MAR','APR','MAY','JUN','JULY','AUG','SEPT','OCT','NOV','DEC'],
+            datasets: [{ label: 'Received', data: [12000, 16546,15560,12876,19432, 22083, 21043, 19023,25876,27054,24087, 28021], borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', borderWidth: 3, tension: 0.4, fill: true },
+                        { label: 'Solved', data: [10000, 13078, 14008, 10099, 15008, 19056, 17000,15876,21987,23012,20342,26098], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 3, tension: 0.4, fill: true }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false }, title: { display: true, text: 'Month', font: { weight: 'bold' } } }, y: { beginAtZero: true, title: { display: true, text: 'Number of Complaints', font: { weight: 'bold' } } } } }
+    });
 }
 
-.row-critical td:last-child { 
-    border-right: 1px solid #ef4444; 
+function initDeptChart() {
+    const ctx = document.getElementById('deptChart');
+    if(!ctx) return;
+    if (window.myDeptChart instanceof Chart) window.myDeptChart.destroy();
+    window.myDeptChart = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: ['PWD', 'Delhi Jal Board', 'BSES Rajdhani', 'MCD (South)'],
+            datasets: [{ label: 'Received', data: [30050, 20765, 21021, 28987], backgroundColor: '#2563eb', borderRadius: 6 },
+                        { label: 'Resolved', data: [20654, 15098, 18043, 28407], backgroundColor: '#10b981', borderRadius: 6 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, animation: { duration: 1000, easing: 'easeOutQuart' }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { grid: { display: false } } } }
+    });
 }
 
-/* Pulsing Urgent Badge */
-.badge-urgent {
-    background: #dc2626; 
-    color: white; 
-    padding: 3px 8px; 
-    border-radius: 6px;
-    font-size: 0.7rem; 
-    font-weight: 800; 
-    margin-right: 6px;
-    display: inline-block;
-    box-shadow: 0 0 10px rgba(220, 38, 38, 0.4);
-    animation: blink-animation 1.5s infinite;
+window.onclick = function(event) {
+    const modal = document.getElementById('analyzeModal');
+    if (event.target == modal) modal.style.display = "none";
 }
 
-@keyframes blink-animation {
-    0% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.8; transform: scale(0.95); }
-    100% { opacity: 1; transform: scale(1); }
+// --- 8. NOTIFICATION CENTER LOGIC ---
+const notifications = [
+    { id: "SIG-8902", msg: "Street Light repaired in Vasant Kunj Block C.", dept: "BSES Rajdhani", time: "10 mins ago", type: "solved" },
+    { id: "SIG-5632", msg: "Road Divider reconstruction completed.", dept: "PWD Delhi", time: "1 hr ago", type: "solved" },
+    { id: "SYS-ALERT", msg: "High traffic load detected in server.", dept: "System Admin", time: "2 hrs ago", type: "alert" }
+];
+
+function renderNotifications() {
+    const list = document.getElementById('notifList');
+    const badge = document.getElementById('notifCount');
+    if(!list) return;
+
+    list.innerHTML = ''; 
+    badge.innerText = notifications.length;
+
+    notifications.forEach(n => {
+        const item = `
+            <div class="notif-card ${n.type}">
+                <div class="n-top">
+                    <span class="n-id">${n.id}</span>
+                    <span class="n-time">${n.time}</span>
+                </div>
+                <p class="n-msg">${n.msg}</p>
+                <span class="n-dept"><i class="ri-government-line"></i> ${n.dept}</span>
+            </div>
+        `;
+        list.innerHTML += item;
+    });
 }
 
-/* =========================================
-   📸 EVIDENCE GEOTAG STYLES
-   ========================================= */
-
-.evidence-wrapper {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background: #000;
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-    border: 2px solid #334155;
+function toggleNotifPanel() {
+    const panel = document.getElementById('notifPanel');
+    panel.classList.toggle('active');
 }
 
-.evidence-img {
-    width: 100%;
-    height: 200px; /* Fixed height for consistency */
-    object-fit: cover;
-    display: block;
-    opacity: 0.95;
+// --- 9. SIMULATE LIVE NOTIFICATION ---
+setTimeout(() => {
+    addNewNotification(
+        "SIG-9021", 
+        "✅ Water Leakage Fixed: Maintenance team has resolved the issue at Defence Colony.", 
+        "Delhi Jal Board", 
+        "Just Now", 
+        "solved"
+    );
+}, 5000);
+
+function addNewNotification(id, msg, dept, time, type) {
+    notifications.unshift({ id, msg, dept, time, type });
+    renderNotifications();
+    
+    // Play a subtle sound or visual cue (Optional)
+    const btn = document.querySelector('.notif-toggle-btn');
+    if (btn) {
+        btn.style.transform = "scale(1.2)";
+        setTimeout(() => btn.style.transform = "scale(1)", 200);
+    }
 }
 
-/* The Stamp in Top Right */
-.verify-stamp {
-    position: absolute;
-    top: 10px; right: 10px;
-    background: rgba(255, 255, 255, 0.9);
-    color: #b91c1c;
-    font-size: 0.6rem;
-    font-weight: 800;
-    padding: 3px 8px;
-    border-radius: 4px;
-    border: 1px solid #b91c1c;
-    z-index: 10;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+// Initial Render
+renderNotifications();
+
+// --- 9. REAL-TIME DATA SYNC ---
+async function fetchLiveComplaints() {
+  try {
+    // Fetch latest data from the backend
+    const res = await fetch("https://delhi-sudarshan-backend.onrender.com/api/new-complaint");
+    const serverData = await res.json();
+
+    let needsRender = false;
+
+    serverData.forEach(serverItem => {
+        // 1. Find if we already have this item locally
+        const localItem = data.find(d => d.id === serverItem.id);
+
+        if (!localItem) {
+            // CASE A: Brand New Complaint -> Add it
+            console.log("New Complaint Found:", serverItem.id);
+            data.unshift(serverItem); 
+            needsRender = true;
+            
+            if (typeof addNewNotification === "function") {
+                addNewNotification(serverItem.id, "New Complaint Received", serverItem.dept, "Live", "alert");
+            }
+        } else {
+            // If server has an image, and it's different from our empty local image...
+            if (serverItem.img && serverItem.img !== "" && localItem.img !== serverItem.img) {
+                
+                console.log(" New Photo Detected for:", serverItem.id);
+                
+                // 1. Update the local data with the new link & status
+                localItem.img = serverItem.img;
+                localItem.status = serverItem.status; 
+                
+                localItem.lat = serverItem.lat;
+                localItem.long = serverItem.long;
+                
+                // 2. Mark for re-rendering
+                needsRender = true; 
+                
+                // 3. Trigger a notification
+                if (typeof addNewNotification === "function") {
+                    addNewNotification(serverItem.id, "Evidence Uploaded", serverItem.dept, "Just Now", "solved");
+                }
+            }
+        }
+    });
+
+    // 2. Refresh the table only if we found changes
+    if (needsRender){
+        renderTable(); 
+        // Update charts
+        if (typeof initMainChart === "function") initMainChart();
+        if (typeof initDeptChart === "function") initDeptChart();
+    }
+
+  } catch (err) {
+    // console.log("Backend offline...");
+  }
+}
+// Keep the interval running
+setInterval(fetchLiveComplaints, 2000);
+
+
+// --- 10. MAP INTEGRATION: LIVE MAP, CLUSTERS, FILTERS ---
+
+// Map globals
+let map, markerCluster, markersIndex = {};
+let mapClusteringEnabled = true; // default
+
+function initMap() {
+    const mapEl = document.getElementById('map');
+    if (!mapEl) return;
+
+    map = L.map('map', { zoomControl: true, preferCanvas: true }).setView([28.6139, 77.2090], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors', maxZoom: 19
+    }).addTo(map);
+
+    markerCluster = L.markerClusterGroup({ chunkedLoading: true, showCoverageOnHover: false });
+
+    // add initial markers
+    buildMapMarkers();
+
+    // Populate department filter from data
+    populateDepartmentFilter();
+
+    // When user opens liveMap tab, invalidate size
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => {
+        setTimeout(() => { if (map) map.invalidateSize(); }, 250);
+    }));
 }
 
-/* The Data Box Below */
-.geotag-box {
-    background: #0f172a; /* Dark Navy */
-    color: #e2e8f0;
-    padding: 8px 12px;
-    font-family: 'Courier New', monospace; /* Digital Font */
-    font-size: 0.75rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 2px solid #ef4444; /* Red Separation Line */
+function createIcon(status) {
+    const color = status === 'Solved' ? '#10b981' : (status === 'Overdue' ? '#ef4444' : '#f59e0b');
+    return L.divIcon({
+        className: 'custom-marker',
+        html: `<div style="background:${color}; width:18px; height:18px; border-radius:50%; box-shadow:0 4px 12px rgba(0,0,0,0.25); border: 2px solid white;"></div>`,
+        iconSize: [22, 22], iconAnchor: [11, 11]
+    });
 }
 
-.geo-left, .geo-right { display: flex; flex-direction: column; gap: 2px; }
-.geo-right { text-align: right; }
-.geo-row { display: flex; align-items: center; gap: 6px; }
+function getCoordinatesFor(item) {
+    // Hardcoded map of neighbourhoods to precise coords (Delhi sample)
+    const lookup = {
+        'Defence Colony': [28.5700, 77.2325],
+        'Vasant Kunj': [28.5355, 77.1754],
+        'CR Park': [28.5453, 77.2696],
+        'Okhla NSIC': [28.5450, 77.2684],
+        'Janakpuri': [28.6420, 77.0910],
+        'Govindpuri': [28.5518, 77.2454],
+        'Lajpat Nagar II': [28.5692, 77.2432],
+        'Saket': [28.5244, 77.2121],
+        'Kalkaji Extension': [28.5600, 77.2500],
+        'Malviya Nagar': [28.5428, 77.2210],
+        'Sarojini Nagar': [28.5730, 77.1988],
+        'Green Park': [28.5500, 77.1967],
+        'Hauz Khas': [28.5467, 77.2014],
+        'Mehrauli-Badarpur Road': [28.5140, 77.2100],
+        'Saket': [28.5244, 77.2121],
+        'Nehru Place': [28.5494, 77.2591],
+        'Outer Ring Road, Chirag Delhi': [28.5365, 77.2390]
+    };
 
-/* =========================================
-   🛡️ FIX: SPLIT VIEW EVIDENCE CARD
-   ========================================= */
+    if (item.lat && item.long) return [parseFloat(item.lat), parseFloat(item.long)];
+    if (item.loc && lookup[item.loc]) return lookup[item.loc];
 
-/* 1. The Container (White Border Box) */
-.modal-img-container {
-    display: flex !important;
-    flex-direction: column !important;
-    height: 300px !important; /* Increased height to fit both comfortably */
-    background: #000;
-    border: 4px solid white;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    // fallback: random-ish within a bounding box of Delhi
+    const lat = 28.4 + Math.random() * 0.5; // 28.4 - 28.9
+    const lng = 76.9 + Math.random() * 0.7; // 76.9 - 77.6
+    return [parseFloat(lat.toFixed(6)), parseFloat(lng.toFixed(6))];
 }
 
-/* 2. The Image Area (Top 80%) */
-.evidence-img-wrapper {
-    flex: 1; /* Takes all available space */
-    position: relative;
-    overflow: hidden;
-    background: #1e293b;
+function buildMapMarkers() {
+    if (!map) return;
+
+    markerCluster.clearLayers();
+    markersIndex = {};
+
+    const statusFilter = document.getElementById('mapStatusFilter') ? document.getElementById('mapStatusFilter').value : 'All';
+    const deptFilter = document.getElementById('mapDeptFilter') ? document.getElementById('mapDeptFilter').value : 'All';
+
+    data.forEach(item => {
+        // apply map filters
+        if (statusFilter !== 'All' && item.status !== statusFilter) return;
+        if (deptFilter !== 'All' && item.dept !== deptFilter) return;
+
+        const coords = getCoordinatesFor(item);
+        const icon = createIcon(item.status);
+        const marker = L.marker(coords, { icon: icon });
+
+        const popupHtml = `
+            <div style="min-width:220px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                    <div style="font-weight:800; color:var(--primary); font-family:monospace;">${item.id}</div>
+                    <div style="font-size:0.8rem; color:#64748b;">${item.date || 'N/A'}</div>
+                </div>
+                <div style="margin-top:8px; font-weight:700;">${item.type}</div>
+                <div style="margin-top:6px; color:#475569; font-weight:600;">${item.loc}</div>
+                <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-size:0.85rem; color:#0f172a; font-weight:800;">${item.dept}</div>
+                    <div><span class="status-badge ${item.status === 'Solved' ? 'st-solved' : item.status === 'Overdue' ? 'st-overdue' : 'st-pending'}">${item.status}</span></div>
+                </div>
+                <div style="margin-top:8px; display:flex; gap:8px;">
+                    <button class="btn-action" style="flex:1" onclick="event.stopPropagation(); openAnalyzeModal(${data.findIndex(d=>d.id===item.id)})">Analyze</button>
+                    <button class="btn-action" style="background:#2563eb;color:white;" onclick="event.stopPropagation(); focusComplaint('${item.id}')"><i class="ri-map-pin-user-line"></i></button>
+                </div>
+            </div>
+        `;
+
+        marker.bindPopup(popupHtml);
+
+        // store by id for quick reference
+        markersIndex[item.id] = marker;
+
+        if (mapClusteringEnabled) markerCluster.addLayer(marker);
+        else marker.addTo(map);
+    });
+
+    if (mapClusteringEnabled) map.addLayer(markerCluster);
 }
 
-.evidence-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Ensures photo fills the space without stretching */
-    display: block;
+function toggleMapClustering() {
+    mapClusteringEnabled = !mapClusteringEnabled;
+    const btn = document.getElementById('mapClusterToggle');
+    if (btn) btn.style.background = mapClusteringEnabled ? 'var(--primary)' : '';
+    buildMapMarkers();
 }
 
-/* 3. The Data Box (Bottom 20% - The Purple Space) */
-.geotag-box {
-    height: 60px; /* Fixed height for the data bar */
-    background: #0f172a; /* Dark Navy Background */
-    color: #e2e8f0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 15px;
-    border-top: 2px solid #ef4444; /* Red divider line */
-    font-family: 'Courier New', monospace;
-    font-size: 0.8rem;
-    z-index: 10;
+function applyMapFilters() {
+    buildMapMarkers();
 }
 
-/* 4. Data Text Styling */
-.geo-left { display: flex; flex-direction: column; gap: 3px; }
-.geo-right { text-align: right; display: flex; flex-direction: column; gap: 3px; }
-
-.geo-row { display: flex; align-items: center; gap: 6px; }
-.geo-row span { font-weight: 600; letter-spacing: 0.5px; }
-
-/* 5. Official Stamp (Kept on top right of image) */
-.verify-stamp {
-    position: absolute;
-    top: 10px; right: 10px;
-    background: rgba(255, 255, 255, 0.95);
-    color: #b91c1c;
-    font-size: 0.6rem;
-    font-weight: 800;
-    padding: 4px 8px;
-    border-radius: 4px;
-    border: 1px solid #b91c1c;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    z-index: 5;
+function populateDepartmentFilter() {
+    const deptSet = new Set();
+    data.forEach(d => { if (d.dept) deptSet.add(d.dept); });
+    const select = document.getElementById('mapDeptFilter');
+    if (!select) return;
+    const existing = new Set(Array.from(select.options).map(o => o.value));
+    deptSet.forEach(d => { if (!existing.has(d)) { const opt = document.createElement('option'); opt.value = d; opt.text = d; select.appendChild(opt); } });
 }
 
+function focusComplaint(id) {
+    if (!map || !markersIndex[id]) {
+        // attempt to build marker and then focus
+        buildMapMarkers();
+    }
+    const marker = markersIndex[id];
+    if (!marker) return;
+    if (!map.hasLayer(marker)) marker.addTo(map);
+    map.setView(marker.getLatLng(), 16, { animate: true });
+    marker.openPopup();
 
+    // Visual pulse effect on marker by toggling style
+    const el = marker._icon;
+    if (el) {
+        el.style.transition = 'transform 0.3s ease';
+        el.style.transform = 'scale(1.4)';
+        setTimeout(() => { if (el) el.style.transform = 'scale(1)'; }, 700);
+    }
 
+    // also scroll table to row (if present) and highlight briefly
+    const rows = document.querySelectorAll('#tableBody tr');
+    rows.forEach(r => {
+        const firstCell = r.querySelector('td');
+        if (firstCell && firstCell.innerText.trim() === id) {
+            r.scrollIntoView({behavior:'smooth', block:'center'});
+            r.classList.add('flash-row');
+            setTimeout(()=> r.classList.remove('flash-row'), 1200);
+        }
+    });
+}
+
+function fitToAllMarkers() {
+    if (!map) return;
+    try {
+        const bounds = mapClusteringEnabled ? markerCluster.getBounds() : L.featureGroup(Object.values(markersIndex)).getBounds();
+        if (bounds && bounds.isValid()) map.fitBounds(bounds.pad(0.2));
+    } catch (e) { console.warn('No valid bounds yet.'); }
+}
+
+function centerToCity() { if (map) map.setView([28.6139, 77.2090], 12); }
+
+// ensure map is initialized on DOM ready
+window.addEventListener('load', function() { setTimeout(() => { initMap(); }, 800); });
+
+// Hook into live update to refresh markers when new items appear
+const originalFetchLiveComplaints = fetchLiveComplaints;
+fetchLiveComplaints = async function() {
+    await originalFetchLiveComplaints();
+    // rebuild markers to include any new coordinates
+    if (map) buildMapMarkers();
+}
+
+// --- 11. ADVANCED AI CLUSTERING (Department + Locality) ---
+let isClusterMode = false;
+
+//to extracting the "Main Area" from a messy address
+function getLocality(address) {
+    const normalize = address.toLowerCase();
+    
+    //Define the main areas you expect in your demo
+    if (normalize.includes("cr park") || normalize.includes("crpark")) return "CR Park";
+    if (normalize.includes("okhla")) return "Okhla Industrial Area";
+    if (normalize.includes("vasant kunj")) return "Vasant Kunj";
+    if (normalize.includes("defence colony")) return "Defence Colony";
+    if (normalize.includes("lajpat")) return "Lajpat Nagar";
+    if (normalize.includes("kalkaji")) return "Kalkaji";
+    if (normalize.includes("saket")) return "Saket";
+    if (normalize.includes("janakpuri")) return "Janakpuri";
+    
+    return address; // Fallback: Use full address if no keyword matches
+}
+
+function toggleClusterMode() {
+    isClusterMode = !isClusterMode;
+    const btn = document.querySelector('button[onclick="toggleClusterMode()"]');
+    
+    if (isClusterMode) {
+        if(btn) {
+            btn.style.background = "var(--primary)";
+            btn.style.color = "white";
+            btn.innerHTML = '<i class="ri-file-list-line" style="color: white"></i>Show List';
+        }
+        renderClusteredTable();
+    } else {
+        if(btn) {
+            btn.style.background = "";
+            btn.style.color = "";
+            btn.innerHTML = '<i class="ri-node-tree"></i>Cluster View';
+        }
+        renderTable(); 
+    }
+}
+
+function renderClusteredTable() {
+    const tbody = document.getElementById('tableBody');
+    if(!tbody) return;
+    tbody.innerHTML = '';
+
+    // 1. Group Data by "Department + Locality"
+    const clusters = {};
+    
+    data.forEach(item => {
+        if (item.status !== 'Solved' && item.status !== 'Work Not Done') return; 
+        
+        const locality = getLocality(item.loc);
+        const key = `${item.dept}-${locality}`; // GROUPING KEY
+        
+        if (!clusters[key]) {
+            clusters[key] = {
+                id: `GRP-${Math.floor(Math.random()*10000)}`, 
+                rowId: `row-${key.replace(/[^a-zA-Z0-9]/g, '')}`, 
+                dept: item.dept,
+                loc: locality, 
+                count: 0,
+                ids: [], 
+                types: new Set(),
+                isVerified: false,
+                isFailed: false // Track failures
+            };
+        }
+        
+        if (item.isVerified) clusters[key].isVerified = true;
+        if (item.status === 'Work Not Done') clusters[key].isFailed = true;
+
+        clusters[key].count++;
+        clusters[key].ids.push(item.id);
+        clusters[key].types.add(item.type);
+    });
+
+    const clusterArray = Object.values(clusters);
+    
+    if (clusterArray.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">No Solved Clusters available for Audit.</td></tr>';
+        return;
+    }
+
+    // 2. Render the Clusters
+    clusterArray.forEach((cluster) => {
+        const issueSummary = Array.from(cluster.types).join(", ").substring(0, 50) + (cluster.types.size > 2 ? "..." : "");
+
+        // Default Styles
+        let rowStyle = "background: rgba(240, 253, 244, 0.5); border-left: 4px solid #10b981;";
+        let statusBadge = '<span class="status-badge st-pending" style="background:#e2e8f0; color:#475569;">Unverified</span>';
+        let actionButton = `
+            <button class="btn-action" style="background-color: #2563eb; color: white;" 
+                onclick="openGroupVerifyModal('${cluster.ids.join(',')}', '${cluster.dept}', '${cluster.loc}', ${cluster.count}, '${cluster.rowId}')">
+                <i class="ri-spy-line"></i>Citizen Assurance Call
+            </button>`;
+
+        // 🟢 STATE 1: VERIFIED
+        if (cluster.isVerified) {
+            rowStyle = "background: rgba(22, 163, 74, 0.2); border-left: 4px solid #059669;";
+            statusBadge = '<span class="status-badge st-solved" style="background:#059669; color:white;"><i class="ri-shield-check-fill"></i> VERIFIED GENUINE</span>';
+            actionButton = '<button class="btn-action" style="background-color: #059669; color: white; cursor: default; opacity: 0.8;"><i class="ri-check-double-line"></i> Audit Passed</button>';
+        }
+
+        // 🔴 STATE 2: FAILED (RED)
+        if (cluster.isFailed) {
+            rowStyle = "background: rgba(239, 68, 68, 0.15); border-left: 4px solid #ef4444;";
+            statusBadge = '<span class="status-badge st-rejected" style="background:#ef4444; color:white;"><i class="ri-alert-line"></i> WORK NOT DONE</span>';
+            actionButton = '<button class="btn-action" style="background-color: #ef4444; color: white; cursor: not-allowed; opacity: 0.8;"><i class="ri-alarm-warning-line"></i> Flagged</button>';
+        }
+
+        const row = `
+            <tr id="${cluster.rowId}" class="cluster-row" style="${rowStyle}">
+                <td style="font-weight:bold; color: #1e293b; font-family:monospace;">${cluster.id}</td>
+                <td style="font-weight:600;">
+                    ${cluster.dept} <br>
+                    <span style="font-size:0.8em; color:#64748b; font-weight:normal;">Claimed Fixed: ${issueSummary}</span>
+                </td>
+                <td>
+                    <i class="ri-map-pin-range-line"></i> ${cluster.loc} 
+                    <span class="status-badge st-solved" style="font-size:0.7em; margin-left:5px;">${cluster.count} Claims</span>
+                </td>
+                <td class="cluster-status">${statusBadge}</td>
+                <td class="cluster-action">${actionButton}</td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+}
+async function openGroupVerifyModal(ids, dept, loc, count, rowId) {
+    const confirmAction = confirm(
+        `INITIATE call? \n\n` +
+        `Action: System will dial a citizen. We will wait for their response.`
+    );
+
+    if (confirmAction) {
+        alert(`Connecting... Please wait for audit to be done.`);
+
+        try {
+            const response = await fetch("https://delhi-sudarshan-backend.onrender.com/api/audit-cluster", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ loc, dept, count })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                const callSid = result.callSid;
+                console.log("Tracking Call:", callSid);
+                
+                // Poll for status every 2 seconds
+                const poller = setInterval(async () => {
+                    const check = await fetch(`https://delhi-sudarshan-backend.onrender.com/api/check-audit-status/${callSid}`);
+                    const data = await check.json();
+                    
+                    console.log("Audit Status:", data.status);
+
+                    if (data.status === '1') {
+                        clearInterval(poller);
+                        markClusterVerified(rowId, loc, count, ids);
+                    } 
+                    else if (data.status === '2') {
+                        clearInterval(poller);
+                        markClusterFailed(rowId, loc, count, ids);
+                    }
+                }, 2000);
+
+            } else {
+                alert("Audit Call Failed: " + result.error);
+            }
+
+        } catch (err) {
+            console.error(err);
+            alert("Server Error.");
+        }
+    }
+}
+
+// Helper to update UI visuals
+function markClusterVerified(rowId, loc, count, ids) {
+    alert(`SERVICE VALIDATED!\n\nThe Citizen has confirmed satisfaction with the resolution.\n\nTicket is now permanently CLOSED.`);
+    const idArray = ids.split(',');
+    idArray.forEach(id => {
+        const item = data.find(d => d.id === id);
+        if (item) {
+            item.isVerified = true; // This saves the status in memory
+        }
+    });       
+    const row = document.getElementById(rowId);
+    if (row) {
+        row.style.borderLeft = "4px solid #059669"; 
+        row.style.background = "rgba(22, 163, 74, 0.2)"; 
+        row.style.transition = "all 0.5s ease";
+
+        const statusCell = row.querySelector('.cluster-status');
+        if (statusCell) {
+            statusCell.innerHTML = '<span class="status-badge st-solved" style="background:#059669; color:white;"><i class="ri-shield-check-fill"></i> VERIFIED</span>';
+        }
+
+        const actionCell = row.querySelector('.cluster-action');
+        if (actionCell) {
+            actionCell.innerHTML = '<button class="btn-action" style="background-color: #059669; color: white; cursor: default; opacity: 0.8;"><i class="ri-check-double-line"></i>Citizen Assurance check done.</button>';
+        }
+    }
+    
+    // Add a notification
+    if (typeof addNewNotification === "function") {
+        addNewNotification("CITIZEN ASSURANCE SYSTEM", `Service validation in ${loc} successful. ${count} tickets verified.`, "QA-System", "Just Now", "solved");
+    }
+}
+// Helper to update UI visuals for FAILURE (Press 2)
+function markClusterFailed(rowId, loc, count, ids) {
+    alert(`DISCREPANCY DETECTED\n\nCitizen reports the issue persists on the ground.\n\nAction: Ticket Re-opened for Priority Rectification.`);            
+    // 1. Update Data Model
+    const idArray = ids.split(',');
+    idArray.forEach(id => {
+        const item = data.find(d => d.id === id);
+        if (item) {
+            item.status = 'Action Required'; 
+            item.isVerified = false; 
+        }
+    });
+
+    // 2. VISUAL UPDATE: Turn the Row Red
+    const row = document.getElementById(rowId);
+    if (row) {
+        row.style.borderLeft = "4px solid #ef4444"; 
+        row.style.background = "rgba(239, 68, 68, 0.15)"; 
+        row.style.transition = "all 0.5s ease";
+
+        const statusCell = row.querySelector('.cluster-status');
+        if (statusCell) {
+            statusCell.innerHTML = '<span class="status-badge st-rejected" style="background:#ef4444; color:white;"><i class="ri-alert-line"></i>Ticket Reopen</span>';
+        }
+
+        const actionCell = row.querySelector('.cluster-action');
+        if (actionCell) {
+            actionCell.innerHTML = '<button class="btn-action" style="background-color: #ef4444; color: white; cursor: not-allowed; opacity: 0.8;"><i class="ri-alarm-warning-line"></i> Flagged</button>';
+        }
+    }
+    
+    // Add a notification
+    if (typeof addNewNotification === "function") {
+        addNewNotification("DISCREPANCY DETECTED!", `Gap Identified in ${loc}. Citizen denied resolution.`, "Citizen Assurance", "Just Now", "alert");
+    }
+}
