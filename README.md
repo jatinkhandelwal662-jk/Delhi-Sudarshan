@@ -23,9 +23,7 @@
   </div>
   <br>
   <div>
-    <span style="background:#212529; color:#17A2B8; font-weight:bold; padding:6px 20px; border-radius:6px; font-size:1.12em; letter-spacing:1px;">
-      BACKEND REPO
-    </span>
+    <b>BACKEND REPO</b>
     <br>
     <a href="https://github.com/jatinkhandelwal662-jk/Delhi-Sudarshan-backend" style="font-size:1.08em; font-weight:500; color:#007bff; text-decoration:none;">https://github.com/jatinkhandelwal662-jk/Delhi-Sudarshan-backend</a>
   </div>
