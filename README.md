@@ -17,13 +17,13 @@
 <center>
 <div align="center">
   <div>
-      <b>VAANI REPO</b>
+      <b>VAANI GITHUB REPO</b>
     <br>
     <a href="https://github.com/jatinkhandelwal662-jk/Vaani" style="font-size:1.08em; font-weight:500; color:#007bff; text-decoration:none;">https://github.com/jatinkhandelwal662-jk/Vaani</a>
   </div>
   <br>
   <div>
-    <b>BACKEND REPO</b>
+    <b>BACKEND GITHUB REPO</b>
     <br>
     <a href="https://github.com/jatinkhandelwal662-jk/Delhi-Sudarshan-backend" style="font-size:1.08em; font-weight:500; color:#007bff; text-decoration:none;">https://github.com/jatinkhandelwal662-jk/Delhi-Sudarshan-backend</a>
   </div>
