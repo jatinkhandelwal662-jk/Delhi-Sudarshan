@@ -15,10 +15,23 @@
   </p>
 </div>
 <center>
-<p align="center">
-  <strong>VAANI REPO:</strong> <a href="https://github.com/jatinkhandelwal662-jk/Vaani">Click Here</a><br>
-  <strong>BACKEND REPO:</strong> <a href="https://github.com/jatinkhandelwal662-jk/Delhi-Sudarshan-backend">Click Here</a><br>
-</p>
+<div align="center">
+  <div>
+    <span style="background:#212529; color:#FFC107; font-weight:bold; padding:6px 20px; border-radius:6px; font-size:1.12em; letter-spacing:1px;">
+      VAANI REPO
+    </span>
+    <br>
+    <a href="https://github.com/jatinkhandelwal662-jk/Vaani" style="font-size:1.08em; font-weight:500; color:#007bff; text-decoration:none;">https://github.com/jatinkhandelwal662-jk/Vaani</a>
+  </div>
+  <br>
+  <div>
+    <span style="background:#212529; color:#17A2B8; font-weight:bold; padding:6px 20px; border-radius:6px; font-size:1.12em; letter-spacing:1px;">
+      BACKEND REPO
+    </span>
+    <br>
+    <a href="https://github.com/jatinkhandelwal662-jk/Delhi-Sudarshan-backend" style="font-size:1.08em; font-weight:500; color:#007bff; text-decoration:none;">https://github.com/jatinkhandelwal662-jk/Delhi-Sudarshan-backend</a>
+  </div>
+</div>
 </center>
 
 ---
