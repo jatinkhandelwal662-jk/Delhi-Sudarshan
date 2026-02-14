@@ -14,12 +14,20 @@
     Features <strong>"Legacy Tunneling"</strong> architecture, <strong>"Citizen Feedback Loop"</strong> verification loops, and <strong>Zero-UI</strong> citizen interaction.
   </p>
 </div>
-<center>
-<p align="center">
-  <strong>💻 VAANI GITHUB REPO:</strong> <a href="https://github.com/jatinkhandelwal662-jk/Vaani">Click Here</a><br>
-   <strong>💻 BACKEND GITHUB REPO:</strong> <a href="https://github.com/jatinkhandelwal662-jk/Delhi-Sudarshan-backend">Click Here</a><br>
-</p>
-</center>
+<div align="center">
+
+  <a href="https://github.com/jatinkhandelwal662-jk/Vaani" style="text-decoration: none;">
+    <span style="display: inline-block; background: #1E88E5; color: #fff; font-weight: bold; font-size: 1.1em; padding: 10px 28px; border-radius: 10px; margin: 6px 0;">
+      💻 VAANI GITHUB REPO &nbsp;|&nbsp; <u>CLICK HERE</u>
+    </span>
+  </a>
+  <br>
+  <a href="https://github.com/jatinkhandelwal662-jk/Delhi-Sudarshan-backend" style="text-decoration: none;">
+    <span style="display: inline-block; background: #388E3C; color: #fff; font-weight: bold; font-size: 1.1em; padding: 10px 28px; border-radius: 10px; margin: 6px 0;">
+      💻 BACKEND GITHUB REPO &nbsp;|&nbsp; <u>CLICK HERE</u>
+    </span>
+  </a>
+</div>
 
 ---
 
