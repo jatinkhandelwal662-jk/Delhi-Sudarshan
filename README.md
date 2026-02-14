@@ -14,6 +14,7 @@
     Features <strong>"Legacy Tunneling"</strong> architecture, <strong>"Citizen Feedback Loop"</strong> verification loops, and <strong>Zero-UI</strong> citizen interaction.
   </p>
 </div>
+<center>
 <div align="center">
 
   <a href="https://github.com/jatinkhandelwal662-jk/Vaani" style="text-decoration: none;">
@@ -28,7 +29,7 @@
     </span>
   </a>
 </div>
-
+</center>
 ---
 
 ## 🚀 Overview
