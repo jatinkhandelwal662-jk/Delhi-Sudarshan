@@ -87,6 +87,7 @@ It acts as an **intelligent middleware** that tunnels into existing government l
   </em>
 </p>
 ---
+
 ## 📍 Operational Strategy: Zonal Decentralization
 
 To ensure rapid response times and pinpoint accountability, we have moved away from a single "clogged" central helpline. **Delhi Sudarshan** implements a **Hyper-Local Operational Model** by dividing the capital into four strategic zones:
