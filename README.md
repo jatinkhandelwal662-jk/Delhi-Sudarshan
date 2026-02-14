@@ -17,9 +17,7 @@
 <center>
 <div align="center">
   <div>
-    <span style="background:#212529; color:#FFC107; font-weight:bold; padding:6px 20px; border-radius:6px; font-size:1.12em; letter-spacing:1px;">
-      VAANI REPO
-    </span>
+      <b>VAANI REPO</b>
     <br>
     <a href="https://github.com/jatinkhandelwal662-jk/Vaani" style="font-size:1.08em; font-weight:500; color:#007bff; text-decoration:none;">https://github.com/jatinkhandelwal662-jk/Vaani</a>
   </div>
