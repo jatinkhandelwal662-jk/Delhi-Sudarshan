@@ -16,8 +16,8 @@
 </div>
 <center>
 <p align="center">
-  ### <strong>💻 VAANI GITHUB REPO:</strong> <a href="https://github.com/jatinkhandelwal662-jk/Vaani">Click Here</a><br>
-  ### <strong>💻 BACKEND GITHUB REPO:</strong> <a href="https://github.com/jatinkhandelwal662-jk/Delhi-Sudarshan-backend">Click Here</a><br>
+  <strong>💻 VAANI GITHUB REPO:</strong> <a href="https://github.com/jatinkhandelwal662-jk/Vaani">Click Here</a><br>
+   <strong>💻 BACKEND GITHUB REPO:</strong> <a href="https://github.com/jatinkhandelwal662-jk/Delhi-Sudarshan-backend">Click Here</a><br>
 </p>
 </center>
 
