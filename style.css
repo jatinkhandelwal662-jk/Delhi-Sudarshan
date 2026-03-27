@@ -579,145 +579,509 @@ tr[onclick]:hover td { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(
     .notif-panel { width: 100%; right: -100%; }
 }
 /* ============================================================
-   📄 CHIEF SECRETARY REPORT MODE
+   📄 CHIEF SECRETARY REPORT MODE — FIXED
    ============================================================ */
+
+/* ── A4 Page Setup ── */
+@page {
+    size: A4 portrait;
+    margin: 18mm 20mm 22mm 20mm;
+}
+
+@page :first {
+    margin-top: 14mm; /* Cover page: tighter top */
+}
+
 @media print {
-    /* 1. RESET THE CANVAS */
-    body, html {
-        background: white !important;
-        color: black !important;
-        width: 100%;
-        margin: 0;
-        padding: 0;
+
+    /* ════════════════════════════════════════════════
+       1. HARD RESET — Kill viewport locks & animations
+    ════════════════════════════════════════════════ */
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 
-    /* 2. HIDE THE UI (Sidebar, Buttons, Modals, Nav, Filters) */
-    .sidebar, 
-    .notification-system, 
-    .modal-overlay, 
-    .gov-footer,
-    #loader-screen,
-    .filter-wrapper, 
-    .badge-live, 
-    .nav-btn,
-    .lang-btn,
-    button /* Hide all buttons */
-    {
-        display: none !important;
-    }
-
-    /* 3. SET LAYOUT FOR PAPER */
-    .glass-container {
-        display: block !important;
-        grid-template-columns: 1fr !important; /* Remove sidebar grid */
-    }
-    .content-area {
-        padding: 0 !important;
+    html {
+        height: auto !important;
         overflow: visible !important;
     }
 
-    /* 4. FORCE ALL TABS TO SHOW (The Magic Trick) */
+    body {
+        background: white !important;
+        background-image: none !important;
+        color: #0f172a !important;
+        height: auto !important;           /* ← BUG FIX: was 100vh — clipped entire page */
+        overflow: visible !important;      /* ← BUG FIX: was hidden — nothing could flow */
+        margin: 0 !important;
+        padding: 0 !important;
+        font-family: 'Times New Roman', serif !important;
+        font-size: 10pt !important;
+    }
+
+    /* ════════════════════════════════════════════════
+       2. HIDE ALL INTERACTIVE / DECORATIVE UI
+    ════════════════════════════════════════════════ */
+    .sidebar,
+    .notif-toggle-btn,
+    .notif-panel,
+    .notification-system,
+    .modal-overlay,
+    .gov-footer,
+    .page-watermark,
+    #loader-screen,
+    .filter-wrapper,
+    .badge-live,
+    .filter-btn,
+    .nav-btn,
+    .lang-btn,
+    .btn-action,            /* Table action buttons only */
+    .modal-action-btn,
+    .btn-capture,
+    .status-box,
+    /* Hide ONLY the last column (Actions) — not all buttons */
+    th:last-child,
+    td:last-child {
+        display: none !important;
+    }
+
+    /* ════════════════════════════════════════════════
+       3. FIX THE LAYOUT — Remove flex/grid viewport locks
+    ════════════════════════════════════════════════ */
+    .glass-container {
+        display: block !important;         /* ← BUG FIX: flex with height:100vh trapped content */
+        height: auto !important;
+        padding: 0 !important;
+        gap: 0 !important;
+    }
+
+    .content-area {
+        display: block !important;
+        height: auto !important;           /* ← BUG FIX: was overflow:hidden + absolute children */
+        overflow: visible !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        position: static !important;
+    }
+
+    /* ════════════════════════════════════════════════
+       4. FIX .view POSITIONING — The core layout bug
+       All views are position:absolute stacked at 0,0.
+       Print needs them to be block-flow documents.
+    ════════════════════════════════════════════════ */
     .view {
-        display: block !important; /* Force show hidden tabs */
+        display: block !important;         /* ← BUG FIX: was display:none */
+        position: relative !important;     /* ← BUG FIX: was position:absolute — caused overlap */
+        top: auto !important;
+        left: auto !important;
+        width: 100% !important;
+        height: auto !important;           /* ← BUG FIX: was 100% — forced 100vh on paper */
+        overflow: visible !important;
         opacity: 1 !important;
         visibility: visible !important;
-        position: relative !important;
-        margin-bottom: 50px;
-        page-break-after: always; /* Force new page after each section */
+        padding: 0 !important;
+        page-break-after: always;
+        break-after: page;
     }
 
-    /* 5. PAGE SPECIFIC STYLING */
-    
-    /* PAGE 1: CITY MONITOR (Stats) */
-    #dashboard header::after {
-        content: " - WEEKLY EXECUTIVE BRIEFING";
-        font-weight: bold;
-        color: #ef4444;
+    /* Last view doesn't need a forced page break */
+    .view:last-child {
+        page-break-after: avoid;
+        break-after: avoid;
     }
-    .stats-row {
+
+    /* ════════════════════════════════════════════════
+       5. OFFICIAL LETTERHEAD — runs on every section
+    ════════════════════════════════════════════════ */
+    .view::before {
+        content: "";
+        display: block;
+        height: 6pt;
+        background: linear-gradient(90deg, #1e3a8a 0%, #dc2626 100%);
+        margin-bottom: 14pt;
+        border-radius: 2pt;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Section title header block */
+    .glass-header {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        border: none !important;
+        border-bottom: 2pt solid #1e3a8a !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 0 0 10pt 0 !important;
+        margin-bottom: 16pt !important;
         display: flex !important;
         justify-content: space-between;
-        margin-bottom: 30px;
-    }
-    .stat-card {
-        border: 1px solid #000;
-        box-shadow: none !important;
-        color: black !important;
+        align-items: flex-end;
     }
 
-    /* PAGE 2: COMPLAINTS RECORD (Table) */
-    #complaints {
-        page-break-before: always;
-    }
-    table {
-        font-size: 10pt;
-        width: 100%;
-        border-collapse: collapse;
-    }
-    th, td {
-        border: 1px solid #333;
-        color: black !important;
-    }
-    /* Hide Action Column for Print */
-    th:last-child, td:last-child { display: none; }
-
-    /* PAGE 3: DEPARTMENT REPORTS */
-    #reports {
-        page-break-before: always;
+    /* Right-align document metadata in header */
+    .glass-header::after {
+        content: "दिल्ली SUDARSHAN  |  Future Governance";
+        font-size: 8pt;
+        color: #64748b;
+        letter-spacing: 1px;
+        white-space: nowrap;
+        margin-left: auto;
+        font-family: 'Segoe UI', sans-serif;
     }
 
-    /* 6. OFFICIAL FOOTER ON EVERY PAGE */
+    .glass-header h2,
+    .glass-header h1 {
+        font-size: 16pt !important;
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        font-family: 'Times New Roman', serif !important;
+    }
+
+    .subtitle {
+        font-size: 9pt !important;
+        color: #475569 !important;
+    }
+
+    /* ════════════════════════════════════════════════
+       6. OFFICIAL FOOTER — bottom of every printed page
+    ════════════════════════════════════════════════ */
     .view::after {
-        content: "CONFIDENTIAL - GOVT OF NCT DELHI | Chief Secretary";
+        content: "CONFIDENTIAL  —  GOVT OF NCT DELHI  |  Chief Secretary  |  Delhi Sudarshan Intelligence Portal";
         display: block;
         text-align: center;
-        font-size: 9pt;
-        color: #666;
-        border-top: 1px solid #ccc;
-        padding-top: 10px;
-        margin-top: 30px;
+        font-size: 7.5pt;
+        color: #64748b;
+        letter-spacing: 1.5px;
+        font-family: 'Segoe UI', sans-serif;
+        border-top: 1pt solid #cbd5e1;
+        padding-top: 8pt;
+        margin-top: 24pt;
+        font-weight: 400;
+        text-transform: uppercase;
     }
-}
-/* ============================================================
-   🛡️ OFFICIAL STAMP
-   ============================================================ */
-@media print {
 
-    /* Officer page container */
+    /* ════════════════════════════════════════════════
+       7. STATS CARDS — Fix glass → solid for paper
+    ════════════════════════════════════════════════ */
+    .stats-row {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 12pt !important;
+        margin-bottom: 20pt !important;
+    }
+
+    .stat-card {
+        background: #f8fafc !important;
+        border: 1.5pt solid #1e3a8a !important;  /* ← BUG FIX: was rgba(white) — invisible on paper */
+        border-radius: 6pt !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        padding: 16pt 14pt !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .stat-card h3 {
+        font-size: 7.5pt !important;
+        color: #475569 !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8pt !important;
+    }
+
+    .stat-card h1 {
+        font-size: 26pt !important;
+        color: #0f172a !important;
+        font-weight: 800 !important;
+    }
+
+    .progress-bar {
+        background: #e2e8f0 !important;
+        height: 5pt !important;
+        margin-top: 10pt !important;
+        border-radius: 3pt !important;
+    }
+
+    .fill {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .success-bg { background: #10b981 !important; }
+    .danger-bg  { background: #ef4444 !important; }
+
+    /* ════════════════════════════════════════════════
+       8. TABLE — Fix overflow clip & glass cells
+    ════════════════════════════════════════════════ */
+
+    /* BUG FIX: .table-wrapper had height:55vh — hard-clipped table on paper */
+    .table-wrapper {
+        height: auto !important;
+        overflow: visible !important;
+        padding: 0 !important;
+    }
+
+    table {
+        width: 100% !important;
+        height: auto !important;
+        border-collapse: collapse !important; /* ← BUG FIX: separate+spacing looks broken on paper */
+        border-spacing: 0 !important;
+        font-size: 8.5pt !important;
+        page-break-inside: auto;
+    }
+
+    thead { display: table-header-group; } /* Repeat header on every page */
+    tr     { page-break-inside: avoid; break-inside: avoid; }
+
+    th {
+        background: #1e3a8a !important;
+        color: white !important;
+        padding: 8pt 10pt !important;
+        font-size: 7.5pt !important;
+        font-weight: 700 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        border: 1pt solid #1e3a8a !important;
+        position: static !important; /* ← BUG FIX: position:sticky breaks print layout */
+        backdrop-filter: none !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    td {
+        padding: 7pt 10pt !important;
+        background: white !important;       /* ← BUG FIX: rgba glass cells vanish on paper */
+        border: 0.75pt solid #cbd5e1 !important;
+        color: #0f172a !important;
+        vertical-align: middle !important;
+        border-radius: 0 !important;
+    }
+
+    /* Alternate row shading for readability */
+    tr:nth-child(even) td {
+        background: #f8fafc !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Overdue rows — keep red tint */
+    .row-overdue td {
+        background: #fef2f2 !important;
+        border-color: #fecaca !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Pending rows — keep amber tint */
+    .row-no-photo td {
+        background: #fffbeb !important;
+        border-color: #fde68a !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Signal ID column — bold monospace for officialness */
+    td:first-child {
+        font-family: 'Courier New', monospace !important;
+        font-weight: 700 !important;
+        font-size: 8pt !important;
+        border-radius: 0 !important;
+        border-left: 3pt solid #1e3a8a !important;
+    }
+
+    /* Status badge — keep colour, remove rounded pill */
+    .status-badge {
+        border-radius: 3pt !important;
+        padding: 2pt 7pt !important;
+        font-size: 7.5pt !important;
+        font-weight: 700 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .st-solved   { background: #d1fae5 !important; color: #065f46 !important; border: 0.75pt solid #a7f3d0 !important; }
+    .st-pending  { background: #fef3c7 !important; color: #92400e !important; border: 0.75pt solid #fde68a !important; }
+    .st-overdue  { background: #fef2f2 !important; color: #991b1b !important; border: 0.75pt solid #fecaca !important; }
+
+    /* ════════════════════════════════════════════════
+       9. GLASS PANELS — strip glassmorphism for paper
+    ════════════════════════════════════════════════ */
+    .glass-panel {
+        background: white !important;
+        backdrop-filter: none !important;
+        border: 1pt solid #e2e8f0 !important;
+        border-radius: 6pt !important;
+        box-shadow: none !important;
+        padding: 16pt !important;
+        overflow: visible !important;
+    }
+
+    /* ════════════════════════════════════════════════
+       10. CHART / MAP PAGES — replace blank canvas with placeholder
+    ════════════════════════════════════════════════ */
+
+    /* Leaflet map — hidden, replaced with notice */
+    .live-map, #map, .map-wrapper, .leaflet-container {
+        display: none !important;
+    }
+
+    #liveMap .glass-panel::after,
+    #reports .chart-wrapper::after {
+        content: "[ Live data visualisation — refer to digital dashboard at delhi-sudarshan-frontend.vercel.app ]";
+        display: block;
+        text-align: center;
+        font-size: 8.5pt;
+        color: #94a3b8;
+        font-style: italic;
+        padding: 24pt 0;
+        border: 1pt dashed #cbd5e1;
+        border-radius: 4pt;
+        margin: 12pt 0;
+    }
+
+    /* Hide canvas charts */
+    canvas { display: none !important; }
+
+    /* ════════════════════════════════════════════════
+       11. OFFICER PROFILE PAGE — official ID card style
+    ════════════════════════════════════════════════ */
     #profile {
         position: relative !important;
-        page-break-before: always;
+        page-break-before: always !important;
+        break-before: page !important;
     }
 
-    /* Big diagonal stamp text */
-    #profile::before {
+    .profile-container {
+        display: block !important;
+        height: auto !important;
+        padding: 0 !important;
+    }
+
+    .glass-card-large {
+        background: white !important;
+        backdrop-filter: none !important;
+        border: 1.5pt solid #1e3a8a !important;
+        border-radius: 8pt !important;
+        box-shadow: none !important;
+        max-width: 100% !important;
+        padding: 28pt 32pt !important;
+        text-align: center !important;
+        position: relative !important;
+    }
+
+    .avatar-img {
+        border: 3pt solid #1e3a8a !important;
+        box-shadow: none !important;
+    }
+
+    .header-text h1 {
+        font-size: 22pt !important;
+        color: #0f172a !important;
+        font-family: 'Times New Roman', serif !important;
+    }
+
+    .designation {
+        font-size: 10pt !important;
+        color: #475569 !important;
+    }
+
+    .info-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10pt !important;
+        margin-top: 18pt !important;
+    }
+
+    .info-box {
+        background: #f8fafc !important;
+        border: 1pt solid #e2e8f0 !important;
+        border-radius: 6pt !important;
+        padding: 12pt 14pt !important;
+        backdrop-filter: none !important;
+    }
+
+    .icon-box {
+        background: #dbeafe !important;
+        color: #1d4ed8 !important;
+        border-radius: 8pt !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* ── Official stamp watermark on profile page ── */
+    #profile .glass-card-large::before {
         content: "OFFICIAL  •  DELHI SUDARSHAN";
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) rotate(-28deg);
-        font-size: 88px;
+        font-size: 52pt;
         font-weight: 900;
-        letter-spacing: 6px;
-        color: rgba(180, 0, 0, 0.18);
-        z-index: 999;
+        letter-spacing: 4px;
+        color: rgba(30, 58, 138, 0.07);
+        z-index: 0;
         white-space: nowrap;
         pointer-events: none;
+        font-family: 'Times New Roman', serif;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 
-    /* Circular government seal */
-    #profile::after {
+    /* Circular seal */
+    #profile .glass-card-large::after {
         content: "";
         position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 520px;
-        height: 520px;
-        border: 8px solid rgba(180, 0, 0, 0.18);
+        top: 50%; left: 50%;
+        width: 320pt; height: 320pt;
+        border: 5pt solid rgba(30, 58, 138, 0.07);
         border-radius: 50%;
         transform: translate(-50%, -50%);
-        z-index: 998;
+        z-index: 0;
         pointer-events: none;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* ════════════════════════════════════════════════
+       12. MISC FIXES
+    ════════════════════════════════════════════════ */
+
+    /* Kill hover states */
+    .stat-card:hover,
+    .info-box:hover,
+    tr[onclick]:hover td { transform: none !important; box-shadow: none !important; }
+
+    /* Ensure page title shows correctly */
+    #dashboard .glass-header h2::after {
+        content: " — WEEKLY EXECUTIVE BRIEFING";
+        font-weight: 700;
+        color: #dc2626;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Complaints table label */
+    #complaints .glass-header h2::before {
+        content: "⬤  ";
+        font-size: 7pt;
+        color: #dc2626;
+    }
+
+    /* No glass on header sections */
+    .header-with-filter { flex-direction: column; align-items: flex-start; gap: 4pt; }
+
+    /* Keep text legible */
+    p, span, td, th, h1, h2, h3, h4, li { orphans: 3; widows: 3; }
+
+    /* Remove any remaining box shadows/blurs */
+    * {
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        text-shadow: none !important;
     }
 }
 
@@ -880,5 +1244,3 @@ tr[onclick]:hover td { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     z-index: 5;
 }
-
-
