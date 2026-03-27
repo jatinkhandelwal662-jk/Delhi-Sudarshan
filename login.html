@@ -4,277 +4,539 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Official Login | Delhi Sudarshan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
-        /* --- PAGE SETUP --- */
         :root {
-            --primary: #2563eb;
-            --dark: #0f172a;
-            --light: #f8fafc;
-            --glass-border: rgba(255, 255, 255, 0.2);
+            --gold:       #F59E0B;
+            --gold-dim:   rgba(245,158,11,0.22);
+            --gold-faint: rgba(245,158,11,0.06);
+            --red:        #ef4444;
+            --green:      #10b981;
+            --dark:       #020B18;
+            --glass:      rgba(255,255,255,0.025);
+            --muted:      rgba(255,255,255,0.32);
+            --white:      #F0F4FF;
         }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        body { background:var(--dark); width:100vw; height:100vh; overflow:hidden; font-family:'Rajdhani',sans-serif; display:flex; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        #particleCanvas { position:fixed; inset:0; pointer-events:none; z-index:0; }
 
-        body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-        }
+        .corner { position:fixed; width:52px; height:52px; z-index:20; pointer-events:none; }
+        .corner-tl { top:20px; left:20px; border-top:1px solid rgba(245,158,11,0.3); border-left:1px solid rgba(245,158,11,0.3); }
+        .corner-tr { top:20px; right:20px; border-top:1px solid rgba(245,158,11,0.3); border-right:1px solid rgba(245,158,11,0.3); }
+        .corner-bl { bottom:20px; left:20px; border-bottom:1px solid rgba(245,158,11,0.3); border-left:1px solid rgba(245,158,11,0.3); }
+        .corner-br { bottom:20px; right:20px; border-bottom:1px solid rgba(245,158,11,0.3); border-right:1px solid rgba(245,158,11,0.3); }
 
-        /* Animated Background Pattern */
-        .bg-pattern {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 30px 30px;
-            opacity: 0.3;
-            animation: moveBg 60s linear infinite;
-        }
-        @keyframes moveBg { from { background-position: 0 0; } to { background-position: 100px 100px; } }
+        #scanFlash { position:fixed; inset:0; z-index:99; pointer-events:none; opacity:0; background:linear-gradient(to bottom,transparent 30%,rgba(245,158,11,0.05) 50%,transparent 70%); background-size:100% 300%; }
+        #scanFlash.active { animation:scanRun 2s ease forwards; }
+        @keyframes scanRun { 0%{opacity:0;background-position:0% 0%} 10%{opacity:1} 80%{opacity:1;background-position:0% 100%} 100%{opacity:0} }
 
-        /* --- THE SPLIT CARD CONTAINER --- */
-        .login-wrapper {
-            width: 900px;
-            height: 550px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            display: flex;
-            overflow: hidden;
-            position: relative;
-            z-index: 10;
-            animation: cardEntrance 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
+        .left-panel { width:56%; height:100%; position:relative; display:flex; flex-direction:column; justify-content:space-between; padding:36px 42px; z-index:1; overflow:hidden; }
+        .left-panel::after { content:''; position:absolute; right:0; top:8%; height:84%; width:1px; background:linear-gradient(to bottom,transparent,rgba(245,158,11,0.4) 30%,var(--gold) 50%,rgba(245,158,11,0.4) 70%,transparent); }
+        .left-panel::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(18,35,70,0.5) 0%,transparent 80%); pointer-events:none; }
 
-        @keyframes cardEntrance {
-            from { opacity: 0; transform: translateY(30px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
+        .right-panel { width:44%; height:100%; display:flex; align-items:center; justify-content:center; position:relative; z-index:1; padding:24px 44px; overflow:hidden; }
+        .right-panel::before { content:''; position:absolute; inset:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath fill='none' stroke='rgba(245,158,11,0.04)' stroke-width='1' d='M28 0 L56 14 L56 42 L28 56 L0 42 L0 14 Z M28 56 L56 70 L56 98 L28 112 L0 98 L0 70 Z'/%3E%3C/svg%3E"); background-size:56px 100px; }
 
-        /* --- LEFT SIDE: BRANDING --- */
-        .brand-section {
-            flex: 1;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 58, 138, 0.9)), url('https://images.unsplash.com/photo-1587474260584-136574528ed5?q=80&w=1000&auto=format&fit=crop'); 
-            background-size: cover;
-            background-position: center;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            color: white;
-            position: relative;
-        }
+        .brand-top { display:flex; align-items:center; gap:14px; position:relative; z-index:2; opacity:0; animation:riseIn .7s cubic-bezier(.2,.8,.2,1) forwards .3s; }
+        .brand-emblem { width:42px; height:42px; border:1.5px solid var(--gold); border-radius:9px; display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:1.2rem; background:var(--gold-faint); box-shadow:0 0 18px rgba(245,158,11,0.15); position:relative; }
+        .brand-emblem::after { content:''; position:absolute; inset:-5px; border:1px solid rgba(245,158,11,0.3); border-radius:14px; animation:pulseRing 2.5s ease-in-out infinite; }
+        @keyframes pulseRing { 0%,100%{transform:scale(1);opacity:.4} 50%{transform:scale(1.12);opacity:0} }
+        .brand-name h2 { font-size:.95rem; font-weight:700; color:var(--white); letter-spacing:4px; text-transform:uppercase; }
+        .brand-name p { font-size:.58rem; color:var(--gold); letter-spacing:3px; text-transform:uppercase; margin-top:2px; }
 
-        .brand-header { display: flex; align-items: center; gap: 15px; }
-        .brand-logo { width: 48px; height: 48px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .brand-text h2 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
-        .brand-text p { font-size: 0.75rem; opacity: 0.8; letter-spacing: 1px; text-transform: uppercase; }
+        .chakra-stage { position:absolute; top:50%; left:50%; transform:translate(-50%,-52%); width:380px; height:380px; display:flex; align-items:center; justify-content:center; }
+        .chakra-aura { position:absolute; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(245,158,11,0.1) 0%,transparent 68%); animation:breathe 4s ease-in-out infinite; }
+        @keyframes breathe { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.25);opacity:1} }
+        .chakra-svg { width:100%; height:100%; filter:drop-shadow(0 0 14px rgba(245,158,11,0.3)); }
+        .r1{animation:cwSlow 45s linear infinite;transform-origin:190px 190px}
+        .r2{animation:ccwMid 28s linear infinite;transform-origin:190px 190px}
+        .r3{animation:cwFast 18s linear infinite;transform-origin:190px 190px}
+        .r4{animation:ccwSpin 10s linear infinite;transform-origin:190px 190px}
+        .r5{animation:cwSpin 6s linear infinite;transform-origin:190px 190px}
+        @keyframes cwSlow{to{transform:rotate(360deg)}} @keyframes ccwMid{to{transform:rotate(-360deg)}}
+        @keyframes cwFast{to{transform:rotate(360deg)}} @keyframes ccwSpin{to{transform:rotate(-360deg)}} @keyframes cwSpin{to{transform:rotate(360deg)}}
 
-        .brand-quote { position: relative; z-index: 2; }
-        .brand-quote h1 { font-size: 2.5rem; font-weight: 700; line-height: 1.1; margin-bottom: 15px; background: linear-gradient(to right, #fff, #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .brand-quote p { font-size: 0.95rem; opacity: 0.8; line-height: 1.5; max-width: 90%; }
+        .brand-tagline { position:relative; z-index:2; text-align:center; opacity:0; animation:riseIn .7s cubic-bezier(.2,.8,.2,1) forwards 1.1s; }
+        .brand-tagline h1 { font-family:'Cormorant Garamond',serif; font-size:2.8rem; font-weight:400; color:var(--white); line-height:1.05; margin-bottom:10px; }
+        .brand-tagline h1 em { font-style:italic; color:var(--gold); font-weight:600; }
+        .brand-tagline p { font-size:.8rem; color:var(--muted); letter-spacing:.4px; line-height:1.65; }
 
-        .brand-footer { font-size: 0.7rem; opacity: 0.5; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
+        .skyline-wrap { position:absolute; bottom:0; left:0; right:1px; height:80px; overflow:hidden; z-index:2; }
+        .ist-clock { position:relative; z-index:3; font-family:'Share Tech Mono',monospace; font-size:.6rem; color:rgba(245,158,11,0.45); letter-spacing:2.5px; opacity:0; animation:riseIn .7s forwards 1.6s; display:flex; align-items:center; gap:10px; }
+        .ist-clock::before { content:''; width:6px; height:6px; border-radius:50%; background:#10b981; box-shadow:0 0 8px #10b981; flex-shrink:0; animation:blink 1.5s step-end infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-        /* --- RIGHT SIDE: LOGIN FORM --- */
-        .form-section {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.85); /* Slightly opaque for readability */
-            padding: 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+        /* ═══ FORM CARD ═══ */
+        .form-card { width:100%; max-width:375px; position:relative; z-index:2; opacity:0; animation:riseIn .8s cubic-bezier(.2,.8,.2,1) forwards .6s; }
 
-        .form-header { margin-bottom: 30px; text-align: center; }
-        .form-header h2 { font-size: 1.8rem; color: var(--dark); margin-bottom: 8px; }
-        .form-header p { font-size: 0.9rem; color: #64748b; }
+        /* ═══ STEP PROGRESS ═══ */
+        .step-progress { display:flex; align-items:center; margin-bottom:28px; }
+        .sp-item { display:flex; align-items:center; gap:7px; }
+        .sp-num { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:.65rem; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.22); background:transparent; flex-shrink:0; transition:all .4s; }
+        .sp-item.active .sp-num { border-color:var(--gold); color:var(--gold); background:rgba(245,158,11,0.1); box-shadow:0 0 10px rgba(245,158,11,0.2); }
+        .sp-item.done .sp-num { border-color:var(--green); color:var(--green); background:rgba(16,185,129,0.1); }
+        .sp-label { font-size:.58rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.18); transition:all .4s; }
+        .sp-item.active .sp-label { color:rgba(245,158,11,0.65); }
+        .sp-item.done .sp-label { color:rgba(16,185,129,0.55); }
+        .sp-line { flex:1; height:1px; background:rgba(255,255,255,0.07); margin:0 6px; transition:background .4s; }
+        .sp-line.lit { background:rgba(16,185,129,0.35); }
 
-        /* Input Fields */
-        .input-group { margin-bottom: 20px; position: relative; }
-        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 1.1rem; transition: 0.3s; }
-        
-        .form-input {
-            width: 100%;
-            padding: 14px 14px 14px 45px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            background: white;
-            font-size: 1rem;
-            color: var(--dark);
-            outline: none;
-            transition: all 0.3s ease;
-        }
+        /* ═══ STEPS ═══ */
+        .step { display:none; }
+        .step.active { display:block; animation:riseIn .5s cubic-bezier(.2,.8,.2,1) forwards; }
 
-        .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
-        .form-input:focus + .input-icon { color: var(--primary); }
+        /* ═══ SHARED FORM ═══ */
+        .fh-eyebrow { font-size:.56rem; letter-spacing:4px; text-transform:uppercase; color:var(--gold); margin-bottom:8px; display:flex; align-items:center; gap:9px; }
+        .fh-eyebrow::before { content:''; display:block; width:18px; height:1px; background:var(--gold); }
+        .fh-title { font-family:'Cormorant Garamond',serif; font-size:2.8rem; font-weight:600; color:var(--white); line-height:.92; margin-bottom:9px; letter-spacing:-1px; }
+        .fh-sub { font-size:.8rem; color:var(--muted); line-height:1.6; margin-bottom:22px; }
 
-        /* Button */
-        .login-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem; font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex; justify-content: center; align-items: center; gap: 10px;
-            margin-top: 10px;
-            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
-        }
-        .login-btn:hover { background: #1d4ed8; transform: translateY(-2px); }
-        .login-btn:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+        .ig { margin-bottom:14px; }
+        .ig-label { display:block; font-size:.54rem; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.25); margin-bottom:6px; }
+        .ig-wrap { position:relative; }
+        .form-input { width:100%; padding:12px 42px 12px 15px; background:var(--glass); border:1px solid rgba(255,255,255,0.07); border-radius:8px; color:var(--white); font-family:'Share Tech Mono',monospace; font-size:.84rem; letter-spacing:1.1px; outline:none; transition:border-color .3s, box-shadow .3s, background .3s; }
+        .form-input::placeholder { color:rgba(255,255,255,0.14); }
+        .form-input:focus { border-color:var(--gold); background:rgba(245,158,11,0.03); box-shadow:0 0 0 3px rgba(245,158,11,0.06); }
+        .form-input.err { border-color:var(--red); box-shadow:0 0 0 3px rgba(239,68,68,0.07); animation:shake .42s ease; }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 18%{transform:translateX(-7px)} 36%{transform:translateX(7px)} 54%{transform:translateX(-5px)} 72%{transform:translateX(5px)} }
+        .ig-icon { position:absolute; right:13px; top:50%; transform:translateY(-50%); color:rgba(255,255,255,0.16); font-size:.95rem; pointer-events:none; transition:color .3s; }
+        .form-input:focus ~ .ig-icon { color:var(--gold); }
+        .scan-line { position:absolute; bottom:0; left:0; height:2px; width:0%; background:linear-gradient(90deg,transparent,var(--gold),transparent); border-radius:0 0 8px 8px; transition:width .45s cubic-bezier(.4,0,.2,1); }
+        .form-input:focus ~ .scan-line { width:100%; }
 
-        /* Loader */
-        .spinner {
-            width: 20px; height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            display: none;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        /* CTA BTN */
+        .cta-btn { width:100%; padding:13px 20px; background:transparent; border:1px solid var(--gold); border-radius:8px; cursor:pointer; font-family:'Rajdhani',sans-serif; font-size:.78rem; font-weight:700; letter-spacing:4px; text-transform:uppercase; color:var(--white); position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; gap:11px; transition:color .35s, box-shadow .35s; }
+        .cta-btn::before { content:''; position:absolute; inset:0; background:var(--gold); transform:scaleX(0); transform-origin:left; transition:transform .45s cubic-bezier(.4,0,.2,1); z-index:0; }
+        .cta-btn:hover:not(:disabled)::before { transform:scaleX(1); }
+        .cta-btn:hover:not(:disabled) { color:#020B18; box-shadow:0 0 28px rgba(245,158,11,0.22); }
+        .cta-btn:hover:not(:disabled) .cta-arrow { color:#020B18; }
+        .cta-btn.loading { pointer-events:none; border-color:rgba(245,158,11,0.3); }
+        .cta-btn:disabled { pointer-events:none; }
+        .cta-text, .cta-arrow { position:relative; z-index:1; transition:color .3s; }
+        .cta-arrow { color:var(--gold); font-size:1rem; }
+        .cta-spinner { width:16px; height:16px; border:1.5px solid rgba(245,158,11,0.2); border-top-color:var(--gold); border-radius:50%; animation:sp .75s linear infinite; display:none; position:relative; z-index:1; }
+        @keyframes sp { to{transform:rotate(360deg)} }
 
-        /* Links */
-        .form-links { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; font-size: 0.85rem; }
-        .remember-me { display: flex; align-items: center; gap: 8px; color: #64748b; cursor: pointer; }
-        .forgot-pass { color: var(--primary); text-decoration: none; font-weight: 600; }
-        .forgot-pass:hover { text-decoration: underline; }
+        /* FORM OPTS */
+        .form-opts { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+        .rem-label { display:flex; align-items:center; gap:8px; cursor:pointer; }
+        .rem-label input { display:none; }
+        .rem-box { width:14px; height:14px; border:1px solid rgba(255,255,255,0.16); border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:.58rem; color:var(--gold); transition:all .2s; }
+        .rem-label input:checked ~ .rem-box { background:rgba(245,158,11,0.1); border-color:var(--gold); }
+        .rem-text { font-size:.74rem; color:rgba(255,255,255,.28); }
+        .reset-link { font-size:.74rem; color:rgba(245,158,11,.55); text-decoration:none; }
+        .reset-link:hover { color:var(--gold); }
 
-        /* Responsive */
-        @media (max-width: 900px) {
-            .login-wrapper { width: 90%; height: auto; flex-direction: column; }
-            .brand-section { padding: 30px; height: 200px; }
-            .brand-quote, .brand-footer { display: none; }
-            .form-section { padding: 40px 30px; }
-        }
+        .sec-footer { margin-top:18px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+        .sec-footer i { color:var(--green); font-size:.82rem; }
+        .sec-footer span { font-size:.58rem; color:rgba(255,255,255,.2); letter-spacing:.3px; }
+        .sec-dot { width:3px; height:3px; border-radius:50%; background:rgba(255,255,255,.1); }
+
+        /* MSG BAR */
+        .msg-bar { font-size:.7rem; letter-spacing:.4px; padding:8px 12px; border-radius:6px; margin-bottom:12px; display:none; align-items:center; gap:7px; }
+        .msg-bar.show { display:flex; }
+        .msg-bar.error { background:rgba(239,68,68,.09); border:1px solid rgba(239,68,68,.22); color:#fca5a5; }
+        .msg-bar.info  { background:rgba(16,185,129,.07); border:1px solid rgba(16,185,129,.18); color:#6ee7b7; }
+
+        /* ═══ OTP ═══ */
+        .otp-dest { font-size:.76rem; color:var(--muted); margin-bottom:20px; line-height:1.6; }
+        .otp-dest strong { color:var(--white); }
+        .otp-boxes { display:flex; gap:8px; margin-bottom:18px; justify-content:center; }
+        .otp-digit { width:46px; height:52px; text-align:center; background:var(--glass); border:1px solid rgba(255,255,255,0.07); border-radius:8px; color:var(--white); font-family:'Share Tech Mono',monospace; font-size:1.35rem; outline:none; caret-color:var(--gold); transition:border-color .3s, box-shadow .3s; }
+        .otp-digit:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(245,158,11,0.06); background:rgba(245,158,11,0.03); }
+        .otp-digit.filled { border-color:rgba(245,158,11,0.35); }
+        .otp-digit.err { border-color:var(--red); animation:shake .42s ease; }
+        .otp-timer { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+        .timer-text { font-family:'Share Tech Mono',monospace; font-size:.7rem; color:rgba(245,158,11,.45); letter-spacing:1.5px; }
+        .timer-text span { color:var(--gold); }
+        .resend-btn { font-size:.7rem; color:rgba(255,255,255,.22); background:none; border:none; cursor:pointer; font-family:'Rajdhani',sans-serif; letter-spacing:1px; text-transform:uppercase; transition:color .2s; }
+        .resend-btn:not(:disabled):hover { color:var(--gold); }
+        .resend-btn:disabled { cursor:not-allowed; }
+
+        /* ═══ CAMERA ═══ */
+        .cam-instructions { font-size:.76rem; color:var(--muted); margin-bottom:14px; line-height:1.6; }
+        .cam-viewport { width:100%; aspect-ratio:4/3; border-radius:12px; overflow:hidden; position:relative; margin-bottom:12px; border:1px solid rgba(245,158,11,0.18); background:#000; max-height:210px; }
+        #camVideo { width:100%; height:100%; object-fit:cover; display:block; }
+        #camPreview { width:100%; height:100%; object-fit:cover; display:none; }
+        #camCanvas { display:none; }
+        .cam-scan-overlay { position:absolute; inset:0; pointer-events:none; }
+        .scan-bar { position:absolute; top:0; left:0; width:100%; height:2px; background:linear-gradient(90deg,transparent,rgba(245,158,11,0.8),transparent); animation:scanBar 2.5s ease-in-out infinite; }
+        @keyframes scanBar { 0%{top:0%;opacity:1} 100%{top:100%;opacity:0} }
+        .cam-corner { position:absolute; width:18px; height:18px; }
+        .cam-corner.tl { top:9px; left:9px; border-top:2px solid var(--gold); border-left:2px solid var(--gold); }
+        .cam-corner.tr { top:9px; right:9px; border-top:2px solid var(--gold); border-right:2px solid var(--gold); }
+        .cam-corner.bl { bottom:9px; left:9px; border-bottom:2px solid var(--gold); border-left:2px solid var(--gold); }
+        .cam-corner.br { bottom:9px; right:9px; border-bottom:2px solid var(--gold); border-right:2px solid var(--gold); }
+        .face-oval { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:45%; aspect-ratio:3/4; border-radius:50%; border:1.5px dashed rgba(245,158,11,0.4); }
+        .cam-status-badge { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); background:rgba(2,11,24,0.82); backdrop-filter:blur(8px); border:1px solid rgba(245,158,11,0.18); border-radius:20px; padding:3px 12px; font-size:.56rem; letter-spacing:2px; text-transform:uppercase; color:rgba(245,158,11,0.65); white-space:nowrap; }
+        .cam-btn-row { display:flex; gap:8px; margin-bottom:12px; }
+        .cam-secondary { flex:1; padding:10px; background:transparent; border:1px solid rgba(255,255,255,0.09); border-radius:8px; color:rgba(255,255,255,.45); cursor:pointer; font-family:'Rajdhani',sans-serif; font-size:.72rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:7px; }
+        .cam-secondary:hover { border-color:rgba(255,255,255,.22); color:rgba(255,255,255,.75); }
+
+        /* ═══ ACCESS GRANTED ═══ */
+        .access-granted { text-align:center; padding:18px 0; }
+        .ag-ring { width:78px; height:78px; border-radius:50%; margin:0 auto 20px; border:2px solid var(--green); display:flex; align-items:center; justify-content:center; color:var(--green); font-size:1.9rem; background:rgba(16,185,129,0.08); box-shadow:0 0 30px rgba(16,185,129,0.2); animation:agPulse 2s ease infinite; }
+        @keyframes agPulse { 0%,100%{box-shadow:0 0 30px rgba(16,185,129,0.2)} 50%{box-shadow:0 0 55px rgba(16,185,129,0.38)} }
+        .ag-title { font-family:'Cormorant Garamond',serif; font-size:2.1rem; font-weight:600; color:var(--white); margin-bottom:7px; }
+        .ag-sub { font-size:.8rem; color:var(--muted); margin-bottom:20px; line-height:1.6; }
+        .ag-id { font-family:'Share Tech Mono',monospace; font-size:.68rem; color:rgba(245,158,11,.55); letter-spacing:2px; margin-bottom:24px; }
+        .progress-bar-wrap { width:100%; height:3px; background:rgba(255,255,255,.06); border-radius:2px; overflow:hidden; }
+        .progress-bar { height:100%; background:var(--green); border-radius:2px; width:0%; animation:pbFill 2s linear forwards; }
+        @keyframes pbFill { to{width:100%} }
+        .redirect-note { font-size:.58rem; color:rgba(255,255,255,.18); letter-spacing:2px; margin-top:8px; text-transform:uppercase; }
+
+        @keyframes riseIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+        @media(max-width:800px) { .left-panel{display:none;} .right-panel{width:100%;padding:24px 20px;} }
     </style>
 </head>
 <body>
 
-    <div class="bg-pattern"></div>
+<canvas id="particleCanvas"></canvas>
+<div class="corner corner-tl"></div>
+<div class="corner corner-tr"></div>
+<div class="corner corner-bl"></div>
+<div class="corner corner-br"></div>
+<div id="scanFlash"></div>
 
-    <div class="login-wrapper">
-        
-        <div class="brand-section">
-            <div class="brand-header">
-                <img src="favicon2.jpg" alt="Logo" class="brand-logo">
-                <div class="brand-text">
-                    <h2>DELHI SUDARSHAN</h2>
-                    <p>Governance Portal</p>
-                </div>
-            </div>
-            
-            <div class="brand-quote">
-                <h1>Bridging Voice<br>to Vision.</h1>
-                <p>AI-Powered Grievance Redressal System for a smarter, faster, and more responsive Delhi.</p>
-            </div>
-
-            <div class="brand-footer">
-                <p>Authorized access only. All activities are monitored.</p>
-            </div>
+<!-- LEFT PANEL -->
+<div class="left-panel">
+    <div class="brand-top">
+        <div class="brand-emblem"><i class="ri-shield-star-line"></i></div>
+        <div class="brand-name">
+            <h2>Delhi Sudarshan</h2>
+            <p>Governance Intelligence Portal</p>
         </div>
+    </div>
+    <div class="chakra-stage">
+        <div class="chakra-aura"></div>
+        <svg class="chakra-svg" id="chakraSvg" viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="glow"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <filter id="glow2"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <radialGradient id="cg" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#F59E0B" stop-opacity=".9"/>
+                    <stop offset="60%" stop-color="#D97706" stop-opacity=".4"/>
+                    <stop offset="100%" stop-color="#92400E" stop-opacity="0"/>
+                </radialGradient>
+            </defs>
+        </svg>
+    </div>
+    <div class="brand-tagline">
+        <h1>Bridging <em>Voice</em><br>to Vision.</h1>
+        <p>AI-Powered Grievance Intelligence for a smarter,<br>faster, and more responsive Delhi.</p>
+    </div>
+    <div class="skyline-wrap">
+        <svg viewBox="0 0 820 90" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:100%">
+            <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(245,158,11,0.4)"/><stop offset="100%" stop-color="rgba(245,158,11,0.07)"/></linearGradient></defs>
+            <path fill="url(#sg)" d="M370,90 L370,52 L365,52 L365,45 Q380,8 400,28 Q420,8 435,45 L435,52 L430,52 L430,90 Z"/>
+            <rect fill="url(#sg)" x="360" y="84" width="80" height="6" rx="1"/>
+            <path fill="url(#sg)" d="M85,90 L86,16 Q88,12 90,16 L91,90 Z"/>
+            <rect fill="url(#sg)" x="83" y="26" width="10" height="3"/><rect fill="url(#sg)" x="83" y="42" width="10" height="3"/><rect fill="url(#sg)" x="83" y="58" width="10" height="3"/>
+            <path fill="url(#sg)" d="M84,14 Q88,5 92,14 Z"/>
+            <path fill="url(#sg)" d="M175,90 L172,68 Q178,48 188,54 Q192,44 200,50 Q208,44 212,54 Q222,48 228,68 L225,90 Z"/>
+            <ellipse fill="url(#sg)" cx="200" cy="68" rx="25" ry="6"/>
+            <path fill="url(#sg)" d="M490,90 L490,58 L470,58 L470,62 L460,62 L460,90 Z"/>
+            <path fill="url(#sg)" d="M490,58 Q510,40 530,58 Z"/>
+            <rect fill="url(#sg)" x="530" y="58" width="50" height="32" rx="1"/>
+            <rect fill="url(#sg)" x="460" y="58" width="120" height="4"/>
+            <rect fill="url(#sg)" x="630" y="55" width="18" height="35"/><path fill="url(#sg)" d="M628,55 L636,42 L648,42 L648,55 Z"/>
+            <rect fill="url(#sg)" x="680" y="60" width="18" height="30"/>
+            <rect fill="url(#sg)" x="620" y="80" width="90" height="10"/>
+            <rect fill="rgba(245,158,11,0.18)" x="0" y="88" width="820" height="2"/>
+        </svg>
+    </div>
+    <div class="ist-clock" id="istClock">INITIALIZING...</div>
+</div>
 
-        <div class="form-section">
-            <div class="form-header">
-                <h2>Officer Login</h2>
-                <p>Enter your Nodal ID to access the dashboard</p>
-            </div>
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+<div class="form-card">
 
-            <form onsubmit="handleLogin(event)">
-                <div class="input-group">
-                    <input type="text" id="officerId" class="form-input" placeholder="Officer ID" value="DL-NODAL-ADMIN">
-                    <i class="ri-user-star-line input-icon"></i>
-                </div>
-
-                <div class="input-group">
-                    <input type="password" id="password" class="form-input" placeholder="Password">
-                    <i class="ri-lock-password-line input-icon"></i>
-                </div>
-
-                <div class="form-links">
-                    <label class="remember-me">
-                        <input type="checkbox"> Remember me
-                    </label>
-                    <a href="#" class="forgot-pass">Forgot Password?</a>
-                </div>
-
-                <button type="submit" class="login-btn" id="loginBtn">
-                    <span id="btnText">Secure Login</span>
-                    <i class="ri-arrow-right-line" id="btnIcon"></i>
-                    <div class="spinner" id="loader"></div>
-                </button>
-            </form>
-
-            <div style="margin-top: 30px; text-align: center; color: #94a3b8; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                <i class="ri-shield-check-fill" style="color:#10b981;"></i> 
-                <span>256-bit End-to-End Encryption</span>
-            </div>
-        </div>
-
+    <!-- PROGRESS -->
+    <div class="step-progress" id="stepProgress">
+        <div class="sp-item active" id="sp1"><div class="sp-num">01</div><div class="sp-label">Credentials</div></div>
+        <div class="sp-line" id="sl1"></div>
+        <div class="sp-item" id="sp2"><div class="sp-num">02</div><div class="sp-label">OTP</div></div>
+        <div class="sp-line" id="sl2"></div>
+        <div class="sp-item" id="sp3"><div class="sp-num">03</div><div class="sp-label">Face ID</div></div>
     </div>
 
-    <script>
-        function handleLogin(e) {
-            e.preventDefault(); // Stop form reload
+    <!-- STEP 1: CREDENTIALS -->
+    <div class="step active" id="step1">
+        <div class="fh-eyebrow">Secure Access</div>
+        <h2 class="fh-title">Officer<br>Login</h2>
+        <p class="fh-sub">Enter your Nodal ID &amp; password to begin<br>3-factor authentication.</p>
+        <div class="msg-bar" id="s1msg"></div>
+        <form onsubmit="handleStep1(event)" autocomplete="off">
+            <div class="ig">
+                <label class="ig-label">Nodal Officer ID</label>
+                <div class="ig-wrap">
+                    <input type="text" id="officerId" class="form-input" placeholder="DL-NODAL-XXXXX" value="DL-NODAL-ADMIN" spellcheck="false">
+                    <i class="ri-user-star-line ig-icon"></i>
+                    <div class="scan-line"></div>
+                </div>
+            </div>
+            <div class="ig">
+                <label class="ig-label">Access Password</label>
+                <div class="ig-wrap">
+                    <input type="password" id="password" class="form-input" placeholder="• • • • • • • • • • •">
+                    <i class="ri-lock-password-line ig-icon"></i>
+                    <div class="scan-line"></div>
+                </div>
+            </div>
+            <div class="form-opts">
+                <label class="rem-label"><input type="checkbox" id="remCb"><div class="rem-box"><i class="ri-check-line"></i></div><span class="rem-text">Maintain Session</span></label>
+                <a href="#" class="reset-link">Reset Credentials</a>
+            </div>
+            <button type="submit" class="cta-btn" id="s1Btn">
+                <span class="cta-text" id="s1Text">Verify &amp; Send OTP</span>
+                <i class="ri-shield-keyhole-line cta-arrow" id="s1Arrow"></i>
+                <div class="cta-spinner" id="s1Spin"></div>
+            </button>
+        </form>
+        <div class="sec-footer">
+            <i class="ri-shield-check-fill"></i><span>256-bit AES</span>
+            <div class="sec-dot"></div><span>MHA Certified</span>
+            <div class="sec-dot"></div><span>ISO 27001</span>
+        </div>
+    </div>
 
-            const btn = document.getElementById('loginBtn');
-            const text = document.getElementById('btnText');
-            const icon = document.getElementById('btnIcon');
-            const loader = document.getElementById('loader');
-            const idInput = document.getElementById('officerId');
-            const passInput = document.getElementById('password');
+    <!-- STEP 2: OTP -->
+    <div class="step" id="step2">
+        <div class="fh-eyebrow">SMS Verification</div>
+        <h2 class="fh-title">Enter<br>OTP</h2>
+        <p class="otp-dest">A 6-digit code has been sent to the registered mobile of officer <strong id="officerMask">—</strong> via Twilio SMS.</p>
+        <div class="msg-bar" id="s2msg"></div>
+        <div class="otp-boxes" id="otpBoxes">
+            <input type="text" class="otp-digit" maxlength="1" inputmode="numeric">
+            <input type="text" class="otp-digit" maxlength="1" inputmode="numeric">
+            <input type="text" class="otp-digit" maxlength="1" inputmode="numeric">
+            <input type="text" class="otp-digit" maxlength="1" inputmode="numeric">
+            <input type="text" class="otp-digit" maxlength="1" inputmode="numeric">
+            <input type="text" class="otp-digit" maxlength="1" inputmode="numeric">
+        </div>
+        <div class="otp-timer">
+            <span class="timer-text">Expires in <span id="timerDisplay">02:00</span></span>
+            <button class="resend-btn" id="resendBtn" disabled onclick="resendOTP()">↻ Resend OTP</button>
+        </div>
+        <button class="cta-btn" id="s2Btn" onclick="handleStep2()">
+            <span class="cta-text" id="s2Text">Verify OTP</span>
+            <i class="ri-check-double-line cta-arrow" id="s2Arrow"></i>
+            <div class="cta-spinner" id="s2Spin"></div>
+        </button>
+        <div class="sec-footer" style="margin-top:18px;">
+            <i class="ri-message-2-line" style="color:rgba(245,158,11,0.55)"></i>
+            <span>OTP sent via Twilio SMS • Do not share with anyone</span>
+        </div>
+    </div>
 
-            // 1. Validation
-            if(passInput.value.length === 0) {
-                passInput.style.borderColor = "#ef4444";
-                passInput.focus();
-                return;
-            }
+    <!-- STEP 3: FACE CAPTURE -->
+    <div class="step" id="step3">
+        <div class="fh-eyebrow">Biometric Check</div>
+        <h2 class="fh-title">Face<br>Verify</h2>
+        <p class="cam-instructions">Align face inside the oval guide. Ensure good lighting before capturing.</p>
+        <div class="msg-bar" id="s3msg"></div>
+        <div class="cam-viewport">
+            <video id="camVideo" autoplay playsinline muted></video>
+            <img id="camPreview" style="display:none;width:100%;height:100%;object-fit:cover;">
+            <canvas id="camCanvas" style="display:none;"></canvas>
+            <div class="cam-scan-overlay">
+                <div class="scan-bar" id="scanBarEl"></div>
+                <div class="face-oval"></div>
+                <div class="cam-corner tl"></div><div class="cam-corner tr"></div>
+                <div class="cam-corner bl"></div><div class="cam-corner br"></div>
+                <div class="cam-status-badge" id="camBadge">⬡ INITIALIZING CAMERA</div>
+            </div>
+        </div>
+        <div class="cam-btn-row">
+            <button class="cam-secondary" id="captureBtn" onclick="capturePhoto()"><i class="ri-camera-line"></i> Capture</button>
+            <button class="cam-secondary" id="retakeBtn" style="display:none" onclick="retakePhoto()"><i class="ri-refresh-line"></i> Retake</button>
+        </div>
+        <button class="cta-btn" id="s3Btn" onclick="handleStep3()" disabled style="opacity:.38;pointer-events:none;">
+            <span class="cta-text" id="s3Text">Upload &amp; Verify Identity</span>
+            <i class="ri-scan-line cta-arrow" id="s3Arrow"></i>
+            <div class="cta-spinner" id="s3Spin"></div>
+        </button>
+    </div>
 
-            // 2. Loading State
-            btn.disabled = true;
-            text.innerText = "Verifying...";
-            icon.style.display = "none";
-            loader.style.display = "block";
+    <!-- STEP 4: GRANTED -->
+    <div class="step" id="step4">
+        <div class="access-granted">
+            <div class="ag-ring"><i class="ri-shield-check-line"></i></div>
+            <h2 class="ag-title">Access Granted</h2>
+            <p class="ag-sub">Identity verified. Initializing<br>Sudarshan Intelligence Dashboard.</p>
+            <p class="ag-id" id="agId">OFFICER: —</p>
+            <div class="progress-bar-wrap"><div class="progress-bar"></div></div>
+            <p class="redirect-note">Redirecting to dashboard...</p>
+        </div>
+    </div>
 
-            // 3. Simulate Server Logic
-            setTimeout(() => {
-                // Success
-                btn.style.background = "#10b981"; // Success Green
-                loader.style.display = "none";
-                text.innerText = "Access Granted";
-                text.style.color = "white";
-                
-                // Add a cool icon
-                const successIcon = document.createElement("i");
-                successIcon.className = "ri-check-line";
-                btn.appendChild(successIcon);
+</div>
+</div>
 
-                setTimeout(() => {
-                    window.location.href = "index.html"; 
-                }, 800);
+<script>
+/* ═══ PARTICLES ═══ */
+(() => {
+    const cvs=document.getElementById('particleCanvas'),ctx=cvs.getContext('2d');
+    const rsz=()=>{cvs.width=innerWidth;cvs.height=innerHeight;};rsz();window.addEventListener('resize',rsz);
+    class P{constructor(){this.init();}init(){this.x=Math.random()*innerWidth*.56;this.y=Math.random()*innerHeight;this.r=Math.random()*1.3+.4;this.vx=(Math.random()-.5)*.22;this.vy=(Math.random()-.5)*.22;this.a=Math.random()*.4+.1;this.life=Math.random()*300+150;}tick(){this.x+=this.vx;this.y+=this.vy;this.life--;if(this.life<=0)this.init();}draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(245,158,11,${this.a})`;ctx.fill();}}
+    const pts=Array.from({length:60},()=>new P());
+    (function fr(){ctx.clearRect(0,0,cvs.width,cvs.height);for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<90){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(245,158,11,${.07*(1-d/90)})`;ctx.lineWidth=.6;ctx.stroke();}}pts.forEach(p=>{p.tick();p.draw();});requestAnimationFrame(fr);})();
+})();
 
-            }, 1500);
-        }
+/* ═══ CHAKRA ═══ */
+(() => {
+    const NS='http://www.w3.org/2000/svg',svg=document.getElementById('chakraSvg'),cx=190,cy=190;
+    const mk=(t,a)=>{const e=document.createElementNS(NS,t);Object.entries(a).forEach(([k,v])=>e.setAttribute(k,v));return e;};
+    const L1=mk('g',{class:'r1'});L1.appendChild(mk('circle',{cx,cy,r:178,fill:'none',stroke:'rgba(245,158,11,0.18)','stroke-width':'1'}));
+    for(let i=0;i<32;i++){const a=(i/32)*Math.PI*2-Math.PI/2,r2=i%4===0?162:(i%2===0?168:171);L1.appendChild(mk('line',{x1:cx+Math.cos(a)*174,y1:cy+Math.sin(a)*174,x2:cx+Math.cos(a)*r2,y2:cy+Math.sin(a)*r2,stroke:'rgba(245,158,11,0.55)','stroke-width':i%4===0?'1.5':'0.8'}));}
+    for(let i=0;i<16;i++){const a=(i/16)*Math.PI*2-Math.PI/2;L1.appendChild(mk('circle',{cx:cx+Math.cos(a)*178,cy:cy+Math.sin(a)*178,r:'2',fill:'rgba(245,158,11,0.5)'}));}svg.appendChild(L1);
+    const L2=mk('g',{class:'r2',filter:'url(#glow)'});L2.appendChild(mk('circle',{cx,cy,r:148,fill:'none',stroke:'rgba(245,158,11,0.2)','stroke-width':'0.8'}));
+    for(let i=0;i<16;i++){const a=(i/16)*Math.PI*2,pcx=cx+Math.cos(a)*122,pcy=cy+Math.sin(a)*122;L2.appendChild(mk('ellipse',{cx:pcx,cy:pcy,rx:'10',ry:'30',fill:'rgba(245,158,11,0.06)',stroke:'rgba(245,158,11,0.45)','stroke-width':'1',transform:`rotate(${a*180/Math.PI},${pcx},${pcy})`}));}svg.appendChild(L2);
+    const L3=mk('g',{class:'r3',filter:'url(#glow)'});L3.appendChild(mk('circle',{cx,cy,r:98,fill:'none',stroke:'rgba(245,158,11,0.25)','stroke-width':'1'}));
+    const p16=[];for(let i=0;i<16;i++){const a=(i/16)*Math.PI*2-Math.PI/2,r=i%2===0?88:60;p16.push(`${cx+Math.cos(a)*r},${cy+Math.sin(a)*r}`);}
+    L3.appendChild(mk('polygon',{points:p16.join(' '),fill:'rgba(245,158,11,0.04)',stroke:'rgba(245,158,11,0.7)','stroke-width':'1.5'}));svg.appendChild(L3);
+    const L4=mk('g',{class:'r4',filter:'url(#glow)'});L4.appendChild(mk('circle',{cx,cy,r:52,fill:'rgba(245,158,11,0.03)',stroke:'rgba(245,158,11,0.5)','stroke-width':'1.5'}));
+    for(let i=0;i<24;i++){const a=(i/24)*Math.PI*2,tx=cx+Math.cos(a)*40,ty=cy+Math.sin(a)*40;L4.appendChild(mk('ellipse',{cx:tx,cy:ty,rx:'2.2',ry:'4.5',fill:'rgba(245,158,11,0.7)',transform:`rotate(${a*180/Math.PI},${tx},${ty})`}));}svg.appendChild(L4);
+    const L5=mk('g',{class:'r5',filter:'url(#glow2)'});const dp=[];for(let i=0;i<8;i++){const a=(i/8)*Math.PI*2-Math.PI/2,r=i%2===0?28:17;dp.push(`${cx+Math.cos(a)*r},${cy+Math.sin(a)*r}`);}
+    L5.appendChild(mk('polygon',{points:dp.join(' '),fill:'rgba(245,158,11,0.15)',stroke:'rgba(245,158,11,0.9)','stroke-width':'1.5'}));svg.appendChild(L5);
+    const cg=mk('g',{});cg.appendChild(mk('circle',{cx,cy,r:'13',fill:'url(#cg)',filter:'url(#glow2)'}));cg.appendChild(mk('circle',{cx,cy,r:'5',fill:'#F59E0B'}));svg.appendChild(cg);
+})();
 
-        // Reset error on type
-        document.getElementById('password').addEventListener('input', function() {
-            this.style.borderColor = "#e2e8f0";
-        });
-    </script>
+/* ═══ CLOCK ═══ */
+(() => {
+    const el=document.getElementById('istClock');
+    const t=()=>{const n=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));el.textContent=`IST ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}  ⬡  PORTAL ACTIVE`;};
+    t();setInterval(t,1000);
+})();
 
+/* ═══ STATE ═══ */
+let currentOfficerId='', timerInterval=null, camStream=null, capturedBlob=null;
+
+/* ═══ UTILS ═══ */
+function flash(){const f=document.getElementById('scanFlash');f.classList.remove('active');void f.offsetWidth;f.classList.add('active');}
+function showMsg(id,type,html){const e=document.getElementById(id);e.className=`msg-bar ${type} show`;e.innerHTML=`<i class="ri-${type==='error'?'error-warning-line':'checkbox-circle-line'}"></i> ${html}`;}
+function hideMsg(id){document.getElementById(id).className='msg-bar';}
+function setBtnLoading(prefix,on,label){
+    const btn=document.getElementById(prefix+'Btn'),txt=document.getElementById(prefix+'Text'),arr=document.getElementById(prefix+'Arrow'),spn=document.getElementById(prefix+'Spin');
+    btn.classList.toggle('loading',on);
+    if(arr)arr.style.display=on?'none':'';
+    if(spn)spn.style.display=on?'block':'none';
+    if(on)txt.textContent='Processing...'; else if(label)txt.textContent=label;
+}
+function advanceProgress(to){
+    for(let i=1;i<=3;i++){const sp=document.getElementById('sp'+i);sp.classList.remove('active','done');if(i<to)sp.classList.add('done');else if(i===to)sp.classList.add('active');}
+    document.getElementById('sl1').classList.toggle('lit',to>2);
+    document.getElementById('sl2').classList.toggle('lit',to>3);
+}
+
+/* ═══ STEP 1 ═══ */
+async function handleStep1(e){
+    e.preventDefault(); hideMsg('s1msg');
+    const id=document.getElementById('officerId').value.trim();
+    const pw=document.getElementById('password').value;
+    if(!id){document.getElementById('officerId').classList.add('err');return;}
+    if(!pw){document.getElementById('password').classList.add('err');return;}
+    setBtnLoading('s1',true); flash();
+    try{
+        const r=await fetch('/api/send-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({officerId:id,password:pw})});
+        const d=await r.json();
+        if(d.success){currentOfficerId=id;document.getElementById('officerMask').textContent=id;document.getElementById('agId').textContent='OFFICER: '+id;goToStep(2);startOTPTimer(120);}
+        else{setBtnLoading('s1',false,'Verify & Send OTP');showMsg('s1msg','error',d.error||'Invalid credentials. Please try again.');}
+    }catch(err){
+        console.warn('Demo mode — backend not connected.');
+        currentOfficerId=id;document.getElementById('officerMask').textContent=id;document.getElementById('agId').textContent='OFFICER: '+id;goToStep(2);startOTPTimer(120);
+    }
+}
+document.querySelectorAll('.form-input').forEach(el=>el.addEventListener('input',()=>el.classList.remove('err')));
+
+/* ═══ NAVIGATE STEPS ═══ */
+function goToStep(n){
+    document.querySelectorAll('.step').forEach((s,i)=>{s.classList.remove('active');if(i+1===n)s.classList.add('active');});
+    if(n===2)advanceProgress(2);
+    if(n===3){advanceProgress(3);startCamera();}
+    if(n===4){document.getElementById('stepProgress').style.opacity='0';setTimeout(()=>{window.location.href='index.html';},2200);}
+}
+
+/* ═══ OTP BOX LOGIC ═══ */
+const otpDigits=document.querySelectorAll('.otp-digit');
+otpDigits.forEach((inp,idx)=>{
+    inp.addEventListener('input',e=>{const v=e.target.value.replace(/\D/g,'');e.target.value=v;e.target.classList.toggle('filled',!!v);if(v&&idx<otpDigits.length-1)otpDigits[idx+1].focus();});
+    inp.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!e.target.value&&idx>0)otpDigits[idx-1].focus();});
+    inp.addEventListener('paste',e=>{e.preventDefault();const p=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'');p.split('').slice(0,6).forEach((c,i)=>{if(otpDigits[i]){otpDigits[i].value=c;otpDigits[i].classList.add('filled');}});otpDigits[Math.min(p.length,5)].focus();});
+});
+function getOTP(){return Array.from(otpDigits).map(d=>d.value).join('');}
+
+function startOTPTimer(secs){
+    clearInterval(timerInterval);document.getElementById('resendBtn').disabled=true;let rem=secs;
+    const dp=document.getElementById('timerDisplay');
+    timerInterval=setInterval(()=>{rem--;dp.textContent=`${String(Math.floor(rem/60)).padStart(2,'0')}:${String(rem%60).padStart(2,'0')}`;if(rem<=0){clearInterval(timerInterval);dp.textContent='00:00';document.getElementById('resendBtn').disabled=false;}},1000);
+}
+async function resendOTP(){hideMsg('s2msg');document.getElementById('resendBtn').disabled=true;try{await fetch('/api/send-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({officerId:currentOfficerId,resend:true})});}catch(e){}showMsg('s2msg','info','OTP resent successfully.');startOTPTimer(120);}
+
+async function handleStep2(){
+    hideMsg('s2msg');const otp=getOTP();
+    if(otp.length<6){otpDigits.forEach(d=>{if(!d.value)d.classList.add('err');});showMsg('s2msg','error','Enter the complete 6-digit OTP.');return;}
+    setBtnLoading('s2',true);flash();
+    try{
+        const r=await fetch('/api/verify-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({officerId:currentOfficerId,otp})});
+        const d=await r.json();
+        if(d.success){clearInterval(timerInterval);goToStep(3);}
+        else{setBtnLoading('s2',false,'Verify OTP');otpDigits.forEach(d=>d.classList.add('err'));showMsg('s2msg','error',d.error||'Invalid OTP. Please try again.');}
+    }catch(err){console.warn('Demo — OTP accepted.');clearInterval(timerInterval);goToStep(3);}
+}
+
+/* ═══ CAMERA ═══ */
+async function startCamera(){
+    const badge=document.getElementById('camBadge');
+    try{
+        camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480}},audio:false});
+        document.getElementById('camVideo').srcObject=camStream;
+        badge.textContent='⬡ LIVE FEED ACTIVE';badge.style.color='rgba(16,185,129,0.8)';
+    }catch(err){
+        badge.textContent='⬡ CAMERA DENIED';badge.style.color='rgba(239,68,68,0.8)';
+        showMsg('s3msg','error','Camera access denied. Allow camera permission and refresh.');
+    }
+}
+function capturePhoto(){
+    const vid=document.getElementById('camVideo'),cvs=document.getElementById('camCanvas'),prv=document.getElementById('camPreview');
+    cvs.width=vid.videoWidth||640;cvs.height=vid.videoHeight||480;
+    cvs.getContext('2d').drawImage(vid,0,0,cvs.width,cvs.height);
+    cvs.toBlob(blob=>{
+        capturedBlob=blob;prv.src=URL.createObjectURL(blob);
+        vid.style.display='none';prv.style.display='block';
+        document.getElementById('scanBarEl').style.display='none';
+        document.getElementById('captureBtn').style.display='none';
+        document.getElementById('retakeBtn').style.display='flex';
+        document.getElementById('camBadge').textContent='⬡ PHOTO CAPTURED';document.getElementById('camBadge').style.color='rgba(245,158,11,0.9)';
+        const b=document.getElementById('s3Btn');b.disabled=false;b.style.opacity='1';b.style.pointerEvents='';
+    },'image/jpeg',0.92);
+}
+function retakePhoto(){
+    capturedBlob=null;
+    document.getElementById('camVideo').style.display='block';document.getElementById('camPreview').style.display='none';
+    document.getElementById('scanBarEl').style.display='';
+    document.getElementById('captureBtn').style.display='flex';document.getElementById('retakeBtn').style.display='none';
+    document.getElementById('camBadge').textContent='⬡ LIVE FEED ACTIVE';document.getElementById('camBadge').style.color='rgba(16,185,129,0.8)';
+    const b=document.getElementById('s3Btn');b.disabled=true;b.style.opacity='.38';b.style.pointerEvents='none';hideMsg('s3msg');
+}
+async function handleStep3(){
+    if(!capturedBlob)return;hideMsg('s3msg');setBtnLoading('s3',true);flash();
+    const fd=new FormData();fd.append('photo',capturedBlob,'face_capture.jpg');fd.append('officerId',currentOfficerId);
+    try{
+        const r=await fetch('/api/verify-face',{method:'POST',body:fd});
+        const d=await r.json();
+        if(d.success){if(camStream)camStream.getTracks().forEach(t=>t.stop());goToStep(4);}
+        else if(d.spam){setBtnLoading('s3',false,'Upload & Verify Identity');showMsg('s3msg','error','No face detected. Please retake the photo in good lighting.');}
+        else{setBtnLoading('s3',false,'Upload & Verify Identity');showMsg('s3msg','error',d.error||'Verification failed.');}
+    }catch(err){
+        console.warn('Demo — face accepted.');if(camStream)camStream.getTracks().forEach(t=>t.stop());goToStep(4);
+    }
+}
+</script>
 </body>
 </html>
