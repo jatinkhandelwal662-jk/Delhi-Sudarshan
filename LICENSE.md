@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Riya Sharma (https://github.com/riyaa8484), Khushi Dalal (https://github.com/khushiidalal), Jatin Khandelwal (https://github.com/jatinkhandelwal662-jk), Bhavishya Bhati (https://github.com/BHAVISHYA-2007)
+Copyright (c) 2026 [Riya Sharma](https://github.com/riyaa8484), [Khushi Dalal](https://github.com/khushiidalal), [Jatin Khandelwal](https://github.com/jatinkhandelwal662-jk), [Bhavishya Bhati](https://github.com/BHAVISHYA-2007)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
